@@ -1,0 +1,22 @@
+This is the foundation of Rosso, I think I have it figured out this time.
+
+This will take years of work, but I think it is worth it
+
+POP
+====
+First we need plugin oriented Programming, take the existing models but remove the hub,
+everything is a pack, no more trine concept
+
+Speed up contracts and local lookups
+
+Tools
+=====
+
+Merge conf into tools, and add in packs for:
+aioproc
+process manager
+logging
+network topologies - aio
+
+Then we can start on Rosso, it will have a number of application enabled network topologies and we will
+pull concepts in from Salt as well.

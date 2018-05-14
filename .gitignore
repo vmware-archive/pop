@@ -1,0 +1,51 @@
+/build
+/src
+*.py[co]
+pkg/arch/*.tar.xz
+*.sw[pon]
+doc/_build
+dist
+MANIFEST
+.pytest_cache/
+*~
+*#
+*.wpr
+*.wpu
+*.DS_Store
+
+# setuptools stuff
+*.egg-info
+
+# code coverage outputs genereated by coverage.py
+.coverage
+coverage.xml
+htmlcov/
+
+# IDE files
+/.settings
+/.project
+/.pydevproject
+/.idea
+/.ropeproject
+.ropeproject
+*_flymake.py
+/*.iml
+*.sublime-project
+*.sublime-workspace
+/.kdev4
+/toran.kdev4
+
+# ignore ctags file
+tags
+
+# ignore Vagrant file
+**/Vagrantfile
+**/.vagrant
+
+# Compiled translation files should not be VCS'ed
+# locale/zh_CN/LC_MESSAGES/topics/virt/nic.mo
+*.mo
+.doctrees
+
+# ignore the local root
+/root/**

@@ -27,6 +27,18 @@ def test_this():
     assert hub.mods.test.this_this() == {}
 
 
+def test_ref_sys():
+    hub = pop.hub.Hub()
+    hub.tools.sub.add('mods', pypath='tests.mods')
+    hub.mods.test.ping()
+    assert hub.tools.ref.last('mods.test.ping')() == {}
+    path = hub.tools.ref.path('mods.test.ping')
+    assert len(path) == 4
+    assert hasattr(path[0], 'mods')
+    assert hasattr(path[1], 'test')
+    assert hasattr(path[2], 'ping')
+
+
 def test_module_level_direct_call():
     hub = pop.hub.Hub()
     hub.tools.sub.add('mods', pypath='tests.mods')

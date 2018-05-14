@@ -20,3 +20,20 @@ def path(hub, ref):
     for chunk in ref:
         ret.append(getattr(ret[-1], chunk))
     return ret
+
+
+def create(hub, ref, obj):
+    '''
+    Create an attribute at a given target using just a ref string and the
+    object to be saved at said location. The desired location must already
+    exist!
+
+    :param ref: The dot delimited string referencing the target location to
+        create the given object on the hub
+    :param obj: The object to store at the given reference point
+    '''
+    comps = ref.split('.')
+    sub_ref = ref[:ref.rindex('.')]
+    var = comps[-1]
+    top = hub.tools.ref.last(sub_ref)
+    setattr(top, var, obj)

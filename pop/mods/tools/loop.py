@@ -4,6 +4,7 @@ The main interface for management of the aio loop
 '''
 # Import python libs
 import asyncio
+import sys
 import functools
 
 __virtualname__ = 'loop'
@@ -18,7 +19,10 @@ def create(hub):
     Create the loop at hub.loop.loop
     '''
     if not hasattr(hub.tools, 'Loop'):
-        hub.tools.Loop = asyncio.get_event_loop()
+        if sys.platform == 'win32':
+            hub.tools.Loop = asyncio.ProactorEventLoop()
+        else:
+            hub.tools.Loop = asyncio.get_event_loop()
 
 
 def call_soon(hub, ref, *args, **kwargs):

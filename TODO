@@ -22,9 +22,9 @@ library.
 
 Tasks to create:
 
-Make the ref resolution system
-Add tests!
-Make the io library so it is easy to create aio servers/clients
+Make the ref resolution system - Done
+Add tests! - Done
+Make the io library so it is easy to create aio servers/clients - Why do we need to wrap this?
 Add tests!
 Make the proc system that can spin up a proc that runs the proc server and io loop
 Make the aio communication system so that we can make tons of connections

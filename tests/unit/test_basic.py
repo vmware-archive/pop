@@ -37,6 +37,9 @@ def test_ref_sys():
     assert hasattr(path[0], 'mods')
     assert hasattr(path[1], 'test')
     assert hasattr(path[2], 'ping')
+    rname = 'Made It!'
+    hub.tools.ref.create('mods.test.Foo', rname)
+    assert hub.mods.test.Foo == rname
 
 
 def test_module_level_direct_call():

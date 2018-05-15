@@ -16,9 +16,10 @@ def __virtual__(hub):
 
 def create(hub):
     '''
-    Create the loop at hub.loop.loop
+    Create the loop at hub.tools.Loop
     '''
-    if not hasattr(hub.tools, 'Loop'):
+    if not hub.tools.Loop:
+        print('Loop getting made')
         if sys.platform == 'win32':
             hub.tools.Loop = asyncio.ProactorEventLoop()
         else:

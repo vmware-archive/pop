@@ -3,32 +3,49 @@ The Proc sub is used to spin up worker processes that run hub referenced
 coroutines.
 '''
 # Import python libs
+import os
+import hashlib
 import sys
+import itertools
 import asyncio
+import subprocess
 
 
-def _get_cmd():
+def new(hub):
+    '''
+    Create constants used by the client and server side of procs
+    '''
+    hub.proc.DELIM = b'f1d219f8c8c01f11'
+
+def _get_cmd(hub, ref):
     '''
     Return the shell command to execute that will start up the worker
     '''
-    code = 'import sys; import pop.hub; sys.path={}; pop.hub.Hub().tools.sub.add("proc", "pop.mods.proc", init=True)'.format(sys.path)
-    cmd = '{} -c {}'.format(sys.executable, code)
+    code = 'import sys; '
+    code += 'import pop.hub; '
+    #code += 'sys.path={}; '.format(sys.path)
+    code += 'hub = pop.hub.Hub(); '
+    code += 'hub.tools.sub.add("proc", pypath="pop.mods.proc"); '
+    code += 'hub.proc.worker.start("{}", "{}")'.format(hub.opts['sock_dir'], ref)
+    cmd = '{} -c \'{}\''.format(sys.executable, code)
+    print(cmd)
+    return cmd
 
 
-def worker(hub):
+def mk_proc(hub, ind, workers):
     '''
-    This funtion is called by the startup script to create a worker process
-
-    :NOTE: This is a new process started from the shell, it does not have any
-    of the process namespace from the creating process.
-    This is an EXEC, NOT a FORK!
+    Create the process and add it to the passed in workers dict at the
+    specified index
     '''
-    # Create io loop
-    # Create server
-    # Accept calls and execute
+    ref = hashlib.blake2s(os.urandom(256)).hexdigest()[:6]
+    workers[ind] = {'ref': ref}
+    workers[ind]['path'] = os.path.join(hub.opts['sock_dir'], ref)
+    cmd = _get_cmd(hub, ref)
+    workers[ind]['proc'] = subprocess.Popen(cmd, shell=True)
+    workers[ind]['pid'] = workers[ind]['proc'].pid
 
 
-async def local_pool(hub, num, ref='hub.tools.proc.Workers'):
+async def local_pool(hub, num, name='Workers'):
     '''
     Create a new local pool of process based workers
 
@@ -37,8 +54,22 @@ async def local_pool(hub, num, ref='hub.tools.proc.Workers'):
         store the worker pool, defaults to `hub.tools.proc.Workers`
     '''
     workers = {}
-    hub.tools.ref.create(ref, workers)
     for ind in range(num):
-        workers[ind] = {}
-        cmd = _get_cmd()
-        workers[ind]['proc'] = await asyncio.create_subprocess_shell(cmd)
+        hub.proc.init.mk_proc(num, workers)
+    w_iter = itertools.cycle(workers)
+    setattr(hub.proc.worker, name, workers)
+    setattr(hub.proc.worker, '{}_iter'.format(name), w_iter)
+    asyncio.ensure_future(hub.proc.init.maintain(name))
+
+
+async def maintain(hub, name):
+    '''
+    Keep an eye on these processes
+    '''
+    workers = getattr(hub.proc.worker, name)
+    while True:
+        for ind, data in workers:
+            if not data['proc'].poll():
+                hub.proc.init.mk_proc(num, workers)
+        asyncio.sleep(2)
+

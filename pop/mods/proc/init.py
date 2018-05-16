@@ -4,8 +4,8 @@ coroutines.
 '''
 # Import python libs
 import os
-import hashlib
 import sys
+import atexit
 import itertools
 import asyncio
 import subprocess
@@ -35,11 +35,12 @@ def mk_proc(hub, ind, workers):
     Create the process and add it to the passed in workers dict at the
     specified index
     '''
-    ref = hashlib.blake2s(os.urandom(256)).hexdigest()[:6] + '.sock'
+    ref = os.urandom(3).hex() + '.sock'
     workers[ind] = {'ref': ref}
     workers[ind]['path'] = os.path.join(hub.opts['sock_dir'], ref)
     cmd = _get_cmd(hub, ref)
     workers[ind]['proc'] = subprocess.Popen(cmd, shell=True)
+    hub.proc.Tracker.append(workers[ind]['proc'])
     workers[ind]['pid'] = workers[ind]['proc'].pid
 
 
@@ -51,6 +52,8 @@ async def local_pool(hub, num, name='Workers'):
     :param ref: The location on the hub to create the Workers dict used to
         store the worker pool, defaults to `hub.tools.proc.Workers`
     '''
+    if not hub.proc.Tracker:
+        hub.proc.init.mk_tracker()
     workers = {}
     for ind in range(num):
         hub.proc.init.mk_proc(ind, workers)
@@ -71,3 +74,20 @@ async def maintain(hub, name):
                 hub.proc.init.mk_proc(ind, workers)
         await asyncio.sleep(2)
 
+
+def mk_tracker(hub):
+    '''
+    Create the process tracker, this simply makes a data structure to hold
+    process references and sets them to be terminated when the system is
+    shutdown.
+    '''
+    hub.proc.Tracker = []
+    atexit.register(hub.proc.init.clean)
+
+
+def clean(hub):
+    '''
+    Clean up the processes registered in the tracker
+    '''
+    for proc in hub.proc.Tracker:
+        proc.terminate()

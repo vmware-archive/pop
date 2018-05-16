@@ -10,6 +10,9 @@ import os
 import asyncio
 # Import third party libs
 import msgpack
+# TODO: The workers should detect if thier controlling process dies and terminate by themselves
+# The controlling process will kill them when it exists, but if it exists hard then the workers
+# Should be able to also clean themselves up
 
 
 def start(hub, sock_dir, ref):

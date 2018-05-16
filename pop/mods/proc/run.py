@@ -14,7 +14,7 @@ async def add_sub(hub, worker_name, *args, **kwargs):
     This funtion takes all of the same arguments as hub.tools.sub.add
     '''
     ret = {}
-    workers = getattr(hub.proc.worker, worker_name)
+    workers = hub.proc.Workers[worker_name]
     for ind in workers:
         payload = {'fun': 'sub', 'args': args, 'kwargs': kwargs}
         # TODO: Make these futures to the run at the same time
@@ -31,7 +31,7 @@ async def pub(hub, worker_name, func_ref, *args, **kwargs):
     to be loaded into the workers for a function to be available via
     hub.proc.run.add_sub
     '''
-    workers = getattr(hub.proc.worker, name)
+    workers = hub.proc.Workers[worker_name]
     ret = {}
     for ind in workers:
         payload = {'fun': 'run', 'ref': func_ref, 'args': args, 'kwargs': kwargs}
@@ -49,8 +49,8 @@ async def func(hub, worker_name, func_ref, *args, **kwargs):
     to be loaded into the workers for a function to be available via
     hub.proc.run.add_sub
     '''
-    workers = getattr(hub.proc.worker, worker_name)
-    w_iter = getattr(hub.proc.worker, '{}_iter'.format(worker_name))
+    workers = hub.proc.Workers[worker_name]
+    w_iter = hub.proc.WorkersIter[worker_name]
     worker = workers[next(w_iter)]
     payload = {'fun': 'run', 'ref': func_ref, 'args': args, 'kwargs': kwargs}
     return await hub.proc.run.send(worker, payload)

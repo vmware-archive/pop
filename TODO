@@ -33,7 +33,7 @@ Tools
 
 Merge conf into tools, and add in packs for:
 aioproc - Done
-process manager
+process manager for aioproc - Done
 logging
 network topologies - aio
 

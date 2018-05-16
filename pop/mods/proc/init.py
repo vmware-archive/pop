@@ -16,6 +16,9 @@ def new(hub):
     Create constants used by the client and server side of procs
     '''
     hub.proc.DELIM = b'f1d219f8c8c01f11'
+    hub.proc.Workers = {}
+    hub.proc.WorkersIter = {}
+
 
 def _get_cmd(hub, ref):
     '''
@@ -40,7 +43,6 @@ def mk_proc(hub, ind, workers):
     workers[ind]['path'] = os.path.join(hub.opts['sock_dir'], ref)
     cmd = _get_cmd(hub, ref)
     workers[ind]['proc'] = subprocess.Popen(cmd, shell=True)
-    hub.proc.Tracker.append(workers[ind]['proc'])
     workers[ind]['pid'] = workers[ind]['proc'].pid
 
 
@@ -58,16 +60,17 @@ async def local_pool(hub, num, name='Workers'):
     for ind in range(num):
         hub.proc.init.mk_proc(ind, workers)
     w_iter = itertools.cycle(workers)
-    setattr(hub.proc.worker, name, workers)
-    setattr(hub.proc.worker, '{}_iter'.format(name), w_iter)
-    asyncio.ensure_future(hub.proc.init.maintain(name))
+    hub.proc.Workers[name] = workers
+    hub.proc.WorkersIter[name] = w_iter
+    # TODO: This seems to be spawning extra procs, this should be fixed
+    #asyncio.ensure_future(hub.proc.init.maintain(name))
 
 
 async def maintain(hub, name):
     '''
     Keep an eye on these processes
     '''
-    workers = getattr(hub.proc.worker, name)
+    workers = hub.proc.Workers[name]
     while True:
         for ind, data in workers.items():
             if not data['proc'].poll():
@@ -81,7 +84,7 @@ def mk_tracker(hub):
     process references and sets them to be terminated when the system is
     shutdown.
     '''
-    hub.proc.Tracker = []
+    hub.proc.Tracker = True
     atexit.register(hub.proc.init.clean)
 
 
@@ -89,5 +92,9 @@ def clean(hub):
     '''
     Clean up the processes registered in the tracker
     '''
-    for proc in hub.proc.Tracker:
-        proc.terminate()
+    print('Cleaning Procs!')
+    for name, workers in hub.proc.Workers.items():
+        print(name)
+        print(workers)
+        for ind in workers:
+            workers[ind]['proc'].terminate()

@@ -19,7 +19,6 @@ def create(hub):
     Create the loop at hub.tools.Loop
     '''
     if not hub.tools.Loop:
-        print('Loop getting made')
         if sys.platform == 'win32':
             hub.tools.Loop = asyncio.ProactorEventLoop()
         else:

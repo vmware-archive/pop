@@ -23,7 +23,15 @@ def start(hub, sock_dir, ref):
     hub.proc.SOCK_DIR = sock_dir
     hub.proc.REF = ref
     hub.proc.SOCK_PATH = os.path.join(sock_dir, ref)
-    hub.tools.loop.start(hub.proc.worker.server())
+    hub.tools.loop.start(hub.proc.worker.hold(), hub.proc.worker.server())
+
+
+async def hold(hub):
+    '''
+    This function just holds the loop open by sleeping in a while loop
+    '''
+    while True:
+        await asyncio.sleep(60)
 
 
 async def server(hub):
@@ -40,24 +48,25 @@ async def work(hub, reader, writer):
     Process the incomming work
     '''
     inbound = await reader.readuntil(hub.proc.DELIM)
-    payload = msgpack.loads(inbound)
+    inbound = inbound.rstrip(hub.proc.DELIM)
+    payload = msgpack.loads(inbound, encoding='utf8')
     ret = b''
     if 'fun' not in payload:
-        ret = msgpack.dumps({'err': 'Invalid format'})
+        ret = {'err': 'Invalid format'}
     elif payload['fun'] == 'sub':
         # Time to add a sub to the hub!
         try:
             hub.proc.worker.add_sub(payload)
-            ret = msgpack.dumps({'status': True})
+            ret = {'status': True}
         except Exception as exc:
-            ret = msgpack.dumps({'status': False, 'exc': str(exc)})
+            ret = {'status': False, 'exc': str(exc)}
     elif payload['fun'] == 'run':
         # Time to do some work!
         try:
             ret = await hub.proc.worker.run(payload)
-            ret = msgpack.dumps(ret)
         except Exception as exc:
-            ret = msgpack.dumps({'status': False, 'exc': str(exc)})
+            ret = {'status': False, 'exc': str(exc)}
+    ret = msgpack.dumps(ret, use_bin_type=True)
     ret += hub.proc.DELIM
     writer.write(ret)
     await writer.drain()

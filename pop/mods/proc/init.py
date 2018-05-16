@@ -23,12 +23,10 @@ def _get_cmd(hub, ref):
     '''
     code = 'import sys; '
     code += 'import pop.hub; '
-    #code += 'sys.path={}; '.format(sys.path)
     code += 'hub = pop.hub.Hub(); '
-    code += 'hub.tools.sub.add("proc", pypath="pop.mods.proc"); '
+    code += 'hub.tools.sub.add("proc", pypath="pop.mods.proc", init=True); '
     code += 'hub.proc.worker.start("{}", "{}")'.format(hub.opts['sock_dir'], ref)
     cmd = '{} -c \'{}\''.format(sys.executable, code)
-    print(cmd)
     return cmd
 
 
@@ -37,7 +35,7 @@ def mk_proc(hub, ind, workers):
     Create the process and add it to the passed in workers dict at the
     specified index
     '''
-    ref = hashlib.blake2s(os.urandom(256)).hexdigest()[:6]
+    ref = hashlib.blake2s(os.urandom(256)).hexdigest()[:6] + '.sock'
     workers[ind] = {'ref': ref}
     workers[ind]['path'] = os.path.join(hub.opts['sock_dir'], ref)
     cmd = _get_cmd(hub, ref)
@@ -55,7 +53,7 @@ async def local_pool(hub, num, name='Workers'):
     '''
     workers = {}
     for ind in range(num):
-        hub.proc.init.mk_proc(num, workers)
+        hub.proc.init.mk_proc(ind, workers)
     w_iter = itertools.cycle(workers)
     setattr(hub.proc.worker, name, workers)
     setattr(hub.proc.worker, '{}_iter'.format(name), w_iter)
@@ -68,8 +66,8 @@ async def maintain(hub, name):
     '''
     workers = getattr(hub.proc.worker, name)
     while True:
-        for ind, data in workers:
+        for ind, data in workers.items():
             if not data['proc'].poll():
-                hub.proc.init.mk_proc(num, workers)
-        asyncio.sleep(2)
+                hub.proc.init.mk_proc(ind, workers)
+        await asyncio.sleep(2)
 

@@ -13,11 +13,13 @@ async def add_sub(hub, worker_name, *args, **kwargs):
 
     This funtion takes all of the same arguments as hub.tools.sub.add
     '''
+    ret = {}
     workers = getattr(hub.proc.worker, worker_name)
     for ind in workers:
-        payload = {'fun': 'add', 'args': args, 'kwargs': kwargs}
+        payload = {'fun': 'sub', 'args': args, 'kwargs': kwargs}
         # TODO: Make these futures to the run at the same time
-        await hub.proc.run.send(workers[ind], payload)
+        ret[ind] = await hub.proc.run.send(workers[ind], payload)
+    return ret
 
 
 async def pub(hub, worker_name, func_ref, *args, **kwargs):
@@ -47,8 +49,8 @@ async def func(hub, worker_name, func_ref, *args, **kwargs):
     to be loaded into the workers for a function to be available via
     hub.proc.run.add_sub
     '''
-    workers = getattr(hub.proc.worker, name)
-    w_iter = getattr(hub.proc.worker, '{}_iter'.format(name))
+    workers = getattr(hub.proc.worker, worker_name)
+    w_iter = getattr(hub.proc.worker, '{}_iter'.format(worker_name))
     worker = workers[next(w_iter)]
     payload = {'fun': 'run', 'ref': func_ref, 'args': args, 'kwargs': kwargs}
     return await hub.proc.run.send(worker, payload)
@@ -59,11 +61,12 @@ async def send(hub, worker, payload):
     Send the given payload to the given worker. pass in the worker dict
     as derived from the pool (workers[ind])
     '''
-    mp = msgpack.dumps(payload)
+    mp = msgpack.dumps(payload, use_bin_type=True)
     mp += hub.proc.DELIM
-    reader, writer = asyncio.open_unix_connection(path=worker['path'])
+    reader, writer = await asyncio.open_unix_connection(path=worker['path'])
     writer.write(mp)
     await writer.drain()
-    writer.close()
     ret = await reader.readuntil(hub.proc.DELIM)
-    return msgpack.loads(ret)
+    ret = ret.rstrip(hub.proc.DELIM)
+    writer.close()
+    return msgpack.loads(ret, encoding='utf8')

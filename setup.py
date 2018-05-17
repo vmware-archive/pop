@@ -7,17 +7,17 @@ import sys
 import shutil
 
 # SETUPTOOLS WILL NOT BE TOLERATED!!
-# I have made MANY python projects and those idiotic seuptools
-# create pkg_resources deps and unnessisarily muddy up the
+# I have made MANY python projects and those idiotic setuptools
+# create pkg_resources deps and unnecessarily muddy up the
 # startup process. They add NO useful features that cannot be
-# easily derived from distutils, which is a clean and resonable
+# easily derived from distutils, which is a clean and reasonable
 # packaging system!
 
 from distutils.core import setup
 from distutils.core import Command
 
 NAME = 'pop'
-DESC = ('The next generation of FaaS')
+DESC = ('The Plugin Oriented Programming System')
 
 # Version info -- read without importing
 _locals = {}

@@ -14,6 +14,77 @@ __virtualname__ = 'args'
 __contracts__ = [__virtualname__]
 
 
+class ActionWrapper:
+    '''
+    This class wraps argparse.Action instances in order to mark arguments passed
+    on CLI as explicitely passed
+    '''
+    def __init__(self, action):
+        self._action = action
+        functools.update_wrapper(self, action)
+
+    def __call__(self, parser, namespace, values, option_string):
+        # Let's store the call to this option as an explicit CLI call for later
+        # use when overwriting any configuration settings on file with those
+        # from CLI
+        if getattr(parser, '_explicit_cli_args_', None) is None:
+            setattr(parser, '_explicit_cli_args_', set())
+        parser._explicit_cli_args_.add(self._action.dest)  # pylint: disable=protected-access
+        # Carry on regular operation
+        return self._action(parser, namespace, values, option_string)
+
+    def __getattribute__(self, name):
+        if name == '_action':
+            return object.__getattribute__(self, name)
+        # Proxy any attribute's search to the _action instance
+        return getattr(self._action, name)
+
+    def __repr__(self):
+        return repr(self._action)
+
+
+class ActionClassWrapper:
+    '''
+    This class wraps argparse.Action classes in order to mark arguments passed
+    on CLI as explicitely passed
+    '''
+    def __init__(self, klass):
+        self._klass = klass
+
+    def __call__(self, *args, **kwargs):
+        return ActionWrapper(self._klass(*args, **kwargs))
+
+    def __repr__(self):
+        return repr(self._klass)
+
+    def __getattribute__(self, name):
+        if name == '_klass':
+            return object.__getattribute__(self, name)
+        # Proxy any attributes search to the _klass instance
+        return getattr(self._klass, name)
+
+
+class ArgumentParser(argparse.ArgumentParser):
+    def register(self, name, value, obj):  # pylint: disable=arguments-differ
+        if name == 'action':
+            # Let's wrap it on our action class wrapper so we can latter store
+            # which options were explicitly passed from CLI
+            return super(ArgumentParser, self).register(
+                name,
+                value,
+                ActionClassWrapper(obj)
+            )
+        return super(ArgumentParser, self).register(name, value, obj)
+
+    def parse_known_args(self, args=None, namespace=None):
+        namespace, arg_strings = super().parse_known_args(args, namespace)
+        explicit_cli_args = getattr(self, '_explicit_cli_args_', set())
+        if '_explicit_cli_args_' not in namespace:
+            setattr(namespace, '_explicit_cli_args_', set())
+        namespace._explicit_cli_args_.update(explicit_cli_args)
+        return namespace, arg_strings
+
+
 def __mod_init__(hub):
     '''
     Set up the local memory copy of the parser
@@ -24,7 +95,7 @@ def __mod_init__(hub):
 def _init_parser(hub, opts):
     if 'parser' not in hub.conf._mem['args']:
         # Instantiate the parser
-        hub.conf._mem['args']['parser'] = argparse.ArgumentParser(**opts.get('_argparser_', {}))
+        hub.conf._mem['args']['parser'] = ArgumentParser(**opts.get('_argparser_', {}))
 
 
 def _keys(opts):

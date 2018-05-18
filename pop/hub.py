@@ -134,6 +134,7 @@ class Sub:
             ):
         self._hub = hub
         self._subs = {}
+        self._mem = {}
         self._modname = modname
         self._subname = subname if subname else modname
         self._pypath = pypath

@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-    pack.dirs
-    ~~~~~~~~~
-
-    Find directories
+Find directories
 '''
 # Import python libs
 import os

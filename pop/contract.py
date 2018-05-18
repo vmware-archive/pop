@@ -1,17 +1,14 @@
 # -*- coding: utf-8 -*-
 '''
-    pack.contract
-    ~~~~~~~~~~~~~
-
-    Contracts to enforce loader objects
+Contracts to enforce loader objects
 '''
 
 # Import python libs
 import inspect
 from collections import namedtuple
 
-# Import pack libs
-import pack.exc
+# Import pop libs
+import pop.exc
 
 
 class ContractedContext(namedtuple('ContractedContext', ('func', 'args', 'kwargs', 'signature', 'ret', 'cache'))):
@@ -72,12 +69,12 @@ def verify_contract(parent, raws, mod):  # pylint: disable=unused-argument
                 functions = raw.functions()
             for fun_name in functions:
                 if not hasattr(mod, fun_name):
-                    raise pack.exc.ContractModuleException(
+                    raise pop.exc.ContractModuleException(
                         'Missing function \'{}\' in {!r}'.format(fun_name, mod)
                     )
                 func = getattr(mod, fun_name)
                 if not callable(func):
-                    raise pack.exc.ContractFuncException('{} is not a function'.format(fun_name))
+                    raise pop.exc.ContractFuncException('{} is not a function'.format(fun_name))
 
 
 class Contracted:  # pylint: disable=too-few-public-methods

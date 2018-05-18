@@ -13,7 +13,7 @@ import py
 import pytest
 
 # import pop libs
-import pop
+import pop.hub
 
 C1 = {
     'foo': {
@@ -216,7 +216,7 @@ def test_default():
     hub = pop.hub.Hub()
     hub.tools.sub.add(
         'conf',
-        pypath='pack.mods.conf',
+        pypath='pop.mods.conf',
     )
     opts = hub.conf.reader.read(C1)
     assert opts['foo'] == 'bar'
@@ -227,7 +227,7 @@ def test_pass():
     hub = pop.hub.Hub()
     hub.tools.sub.add(
         'conf',
-        pypath='pack.mods.conf',
+        pypath='pop.mods.conf',
     )
     sys.argv.append('--foo')
     sys.argv.append('baz')
@@ -239,7 +239,7 @@ def test_action():
     hub = pop.hub.Hub()
     hub.tools.sub.add(
         'conf',
-        pypath='pack.mods.conf',
+        pypath='pop.mods.conf',
     )
     opts = hub.conf.reader.read(C1, args=['-f'])
     assert opts['false'] is False
@@ -249,7 +249,7 @@ def test_file(tmpdir):
     hub = pop.hub.Hub()
     hub.tools.sub.add(
         'conf',
-        pypath='pack.mods.conf',
+        pypath='pop.mods.conf',
     )
     try:
         conf_file = tmpdir.join('config_file')
@@ -269,7 +269,7 @@ def test_config_dir(tmpdir):
     hub = pop.hub.Hub()
     hub.tools.sub.add(
         'conf',
-        pypath='pack.mods.conf',
+        pypath='pop.mods.conf',
     )
     try:
         conf_dir = tmpdir.mkdir('cfgdir')
@@ -290,7 +290,7 @@ def test_config_dir_multiple_files(tmpdir):
     hub = pop.hub.Hub()
     hub.tools.sub.add(
         'conf',
-        pypath='pack.mods.conf',
+        pypath='pop.mods.conf',
     )
     try:
         conf_dir = tmpdir.mkdir('cfgdir')
@@ -313,7 +313,7 @@ def test_config_dir_with_nested_dirs(tmpdir):
     hub = pop.hub.Hub()
     hub.tools.sub.add(
         'conf',
-        pypath='pack.mods.conf',
+        pypath='pop.mods.conf',
     )
     try:
         conf_dir_1 = tmpdir.mkdir('cfgdir')
@@ -338,7 +338,7 @@ def test_config_dir_nargs(tmpdir):
         hub = pop.hub.Hub()
         hub.tools.sub.add(
             'conf',
-            pypath='pack.mods.conf',
+            pypath='pop.mods.conf',
         )
         conf_dir_1 = tmpdir.mkdir('cfgdir-1')
         conf_file_1 = conf_dir_1.join('config_file-0')
@@ -358,7 +358,7 @@ def test_config_dir_nargs(tmpdir):
         hub = pop.hub.Hub()
         hub.tools.sub.add(
             'conf',
-            pypath='pack.mods.conf',
+            pypath='pop.mods.conf',
         )
         conf_dir_3 = tmpdir.mkdir('cfgdir-3')
         conf_file_3 = conf_dir_3.join('config_file-0')
@@ -385,7 +385,7 @@ def test_config_dir_nargs_append(tmpdir):
         hub = pop.hub.Hub()
         hub.tools.sub.add(
             'conf',
-            pypath='pack.mods.conf',
+            pypath='pop.mods.conf',
         )
         conf_dir_1 = tmpdir.mkdir('cfgdir-1')
         conf_file_1 = conf_dir_1.join('config_file-0')
@@ -424,7 +424,7 @@ def test_config_dir_pattern(tmpdir):
     hub = pop.hub.Hub()
     hub.tools.sub.add(
         'conf',
-        pypath='pack.mods.conf',
+        pypath='pop.mods.conf',
     )
     try:
         conf_dir = tmpdir.mkdir('cfgdir')
@@ -447,7 +447,7 @@ def test_subs():
     hub = pop.hub.Hub()
     hub.tools.sub.add(
         'conf',
-        pypath='pack.mods.conf',
+        pypath='pop.mods.conf',
     )
     sys.argv.extend(['sub', '--foo', 'bar'])
     opts = hub.conf.reader.read(C4, SUB)
@@ -466,7 +466,7 @@ def test_version(capsys):
     hub = pop.hub.Hub()
     hub.tools.sub.add(
         'conf',
-        pypath='pack.mods.conf',
+        pypath='pop.mods.conf',
     )
     with pytest.raises(SystemExit):
         hub.conf.reader.read(in_opts, args=['--version'])
@@ -500,7 +500,7 @@ def test_priority_order(capsys):
     hub = pop.hub.Hub()
     hub.tools.sub.add(
         'conf',
-        pypath='pack.mods.conf',
+        pypath='pop.mods.conf',
     )
     with pytest.raises(SystemExit):
         hub.conf.reader.read(in_opts, args=['-h'])
@@ -522,7 +522,7 @@ def test_priority_order(capsys):
     hub = pop.hub.Hub()
     hub.tools.sub.add(
         'conf',
-        pypath='pack.mods.conf',
+        pypath='pop.mods.conf',
     )
     with pytest.raises(SystemExit):
         hub.conf.reader.read(in_opts, args=['-h'])
@@ -545,7 +545,7 @@ def test_priority_order(capsys):
     hub = pop.hub.Hub()
     hub.tools.sub.add(
         'conf',
-        pypath='pack.mods.conf',
+        pypath='pop.mods.conf',
     )
     with pytest.raises(SystemExit):
         hub.conf.reader.read(od_in_opts, args=['-h'])
@@ -567,7 +567,7 @@ def test_priority_order(capsys):
     hub = pop.hub.Hub()
     hub.tools.sub.add(
         'conf',
-        pypath='pack.mods.conf',
+        pypath='pop.mods.conf',
     )
     with pytest.raises(SystemExit):
         hub.conf.reader.read(ode_in_opts, args=['-h'])
@@ -586,7 +586,7 @@ def test_ex_group(capsys):
     hub = pop.hub.Hub()
     hub.tools.sub.add(
         'conf',
-        pypath='pack.mods.conf',
+        pypath='pop.mods.conf',
     )
     sys.argv.extend(['--gr1', 'bar', '--gr2', 'baz'])
     with pytest.raises(SystemExit):
@@ -609,7 +609,7 @@ def test_argparser_config(capsys):
     hub = pop.hub.Hub()
     hub.tools.sub.add(
         'conf',
-        pypath='pack.mods.conf',
+        pypath='pop.mods.conf',
     )
     with pytest.raises(SystemExit):
         hub.conf.reader.read(opts, args=['-h'])
@@ -622,7 +622,7 @@ def test_positional():
     hub = pop.hub.Hub()
     hub.tools.sub.add(
         'conf',
-        pypath='pack.mods.conf',
+        pypath='pop.mods.conf',
     )
     sys.argv.extend(['bar', '-C', '/tmp/bin'])
     opts = hub.conf.reader.read(C7)
@@ -634,7 +634,7 @@ def test_positional_default():
     hub = pop.hub.Hub()
     hub.tools.sub.add(
         'conf',
-        pypath='pack.mods.conf',
+        pypath='pop.mods.conf',
     )
     sys.argv.extend(['-C', '/tmp/bin'])
     opts = hub.conf.reader.read(copy.deepcopy(C9))
@@ -644,7 +644,7 @@ def test_positional_default():
     hub = pop.hub.Hub()
     hub.tools.sub.add(
         'conf',
-        pypath='pack.mods.conf',
+        pypath='pop.mods.conf',
     )
     sys.argv.extend(['bin', '-C', '/tmp/bin'])
     opts = hub.conf.reader.read(copy.deepcopy(C9))
@@ -656,7 +656,7 @@ def test_subs_positional():
     hub = pop.hub.Hub()
     hub.tools.sub.add(
         'conf',
-        pypath='pack.mods.conf',
+        pypath='pop.mods.conf',
     )
     sys.argv.extend(['--foo', 'bar', 'sub', 'positional-baz', 'positional-bar'])
     opts = hub.conf.reader.read(copy.deepcopy(C8), SUB)
@@ -671,7 +671,7 @@ def test_subs_positional_missing(capsys):
     hub = pop.hub.Hub()
     hub.tools.sub.add(
         'conf',
-        pypath='pack.mods.conf',
+        pypath='pop.mods.conf',
     )
     sys.argv.extend(['--foo', 'bar', 'sub', 'positional-baz'])
     with pytest.raises(SystemExit):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-The pack top level module
+The pop top level module
 '''
 
 # Import python libs
@@ -14,7 +14,7 @@ INSTALL_DIR = os.path.dirname(os.path.realpath(__file__))
 def __define_global_system_encoding_variable__():
     import sys
     # sys.stdin.encoding is the most trustworthy source of the system encoding, though, if
-    # pack is being imported after being daemonized, this information is lost and reset to None
+    # pop is being imported after being daemonized, this information is lost and reset to None
     encoding = None
 
     if not sys.platform.startswith('win') and sys.stdin is not None:

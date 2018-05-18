@@ -92,9 +92,6 @@ def clean(hub):
     '''
     Clean up the processes registered in the tracker
     '''
-    print('Cleaning Procs!')
     for name, workers in hub.proc.Workers.items():
-        print(name)
-        print(workers)
         for ind in workers:
             workers[ind]['proc'].terminate()

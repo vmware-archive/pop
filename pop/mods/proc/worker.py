@@ -54,7 +54,7 @@ async def work(hub, reader, writer):
     Process the incomming work
     '''
     inbound = await reader.readuntil(hub.proc.DELIM)
-    inbound = inbound.rstrip(hub.proc.DELIM)
+    inbound = inbound[:-len(hub.proc.DELIM)]
     payload = msgpack.loads(inbound, encoding='utf8')
     ret = b''
     if 'fun' not in payload:
@@ -111,6 +111,6 @@ async def ret(hub, payload):
     writer.write(mp)
     await writer.drain()
     ret = await reader.readuntil(hub.proc.DELIM)
-    ret = ret.rstrip(hub.proc.DELIM)
+    ret = ret[:-len(hub.proc.DELIM)]
     writer.close()
     return msgpack.loads(ret, encoding='utf8')

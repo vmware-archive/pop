@@ -14,7 +14,6 @@ async def _test_create(hub):
 
 
 async def callback(hub, payload):
-    print('Callback')
     if 'payload' in payload:
         hub.set_me = payload['payload']['ret']
     return 'foo'

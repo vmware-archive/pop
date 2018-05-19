@@ -7,13 +7,6 @@ import os
 # Import pop libs
 import pop.hub
 
-#    hub.tools.sub.add('mods', pypath='tests.mods')
-#    hub.mods.test.ping()
-#    assert hub.mods.test.ping() == {}
-#    assert hub.mods.test.this_pack() == {}
-#    assert hub.mods.test.demo() is False
-#    assert hub.mods.test.ping() == hub.mods.foo.bar()
-
 
 async def _test_create(hub):
     name = 'Tests'

@@ -15,7 +15,7 @@ import msgpack
 # Should be able to also clean themselves up
 
 
-def start(hub, sock_dir, ref):
+def start(hub, sock_dir, ind, ref, ret_ref):
     '''
     This funtion is called by the startup script to create a worker process
 
@@ -26,6 +26,9 @@ def start(hub, sock_dir, ref):
     hub.proc.SOCK_DIR = sock_dir
     hub.proc.REF = ref
     hub.proc.SOCK_PATH = os.path.join(sock_dir, ref)
+    hub.proc.RET_REF = ret_ref
+    hub.proc.RET_SOCK_PATH = os.path.join(sock_dir, ret_ref)
+    hub.proc.IND = ind
     hub.tools.loop.start(hub.proc.worker.hold(), hub.proc.worker.server())
 
 
@@ -94,3 +97,20 @@ async def run(hub, payload):
     if asyncio.iscoroutine(ret):
         return await ret
     return ret
+
+
+async def ret(hub, payload):
+    '''
+    Send a return payload to the spawning process. This return will be tagged
+    with the index of the process that returned it
+    '''
+    payload = {'ind': hub.proc.IND, 'payload': payload}
+    mp = msgpack.dumps(payload, use_bin_type=True)
+    mp += hub.proc.DELIM
+    reader, writer = await asyncio.open_unix_connection(path=hub.proc.RET_SOCK_PATH)
+    writer.write(mp)
+    await writer.drain()
+    ret = await reader.readuntil(hub.proc.DELIM)
+    ret = ret.rstrip(hub.proc.DELIM)
+    writer.close()
+    return msgpack.loads(ret, encoding='utf8')

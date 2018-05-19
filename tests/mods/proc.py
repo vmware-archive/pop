@@ -1,12 +1,3 @@
-'''
-Test the proc subsystem
-'''
-# Import python libs
-import asyncio
-import os
-# Import pop libs
-import pop.hub
-
 
 async def _test_create(hub):
     name = 'Tests'
@@ -22,10 +13,13 @@ async def _test_create(hub):
     assert ret_ret == 'inline'
 
 
-def test_create():
-    hub = pop.hub.Hub()
-    hub.opts = {}
-    hub.opts['sock_dir'] = os.getcwd()
-    hub.tools.sub.add('proc', pypath='pop.mods.proc', init=True)
-    hub.tools.sub.add('mods', pypath='tests.mods')
-    hub.tools.loop.start(_test_create(hub))
+async def callback(hub, payload):
+    print('Callback')
+    if 'payload' in payload:
+        hub.set_me = payload['payload']['ret']
+    return 'foo'
+
+
+async def ret(hub):
+    await hub.proc.worker.ret({'ret': 'Returned'})
+    return 'inline'

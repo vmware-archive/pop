@@ -67,6 +67,6 @@ async def send(hub, worker, payload):
     writer.write(mp)
     await writer.drain()
     ret = await reader.readuntil(hub.proc.DELIM)
-    ret = ret.rstrip(hub.proc.DELIM)
+    ret = ret[:-len(hub.proc.DELIM)]
     writer.close()
     return msgpack.loads(ret, encoding='utf8')

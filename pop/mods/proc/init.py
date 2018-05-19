@@ -9,6 +9,8 @@ import atexit
 import itertools
 import asyncio
 import subprocess
+# Import third party libs
+import msgpack
 
 
 def new(hub):
@@ -20,7 +22,7 @@ def new(hub):
     hub.proc.WorkersIter = {}
 
 
-def _get_cmd(hub, ref):
+def _get_cmd(hub, ind, ref, ret_ref):
     '''
     Return the shell command to execute that will start up the worker
     '''
@@ -28,12 +30,12 @@ def _get_cmd(hub, ref):
     code += 'import pop.hub; '
     code += 'hub = pop.hub.Hub(); '
     code += 'hub.tools.sub.add("proc", pypath="pop.mods.proc", init=True); '
-    code += 'hub.proc.worker.start("{}", "{}")'.format(hub.opts['sock_dir'], ref)
+    code += 'hub.proc.worker.start("{}", "{}", "{}", "{}")'.format(hub.opts['sock_dir'], ind, ref, ret_ref)
     cmd = '{} -c \'{}\''.format(sys.executable, code)
     return cmd
 
 
-def mk_proc(hub, ind, workers):
+def mk_proc(hub, ind, workers, ret_ref):
     '''
     Create the process and add it to the passed in workers dict at the
     specified index
@@ -41,24 +43,32 @@ def mk_proc(hub, ind, workers):
     ref = os.urandom(3).hex() + '.sock'
     workers[ind] = {'ref': ref}
     workers[ind]['path'] = os.path.join(hub.opts['sock_dir'], ref)
-    cmd = _get_cmd(hub, ref)
+    cmd = _get_cmd(hub, ind, ref, ret_ref)
     workers[ind]['proc'] = subprocess.Popen(cmd, shell=True)
     workers[ind]['pid'] = workers[ind]['proc'].pid
 
 
-async def local_pool(hub, num, name='Workers'):
+async def local_pool(hub, num, name='Workers', callback=None):
     '''
     Create a new local pool of process based workers
 
     :param num: The number of processes to add to this pool
     :param ref: The location on the hub to create the Workers dict used to
         store the worker pool, defaults to `hub.tools.proc.Workers`
+    :param callback: The pop ref to call when the process communicates
+        back
     '''
+    ret_ref = os.urandom(3).hex() + '.sock'
+    ret_sock_path = os.path.join(hub.opts['sock_dir'], ret_ref)
     if not hub.proc.Tracker:
         hub.proc.init.mk_tracker()
     workers = {}
+    if callback:
+        await asyncio.start_unix_server(
+                hub.proc.init.ret_work(callback),
+                path=ret_sock_path)
     for ind in range(num):
-        hub.proc.init.mk_proc(ind, workers)
+        hub.proc.init.mk_proc(ind, workers, ret_ref)
     w_iter = itertools.cycle(workers)
     hub.proc.Workers[name] = workers
     hub.proc.WorkersIter[name] = w_iter
@@ -95,3 +105,20 @@ def clean(hub):
     for name, workers in hub.proc.Workers.items():
         for ind in workers:
             workers[ind]['proc'].terminate()
+
+
+def ret_work(hub, callback):
+    async def work(reader, writer):
+        '''
+        Process the incomming work
+        '''
+        inbound = await reader.readuntil(hub.proc.DELIM)
+        inbound = inbound[:-len(hub.proc.DELIM)]
+        payload = msgpack.loads(inbound, encoding='utf8')
+        ret = await callback(payload)
+        ret = msgpack.dumps(ret, use_bin_type=True)
+        ret += hub.proc.DELIM
+        writer.write(ret)
+        await writer.drain()
+        writer.close()
+    return work

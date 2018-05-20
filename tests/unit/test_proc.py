@@ -3,6 +3,7 @@ Test the proc subsystem
 '''
 # Import python libs
 import asyncio
+import tempfile
 import os
 # Import pop libs
 import pop.hub
@@ -25,7 +26,7 @@ async def _test_create(hub):
 def test_create():
     hub = pop.hub.Hub()
     hub.opts = {}
-    hub.opts['sock_dir'] = os.getcwd()
+    hub.opts['sock_dir'] = tempfile.mkdtemp()
     hub.tools.sub.add('proc', pypath='pop.mods.proc', init=True)
     hub.tools.sub.add('mods', pypath='tests.mods')
     hub.tools.loop.start(_test_create(hub))

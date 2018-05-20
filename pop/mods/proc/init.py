@@ -72,6 +72,14 @@ async def local_pool(hub, num, name='Workers', callback=None):
     w_iter = itertools.cycle(workers)
     hub.proc.Workers[name] = workers
     hub.proc.WorkersIter[name] = w_iter
+    up = set()
+    while True:
+        for ind in workers:
+            if os.path.exists(workers[ind]['path']):
+                up.add(ind)
+        if len(up) == num:
+            break
+        await asyncio.sleep(0.01)
     # TODO: This seems to be spawning extra procs, this should be fixed
     #asyncio.ensure_future(hub.proc.init.maintain(name))
 

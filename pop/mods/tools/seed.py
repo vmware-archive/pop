@@ -107,6 +107,7 @@ def new(hub):
     hub.tools.seed.mksetup(name)
     hub.tools.seed.mkscript(name)
     hub.tools.seed.mkinit(name)
+    hub.tools.seed.mkversion(name)
 
 
 def mkdir(hub, *args):
@@ -158,3 +159,12 @@ def mkinit(hub, name):
     with open(path, 'w+') as fp:
         fp.write(init_str)
 
+
+def mkversion(hub, name):
+    '''
+    Create the version.py file
+    '''
+    path = os.getcwd()
+    path = os.path.join(path, name, 'version.py')
+    with open(path, 'w+') as fp:
+        fp.write('version = \'1.0.0\'')

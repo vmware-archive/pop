@@ -42,5 +42,5 @@ def module_level_non_aliased_ping_call_fw_hub(hub):
 def call_scan(hub):
     # If scan has been packed(wrongly), the call below will throw a TypeError because
     # we'll also pass hub
-    scan([os.path.dirname(__file__)], False, True)
+    scan([os.path.dirname(__file__)])
     return True

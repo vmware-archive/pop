@@ -13,7 +13,7 @@ CYTHON_END = ('.pyx',)
 SKIP_DIRNAMES = ('__pycache__',)
 
 
-def scan(dirs, imp, recurse=False):
+def scan(dirs):
     '''
     Return a list of importable files
     '''
@@ -23,13 +23,8 @@ def scan(dirs, imp, recurse=False):
     ret['ext'] = collections.OrderedDict()
     ret['imp'] = collections.OrderedDict()
     for dir_ in dirs:
-        if recurse:
-            for dir_, dirs, files in os.walk(dir_):
-                for fn_ in files:
-                    _apply_scan(ret, dir_, fn_)
-        else:
-            for fn_ in os.listdir(dir_):
-                _apply_scan(ret, dir_, fn_)
+        for fn_ in os.listdir(dir_):
+            _apply_scan(ret, dir_, fn_)
     return ret
 
 

@@ -24,7 +24,7 @@ def test_iter_sub():
     mods = []
     for mod in hub.mods:
         mods.append(mod.__sub_name__)
-    assert mods == sorted(mods)
+    assert mods == sorted(hub.mods._loaded.keys())
 
 
 def test_iter_hub():

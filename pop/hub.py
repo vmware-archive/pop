@@ -99,7 +99,6 @@ class Sub:
             contracts_static=None,
             default_contracts=None,
             virtual=True,
-            recurse=False,
             omit_start=('_'),
             omit_end=(),
             omit_func=False,
@@ -123,7 +122,6 @@ class Sub:
             default_contracts = [default_contracts]
         self._default_contracts = default_contracts or ()
         self._virtual = virtual
-        self._recurse = recurse
         self._omit_start = omit_start
         self._omit_end = omit_end
         self._omit_func = omit_func
@@ -145,7 +143,7 @@ class Sub:
         else:
             self._contracts = None
         self._mem = {}
-        self._scan = pop.scanner.scan(self._dirs, self._recurse)
+        self._scan = pop.scanner.scan(self._dirs)
         self._loaded = {}
         self._vmap = {}
         self._load_errors = {}
@@ -164,7 +162,6 @@ class Sub:
             _contracts_static=self._contracts_static,
             _default_contracts=self._default_contracts,
             _virtual=self._virtual,
-            _recurse=self._recurse,
             _omit_start=self._omit_start,
             _omit_end=self._omit_end,
             _omit_func=self._omit_func,
@@ -226,7 +223,7 @@ class Sub:
         if self._loaded_all is False:
             self._load_all()
             self._iter_keys = sorted(self._loaded.keys())
-        if self._iter_ind == len(self._iter_keys) - 1:
+        if self._iter_ind == len(self._iter_keys):
             self._iter_ind = 0
             raise StopIteration
         self._iter_ind += 1

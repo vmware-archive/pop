@@ -2,6 +2,8 @@
 '''
 Control and add subsystems to the running daemon hub
 '''
+# Import python libs
+import os
 # Import pop libs
 import pop.hub
 
@@ -16,7 +18,6 @@ def add(hub,
         contracts_static=None,
         default_contracts=None,
         virtual=True,
-        recurse=False,
         omit_start=('_'),
         omit_end=(),
         omit_func=False,
@@ -47,7 +48,6 @@ def add(hub,
             contracts_static,
             default_contracts,
             virtual,
-            recurse,
             omit_start,
             omit_end,
             omit_func,
@@ -82,3 +82,46 @@ def load_all(hub, subname):
         return True
     else:
         return False
+
+
+def get_dirs(hub, sub):
+    '''
+    Return a list of directories that contain the modules for this subname
+    '''
+    return sub._dirs
+
+
+def iter_subs(hub, sub):
+    '''
+    Return an iterator that will traverse just the subs. This is useful for
+    nested subs
+    '''
+    for name in sorted(sub._subs):
+        yield sub._subs[name]
+
+
+def load_subdirs(hub, sub):
+    '''
+    Given a sub, load all subdirectories found under the sub into a lower namespace
+    '''
+    dirs = hub.tools.sub.get_dirs(sub)
+    for dir_ in dirs:
+        for fn in os.listdir(dir_):
+            if fn.startswith('_'):
+                continue
+            full = os.path.join(dir_, fn)
+            print(full)
+            if os.path.isdir(full):
+                # Load er up!
+                hub.tools.sub.add(
+                        fn,
+                        sub=sub,
+                        static=[full],
+                        virtual=sub._virtual,
+                        omit_start=sub._omit_start,
+                        omit_end=sub._omit_end,
+                        omit_func=sub._omit_func,
+                        omit_class=sub._omit_class,
+                        omit_vars=sub._omit_vars,
+                        mod_basename=sub._mod_basename,
+                        stop_on_failures=sub._stop_on_failures)

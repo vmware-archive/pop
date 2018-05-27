@@ -12,5 +12,4 @@ CONFIG = {
 hub = pop.hub.Hub()
 hub.tools.sub.add('conf', pypath='pop.mods.conf')
 hub.opts = hub.conf.reader.read(CONFIG)
-print(hub.opts)
 hub.tools.seed.new()

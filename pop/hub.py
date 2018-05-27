@@ -24,7 +24,8 @@ class Hub:
     '''
     def __init__(self):
         self._subs = {}
-        self._add_subsystem(
+        self._subs['tools'] = Sub(
+                self,
                 'tools',
                 pypath='pop.mods.tools')
 
@@ -35,47 +36,6 @@ class Hub:
 
     def __setstate__(self, state):
         self.__dict__.update(state)
-
-    def _add_subsystem(
-            self,
-            modname,
-            subname=None,
-            pypath=None,
-            static=None,
-            contracts_pypath=None,
-            contracts_static=None,
-            default_contracts=None,
-            virtual=True,
-            recurse=False,
-            omit_start=('_'),
-            omit_end=(),
-            omit_func=False,
-            omit_class=True,
-            omit_vars=False,
-            mod_basename='pop.poped',
-            stop_on_failures=False,
-            init=None,
-            ):
-        subname = subname if subname else modname
-        self._subs[modname] = Sub(
-                self,
-                modname,
-                subname,
-                pypath,
-                static,
-                contracts_pypath,
-                contracts_static,
-                default_contracts,
-                virtual,
-                recurse,
-                omit_start,
-                omit_end,
-                omit_func,
-                omit_class,
-                omit_vars,
-                mod_basename,
-                stop_on_failures)
-        self._subs[modname]._pop_init(init)
 
     @property
     def _(self):

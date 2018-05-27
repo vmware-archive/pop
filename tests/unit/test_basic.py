@@ -36,6 +36,15 @@ def test_iter_hub():
     assert subs == sorted(hub._subs.keys())
 
 
+def test_iter_vars():
+    hub = pop.hub.Hub()
+    hub.tools.sub.add('mods', pypath='tests.mods')
+    funcs = []
+    for var in hub.tools.sub:
+        funcs.append(var.__name__)
+    assert funcs == sorted(hub.tools.sub._funcs.keys())
+
+
 def test_this():
     hub = pop.hub.Hub()
     hub.tools.sub.add('mods', pypath='tests.mods')

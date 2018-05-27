@@ -280,19 +280,15 @@ def prep_mod_dict(this_pack, mod, pack_name, contracts, loading_contract_sub=Fal
     that should not be exposed
     '''
     # pylint: disable=protected-access
-    mod_dict = type('PopLoadedMod', (), {})()
-    setattr(mod_dict, '__sub_name__', pack_name)
-    packed_vars = []
-    packed_classes = []
-    packed_functions = []
+    mod_dict = LoadedMod(pack_name)
     for attr in getattr(mod, '__load__', dir(mod)):
         name = getattr(mod, '__func_alias__', {}).get(attr, attr)
         func = getattr(mod, attr)
         if not this_pack._omit_vars:
             if not inspect.isfunction(func) and not inspect.isclass(func) and \
                     type(func).__name__ != 'cython_function_or_method':
-                setattr(mod_dict, name, func)
-                packed_vars.append(name)
+                mod_dict._vars[name] = func
+                mod_dict._attrs[name] = func
                 continue
         if attr.startswith(this_pack._omit_start):
             continue
@@ -306,8 +302,8 @@ def prep_mod_dict(this_pack, mod, pack_name, contracts, loading_contract_sub=Fal
                     # We're only interested in functions defined in this module, not
                     # imported functions
                     continue
-                setattr(mod_dict, name, obj)
-                packed_functions.append(name)
+                mod_dict._funcs[name] = obj
+                mod_dict._attrs[name] = obj
                 if loading_contract_sub is False:
                     # Allow the function to be called directly from within the module while
                     # not breaking out of contracts. The original function name, not the aliased one
@@ -320,10 +316,38 @@ def prep_mod_dict(this_pack, mod, pack_name, contracts, loading_contract_sub=Fal
                     # We're only interested in classes defined in this module, not
                     # imported classes
                     continue
-                setattr(mod_dict, name, klass)
-                packed_classes.append(name)
-    setattr(mod_dict, '__packed_vars__', frozenset(packed_vars))
-    setattr(mod_dict, '__packed_classes__', frozenset(packed_classes))
-    setattr(mod_dict, '__packed_functions__', frozenset(packed_functions))
+                mod_dict._classes[name] = klass
+                mod_dict._attrs[name] = klass
     return mod_dict
-    # pylint: enable=protected-access
+
+
+class LoadedMod:
+    '''
+    The LoadedMod class allows for the module loaded onto the sub to return
+    custom sequencing, for instance it can be iterated over to return all
+    functions
+    '''
+    def __init__(self, name):
+        self.__sub_name__ = name
+        self._vars = {}
+        self._funcs = {}
+        self._classes = {}
+        self._attrs = {}
+
+    def __getattr__(self, item):
+        if item in self._attrs:
+            return self._attrs[item]
+        raise AttributeError(item)
+
+    def __iter__(self):
+        keys = sorted(self._funcs)
+        ret = []
+        for key in keys:
+            ret.append(self._funcs[key])
+        return iter(ret)
+
+    def __dir__(self):
+        # TODO: This should return finite set attrs as well as dunder attrs
+        ret = list(self._attrs.keys())
+        ret.extend(['__name__', '_vars', '_funcs', '_classes', '_attrs'])
+        return ret

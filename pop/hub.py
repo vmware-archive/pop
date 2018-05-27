@@ -28,6 +28,8 @@ class Hub:
                 self,
                 'tools',
                 pypath='pop.mods.tools')
+        self._iter_subs = sorted(self._subs.keys())
+        self._iter_ind = 0
 
     def __getstate__(self):
         return dict(
@@ -36,6 +38,17 @@ class Hub:
 
     def __setstate__(self, state):
         self.__dict__.update(state)
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self._iter_ind == len(self._iter_subs):
+            self._iter_subs = sorted(self._subs.keys())
+            self._iter_ind = 0
+            raise StopIteration
+        self._iter_ind += 1
+        return self._subs[self._iter_subs[self._iter_ind - 1]]
 
     @property
     def _(self):
@@ -55,7 +68,11 @@ class Hub:
         Remove the named subsystem
         '''
         if subname in self._subs:
+            # Remove the subsystem
             self._subs.pop(subname)
+            # reset the iterator
+            self._iter_subs = sorted(self._subs.keys())
+            self._iter_ind = 0
             return True
         return False
 
@@ -210,6 +227,7 @@ class Sub:
             self._load_all()
             self._iter_keys = sorted(self._loaded.keys())
         if self._iter_ind == len(self._iter_keys) - 1:
+            self._iter_ind = 0
             raise StopIteration
         self._iter_ind += 1
         return self._loaded[self._iter_keys[self._iter_ind - 1]]

@@ -56,6 +56,7 @@ def add(hub,
             mod_basename,
             stop_on_failures)
     root._subs[modname]._pop_init(init)
+    root._iter_subs = sorted(root._subs.keys())
 
 
 def remove(hub, subname):

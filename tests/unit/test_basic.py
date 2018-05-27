@@ -18,6 +18,15 @@ def test_basic():
     assert hub.mods.test.ping() == hub.mods.foo.bar()
 
 
+def test_iter():
+    hub = pop.hub.Hub()
+    hub.tools.sub.add('mods', pypath='tests.mods')
+    mods = []
+    for mod in hub.mods:
+        mods.append(mod.__sub_name__)
+    assert mods == sorted(mods)
+
+
 def test_this():
     hub = pop.hub.Hub()
     hub.tools.sub.add('mods', pypath='tests.mods')

@@ -132,6 +132,7 @@ class Sub:
             stop_on_failures=False,
             init=None,
             ):
+        self._iter_ind = 0
         self._hub = hub
         self._subs = {}
         self._mem = {}
@@ -242,9 +243,16 @@ class Sub:
         return '{}.{}'.format(self._mod_basename, self._modname)
 
     def __iter__(self):
+        return self
+
+    def __next__(self):
         if self._loaded_all is False:
             self._load_all()
-        return iter(self._loaded.values())
+            self._iter_keys = sorted(self._loaded.keys())
+        if self._iter_ind == len(self._iter_keys) - 1:
+            raise StopIteration
+        self._iter_ind += 1
+        return self._loaded[self._iter_keys[self._iter_ind - 1]]
 
     def _pop_init(self, init):
         '''

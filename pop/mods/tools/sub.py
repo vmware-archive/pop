@@ -110,7 +110,6 @@ def load_subdirs(hub, sub):
             if fn.startswith('_'):
                 continue
             full = os.path.join(dir_, fn)
-            print(full)
             if os.path.isdir(full):
                 # Load er up!
                 hub.tools.sub.add(

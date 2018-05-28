@@ -96,6 +96,8 @@ class Contracted:  # pylint: disable=too-few-public-methods
             # since we'll inject it further down
             args = list(args)[1:]
         args = tuple([self.parent] + list(args))
+        if not self.contracts:
+            return self.func(*args, **kwargs)
         contract_context = ContractedContext(self.func, args, kwargs, self.signature)
         pre = 'pre_{}'.format(self.func_name)
         post = 'post_{}'.format(self.func_name)

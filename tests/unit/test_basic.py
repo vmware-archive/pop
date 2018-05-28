@@ -45,6 +45,16 @@ def test_iter_vars():
     assert funcs == sorted(hub.tools.sub._funcs.keys())
 
 
+def test_nest():
+    '''
+    Test the ability to nest the subs in a deeper namespace
+    '''
+    hub = pop.hub.Hub()
+    hub.tools.sub.add('mods', pypath='tests.mods')
+    hub.tools.sub.add('nest', sub=hub.mods, pypath='tests.mods.nest')
+    assert hub.mods.nest.basic.ret_true()
+
+
 def test_this():
     hub = pop.hub.Hub()
     hub.tools.sub.add('mods', pypath='tests.mods')

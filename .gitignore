@@ -33,6 +33,7 @@ htmlcov/
 *.sublime-project
 *.sublime-workspace
 /.kdev4
+/*.kdev4
 /toran.kdev4
 
 # ignore ctags file

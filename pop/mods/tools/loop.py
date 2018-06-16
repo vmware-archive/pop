@@ -43,14 +43,26 @@ def ensure_future(hub, ref, *args, **kwargs):
     asyncio.ensure_future(fun(*args, **kwargs))
 
 
-def start(hub, *coros):
+def start(hub, *coros, hold=False):
     '''
     Start a loop that will run until complete
     '''
     hub.tools.loop.create()
+    if hold:
+        coros = list(coros)
+        coros.append(_holder())
     return hub.tools.Loop.run_until_complete(
             asyncio.gather(*coros)
             )
+
+
+async def _holder():
+    '''
+    Just a sleeping while loop to hold the loop open while it runs until
+    complete
+    '''
+    while True:
+        await asyncio.sleep(60)
 
 
 async def kill(hub, wait=0):

@@ -51,6 +51,8 @@ def start(hub, *coros, hold=False):
     if hold:
         coros = list(coros)
         coros.append(_holder())
+    # DO NOT CHANGE THIS CALL TO run_forever! If we do that then the tracebacks
+    # do not get resolved.
     return hub.tools.Loop.run_until_complete(
             asyncio.gather(*coros)
             )

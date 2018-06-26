@@ -7,3 +7,8 @@ async def callback(hub, payload):
 async def ret(hub):
     await hub.proc.worker.ret({'ret': 'Returned'})
     return 'inline'
+
+
+async def gen(hub, start, end):
+    for x in range(start, end):
+        yield x

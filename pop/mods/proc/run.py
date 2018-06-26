@@ -56,6 +56,25 @@ async def func(hub, worker_name, func_ref, *args, **kwargs):
     return await hub.proc.run.send(worker, payload)
 
 
+async def gen(hub, worker_name, func_ref, *args, **kwargs):
+    '''
+    Execute a generator function reference within one worker within the given
+    worker pool.
+
+    Like `func` the sub needs to be made available to all workers first
+    '''
+    # TODO: Make this read in each iteration at a time
+    workers = hub.proc.Workers[worker_name]
+    w_iter = hub.proc.WorkersIter[worker_name]
+    worker = workers[next(w_iter)]
+    payload = {'fun': 'gen', 'ref': func_ref, 'args': args, 'kwargs': kwargs}
+    ret = await hub.proc.run.send(worker, payload)
+    rindex = ret.rindex(hub.proc.ITER_DELIM)
+    ret = ret[:rindex]
+    for chunk in ret.split(hub.proc.ITER_DELIM):
+        yield msgpack.loads(chunk, encoding='utf8')
+
+
 async def send(hub, worker, payload):
     '''
     Send the given payload to the given worker. pass in the worker dict
@@ -69,4 +88,6 @@ async def send(hub, worker, payload):
     ret = await reader.readuntil(hub.proc.DELIM)
     ret = ret[:-len(hub.proc.DELIM)]
     writer.close()
+    if hub.proc.ITER_DELIM in ret:
+        return ret
     return msgpack.loads(ret, encoding='utf8')

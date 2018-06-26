@@ -7,6 +7,7 @@ This is an exec, not a fork! This is a fresh memory space!
 '''
 # Import python libs
 import os
+import types
 import asyncio
 # Import third party libs
 import msgpack
@@ -72,6 +73,8 @@ async def work(hub, reader, writer):
             ret = await hub.proc.worker.run(payload)
         except Exception as exc:
             ret = {'status': False, 'exc': str(exc)}
+    elif payload['fun'] == 'gen':
+        ret = await hub.proc.worker.gen(payload, reader, writer)
     ret = msgpack.dumps(ret, use_bin_type=True)
     ret += hub.proc.DELIM
     writer.write(ret)
@@ -84,6 +87,32 @@ def add_sub(hub, payload):
     Add a new sub onto the hub for this worker
     '''
     hub.tools.sub.add(*payload['args'], **payload['kwargs'])
+
+
+async def gen(hub, payload, reader, writer):
+    '''
+    Run a generator and yield back the returns. Supports a generator and an
+    async generator
+    '''
+    ref = payload.get('ref')
+    args = payload.get('args', [])
+    kwargs = payload.get('kwargs', {})
+    ret = hub.tools.ref.last(ref)(*args, **kwargs)
+    if isinstance(ret, types.AsyncGeneratorType):
+        async for chunk in ret:
+            rchunk = msgpack.dumps(chunk, use_bin_type=True)
+            rchunk += hub.proc.ITER_DELIM
+            writer.write(rchunk)
+            await writer.drain()
+    elif isinstance(ret, types.GeneratorType):
+        for chunk in ret:
+            rchunk = msgpack.dumps(chunk, use_bin_type=True)
+            rchunk += hub.proc.ITER_DELIM
+            writer.write(rchunk)
+            await writer.drain()
+    elif asyncio.iscoroutine(ret):
+        return await ret
+    return ''
 
 
 async def run(hub, payload):

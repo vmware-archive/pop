@@ -18,6 +18,7 @@ def new(hub):
     Create constants used by the client and server side of procs
     '''
     hub.proc.DELIM = b'f1d219f8c8c01f11'
+    hub.proc.ITER_DELIM = b'2fca4ac85a2831e4'
     hub.proc.Workers = {}
     hub.proc.WorkersIter = {}
 

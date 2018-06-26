@@ -12,3 +12,8 @@ async def ret(hub):
 async def gen(hub, start, end):
     for x in range(start, end):
         yield x
+
+
+def simple_gen(hub, start, end):
+    for x in range(start, end):
+        yield x

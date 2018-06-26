@@ -22,12 +22,16 @@ async def _test_create(hub):
     assert hub.set_me == 'Returned'
     assert ret_ret == 'inline'
     n = []
+    s = []
     e = []
     async for ind in hub.proc.run.gen(name, 'mods.proc.gen', 23, 77):
         n.append(ind)
     for ind in range(23, 77):
         e.append(ind)
     assert n == e
+    async for ind in hub.proc.run.gen(name, 'mods.proc.simple_gen', 23, 77):
+        s.append(ind)
+    assert s == e
 
 
 def test_create():

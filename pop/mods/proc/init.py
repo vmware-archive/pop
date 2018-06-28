@@ -21,6 +21,7 @@ def new(hub):
     hub.proc.ITER_DELIM = b'2fca4ac85a2831e4'
     hub.proc.Workers = {}
     hub.proc.WorkersIter = {}
+    hub.proc.WorkersTrack = {}
 
 
 def _get_cmd(hub, ind, ref, ret_ref):
@@ -49,7 +50,7 @@ def mk_proc(hub, ind, workers, ret_ref):
     workers[ind]['pid'] = workers[ind]['proc'].pid
 
 
-async def local_pool(hub, num, name='Workers', callback=None):
+async def pool(hub, num, name='Workers', callback=None):
     '''
     Create a new local pool of process based workers
 
@@ -73,6 +74,7 @@ async def local_pool(hub, num, name='Workers', callback=None):
     w_iter = itertools.cycle(workers)
     hub.proc.Workers[name] = workers
     hub.proc.WorkersIter[name] = w_iter
+    hub.proc.WorkersTrack[name] = {'subs': [], 'ret_ref': ret_ref}
     up = set()
     while True:
         for ind in workers:

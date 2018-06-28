@@ -11,7 +11,7 @@ import pop.hub
 
 async def _test_create(hub):
     name = 'Tests'
-    await hub.proc.init.local_pool(3, name, hub.mods.proc.callback)
+    await hub.proc.init.pool(3, name, hub.mods.proc.callback)
     #await asyncio.sleep(1)  # Give the processes some time to spin up
     ret = await hub.proc.run.add_sub(name, 'mods', pypath='tests.mods')
     # Make sure we round robin all the procs a few times

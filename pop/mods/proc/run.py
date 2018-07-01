@@ -19,7 +19,8 @@ async def add_sub(hub, worker_name, *args, **kwargs):
     for ind in workers:
         payload = {'fun': 'sub', 'args': args, 'kwargs': kwargs}
         # TODO: Make these futures to the run at the same time
-        ret[ind] = await hub.proc.run.send(workers[ind], payload)
+        async for chunk in hub.proc.run.send(workers[ind], payload):
+            ret[ind] = chunk
     hub.proc.WorkersTrack[worker_name]['subs'].append({'args': args, 'kwargs': kwargs})
     return ret
 
@@ -44,7 +45,8 @@ async def add_proc(hub, worker_name):
     # Add all of the subs that have been added to processes in this pool
     for sub in hub.proc.WorkersTrack[worker_name]['subs']:
         payload = {'fun': 'sub', 'args': sub['args'], 'kwargs': sub['kwargs']}
-        await hub.proc.run.send(workers[ind], payload)
+        async for chunk in hub.proc.run.send(workers[ind], payload):
+            pass
     return ind
 
 
@@ -62,7 +64,8 @@ async def pub(hub, worker_name, func_ref, *args, **kwargs):
     for ind in workers:
         payload = {'fun': 'run', 'ref': func_ref, 'args': args, 'kwargs': kwargs}
         # TODO: Make these futures to the run at the same time
-        ret[ind] = await hub.proc.run.send(workers[ind], payload)
+        async for chunk in hub.proc.run.send(workers[ind], payload):
+            ret[ind] = chunk
     return ret
 
 
@@ -73,7 +76,8 @@ async def ind_func(hub, worker_name, _ind, func_ref, *args, **kwargs):
     workers = hub.proc.Workers[worker_name]
     worker = workers[_ind]
     payload = {'fun': 'run', 'ref': func_ref, 'args': args, 'kwargs': kwargs}
-    return await hub.proc.run.send(worker, payload)
+    async for ret in hub.proc.run.send(worker, payload):
+        return ret
 
 
 async def func(hub, worker_name, func_ref, *args, **kwargs):
@@ -107,16 +111,9 @@ async def gen(hub, worker_name, func_ref, *args, **kwargs):
 
     Like `func` the sub needs to be made available to all workers first
     '''
-    # TODO: Make this read in each iteration at a time
-    workers = hub.proc.Workers[worker_name]
-    w_iter = hub.proc.WorkersIter[worker_name]
-    worker = workers[next(w_iter)]
-    payload = {'fun': 'gen', 'ref': func_ref, 'args': args, 'kwargs': kwargs}
-    ret = await hub.proc.run.send(worker, payload)
-    rindex = ret.rindex(hub.proc.ITER_DELIM)
-    ret = ret[:rindex]
-    for chunk in ret.split(hub.proc.ITER_DELIM):
-        yield msgpack.loads(chunk, encoding='utf8')
+    ind, coro = await hub.proc.run.track_gen(worker_name, func_ref, *args, **kwargs)
+    async for chunk in coro:
+        yield chunk
 
 
 async def track_gen(hub, worker_name, func_ref, *args, **kwargs):
@@ -131,15 +128,16 @@ async def track_gen(hub, worker_name, func_ref, *args, **kwargs):
 
 async def ind_gen(hub, worker_name, _ind, func_ref, *args, **kwargs):
     '''
+    run the given iterator on the defined index
     '''
     workers = hub.proc.Workers[worker_name]
     worker = workers[_ind]
     payload = {'fun': 'gen', 'ref': func_ref, 'args': args, 'kwargs': kwargs}
-    async for chunk in hub.proc.run.send_gen(worker, payload):
+    async for chunk in hub.proc.run.send(worker, payload):
         yield chunk
 
 
-async def send_gen(hub, worker, payload):
+async def send(hub, worker, payload):
     '''
     Send the given payload to the given worker, yield iterations based on the
     returns from the remote.
@@ -151,30 +149,14 @@ async def send_gen(hub, worker, payload):
     await writer.drain()
     final_ret = True
     while True:
-        ret = await reader.readuntil((hub.proc.DELIM, hub.proc.ITER_DELIM))
-        delim = ret[-len(hub.proc.delim):]
-        ret = ret[:-len(hub.proc.DELIM)]
-        if delim == hub.proc.DELIM:
+        ret = await reader.readuntil(hub.proc.DELIM)
+        p_ret = ret[:-len(hub.proc.DELIM)]
+        i_flag = p_ret[-1:]
+        ret = msgpack.loads(p_ret[:-1], encoding='utf8')
+        if i_flag == hub.proc.D_FLAG:
+            # break for the end of the sequence
             break
-        yield msgpack.loads(ret, encoding='utf8')
+        yield ret
         final_ret = False
     if final_ret:
-        yield msgpack.loads(ret, encoding='utf8')
-
-
-async def send(hub, worker, payload):
-    '''
-    Send the given payload to the given worker. pass in the worker dict
-    as derived from the pool (workers[ind])
-    '''
-    mp = msgpack.dumps(payload, use_bin_type=True)
-    mp += hub.proc.DELIM
-    reader, writer = await asyncio.open_unix_connection(path=worker['path'])
-    writer.write(mp)
-    await writer.drain()
-    ret = await reader.readuntil(hub.proc.DELIM)
-    ret = ret[:-len(hub.proc.DELIM)]
-    writer.close()
-    if hub.proc.ITER_DELIM in ret:
-        return ret
-    return msgpack.loads(ret, encoding='utf8')
+        yield ret

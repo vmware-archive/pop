@@ -33,12 +33,19 @@ def echo_last(hub):
     Return 2 numbers, the second number is new, the first number is the same that
     was the second number the last time it was called
     '''
-    try:
+    next_ = random.randint(0, 50000)
+    if 'last' not in hub.LASTS:
+        hub.LASTS['last'] = 0
+    last = hub.LASTS['last']
+    hub.LASTS['last'] = next_
+    return last, next_
+
+
+def gen_last(hub, num=5):
+    for _ in range(num):
         next_ = random.randint(0, 50000)
         if 'last' not in hub.LASTS:
             hub.LASTS['last'] = 0
         last = hub.LASTS['last']
         hub.LASTS['last'] = next_
-        return last, next_
-    except Exception as exc:
-        return 0, exc
+        yield last, next_

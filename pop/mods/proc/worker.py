@@ -76,6 +76,7 @@ async def work(hub, reader, writer):
     elif payload['fun'] == 'gen':
         ret = await hub.proc.worker.gen(payload, reader, writer)
     ret = msgpack.dumps(ret, use_bin_type=True)
+    ret += hub.proc.D_FLAG
     ret += hub.proc.DELIM
     writer.write(ret)
     await writer.drain()
@@ -101,13 +102,15 @@ async def gen(hub, payload, reader, writer):
     if isinstance(ret, types.AsyncGeneratorType):
         async for chunk in ret:
             rchunk = msgpack.dumps(chunk, use_bin_type=True)
-            rchunk += hub.proc.ITER_DELIM
+            rchunk += hub.proc.I_FLAG
+            rchunk += hub.proc.DELIM
             writer.write(rchunk)
             await writer.drain()
     elif isinstance(ret, types.GeneratorType):
         for chunk in ret:
             rchunk = msgpack.dumps(chunk, use_bin_type=True)
-            rchunk += hub.proc.ITER_DELIM
+            rchunk += hub.proc.I_FLAG
+            rchunk += hub.proc.DELIM
             writer.write(rchunk)
             await writer.drain()
     elif asyncio.iscoroutine(ret):

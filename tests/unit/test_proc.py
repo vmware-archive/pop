@@ -21,6 +21,8 @@ async def _test_create(hub):
     ret_ret = await hub.proc.run.func(name, 'mods.proc.ret')
     assert hub.set_me == 'Returned'
     assert ret_ret == 'inline'
+
+    # Test iterator systems
     n = []
     s = []
     e = []
@@ -32,6 +34,18 @@ async def _test_create(hub):
     async for ind in hub.proc.run.gen(name, 'mods.proc.simple_gen', 23, 77):
         s.append(ind)
     assert s == e
+    # Test pub
+    assert await hub.proc.run.pub(name, 'mods.proc.init_lasts')
+
+    # Test track and ind func calls
+    ind, coro = await hub.proc.run.track_func(name, 'mods.proc.echo_last')
+    last_1, next_1 = await coro
+    for _ in range(20):
+        ind_2, coro = await hub.proc.run.ind_func(name, ind, 'mods.proc.echo_last')
+        last_2, next_2 = await coro
+        assert ind == ind_2
+        assert next_1 == last_2
+        next_1 = next_2
 
 
 def test_create():

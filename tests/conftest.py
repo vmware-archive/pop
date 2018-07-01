@@ -18,7 +18,6 @@ import pytest
 
 log = logging.getLogger('pop.tests')
 
-
 def pytest_runtest_protocol(item, nextitem):
     '''
     implements the runtest_setup/call/teardown protocol for

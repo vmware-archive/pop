@@ -25,7 +25,7 @@ Now the proc subsystem is available. Create a new process pool:
 
 .. code-block:: python
 
-    await hub.proc.init.local_pool(3, 'Workers')
+    await hub.proc.init.pool(3, 'Workers')
 
 You now have a worker pool named `Workers` with 3 processes.
 

@@ -119,6 +119,49 @@ async def gen(hub, worker_name, func_ref, *args, **kwargs):
         yield msgpack.loads(chunk, encoding='utf8')
 
 
+async def track_gen(hub, worker_name, func_ref, *args, **kwargs):
+    '''
+    Return an iterable coroutine and the index executed on
+    '''
+    w_iter = hub.proc.WorkersIter[worker_name]
+    ind = next(w_iter)
+    coro = hub.proc.run.ind_gen(worker_name, ind, func_ref, *args, **kwargs)
+    return ind, coro
+
+
+async def ind_gen(hub, worker_name, _ind, func_ref, *args, **kwargs):
+    '''
+    '''
+    workers = hub.proc.Workers[worker_name]
+    worker = workers[_ind]
+    payload = {'fun': 'gen', 'ref': func_ref, 'args': args, 'kwargs': kwargs}
+    async for chunk in hub.proc.run.send_gen(worker, payload):
+        yield chunk
+
+
+async def send_gen(hub, worker, payload):
+    '''
+    Send the given payload to the given worker, yield iterations based on the
+    returns from the remote.
+    '''
+    mp = msgpack.dumps(payload, use_bin_type=True)
+    mp += hub.proc.DELIM
+    reader, writer = await asyncio.open_unix_connection(path=worker['path'])
+    writer.write(mp)
+    await writer.drain()
+    final_ret = True
+    while True:
+        ret = await reader.readuntil((hub.proc.DELIM, hub.proc.ITER_DELIM))
+        delim = ret[-len(hub.proc.delim):]
+        ret = ret[:-len(hub.proc.DELIM)]
+        if delim == hub.proc.DELIM:
+            break
+        yield msgpack.loads(ret, encoding='utf8')
+        final_ret = False
+    if final_ret:
+        yield msgpack.loads(ret, encoding='utf8')
+
+
 async def send(hub, worker, payload):
     '''
     Send the given payload to the given worker. pass in the worker dict

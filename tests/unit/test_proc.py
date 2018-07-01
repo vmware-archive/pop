@@ -41,11 +41,17 @@ async def _test_create(hub):
     ind, coro = await hub.proc.run.track_func(name, 'mods.proc.echo_last')
     last_1, next_1 = await coro
     for _ in range(20):
-        ind_2, coro = await hub.proc.run.ind_func(name, ind, 'mods.proc.echo_last')
-        last_2, next_2 = await coro
-        assert ind == ind_2
+        last_2, next_2 = await hub.proc.run.ind_func(name, ind, 'mods.proc.echo_last')
         assert next_1 == last_2
         next_1 = next_2
+
+    # Test add_proc
+    pre = len(hub.proc.Workers[name])
+    await hub.proc.run.add_proc(name)
+    post = len(hub.proc.Workers[name])
+    assert pre < post
+    for _ in range(20):
+        ret = await hub.proc.run.func(name, 'mods.test.ping')
 
 
 def test_create():

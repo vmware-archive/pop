@@ -73,8 +73,7 @@ async def ind_func(hub, worker_name, _ind, func_ref, *args, **kwargs):
     workers = hub.proc.Workers[worker_name]
     worker = workers[_ind]
     payload = {'fun': 'run', 'ref': func_ref, 'args': args, 'kwargs': kwargs}
-    coro = hub.proc.run.send(worker, payload)
-    return _ind, coro
+    return await hub.proc.run.send(worker, payload)
 
 
 async def func(hub, worker_name, func_ref, *args, **kwargs):
@@ -97,7 +96,8 @@ async def track_func(hub, worker_name, func_ref, *args, **kwargs):
     '''
     w_iter = hub.proc.WorkersIter[worker_name]
     ind = next(w_iter)
-    return await hub.proc.run.ind_func(worker_name, ind, func_ref, *args, **kwargs)
+    coro = hub.proc.run.ind_func(worker_name, ind, func_ref, *args, **kwargs)
+    return ind, coro
 
 
 async def gen(hub, worker_name, func_ref, *args, **kwargs):

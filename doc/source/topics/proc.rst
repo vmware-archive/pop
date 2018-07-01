@@ -60,7 +60,32 @@ function with `proc.run` to return a generator. The function to call is `proc.ru
 
 Calling this function will always return an async generator, even if the function
 called in the proc process is a classic generator, so remember to `async for`, not
-just `for`.
+just `for`:
+.. code-block:: python
+
+    async for ind in hub.proc.run.gen('Workers', 'act.test.iterate'):
+        print(ind)
+
+Tracking Calls
+==============
+
+Lets say you want the same worker function to be called repeatedly, perhaps
+you have a long running async task running that you want to communicate with
+by calling more functions. Proc can return the staged coroutine and index of
+the intended process to run on!
+
+.. code-block:: python
+
+    ind, coro = await hub.proc.run.track_func('Workers', 'act.test.ping')
+    await coro
+
+Now you can send another function in that you know will be run on the same
+process as the previous call:
+
+.. code-block:: python
+
+    ret = await hub.proc.run.ind_func('Workers', 1, 'act.test.ping')
+
 
 Async Callback Server
 =====================

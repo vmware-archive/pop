@@ -11,6 +11,16 @@ import aiohttp.web
 import msgpack
 
 
+async def f_router(hub, router, pool_name, cname, data):
+    ctx = {'pool_name': pool_name, 'cname': cname, 'data': data}
+    if 'stag' in data:
+        rtag = data['stag']
+    else:
+        rtag = None
+    rmsg = await router(ctx, data['msg'])
+    await hub.com.con.send(pool_name, cname, rmsg, rtag)
+
+
 async def client(hub, pool_name, cname, addr, port, router):
     '''
     Creates a client connection to a remote server
@@ -32,7 +42,13 @@ async def client(hub, pool_name, cname, addr, port, router):
                 hub.com.EVENTS[data['rtag']].set()
                 continue
             else:
-                futures.append(asyncio.ensure_future(router(pool_name, cname, data)))
+                futures.append(
+                    asyncio.ensure_future(
+                        f_router(
+                            router,
+                            pool_name,
+                            cname,
+                            data)))
         elif msg.type == aiohttp.WSMsgType.CLOSED:
             print('Session closed from remote')
             break
@@ -80,7 +96,13 @@ async def wsh(hub, request):
                 hub.com.EVENTS[data['rtag']].set()
                 continue
             else:
-                futures.append(asyncio.ensure_future(router(pool_name, cname, data)))
+                futures.append(
+                    asyncio.ensure_future(
+                        f_router(
+                            router,
+                            pool_name,
+                            cname,
+                            data)))
         elif msg.type == aiohttp.WSMsgType.CLOSED:
             print('Session closed from remote')
             break

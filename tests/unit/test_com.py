@@ -19,10 +19,11 @@ def test_connections():
         '''
         '''
         hub.com.pool.create('srv', hub.com.test.echo_router)
-        await hub.com.pool.add_con('srv', 'bind', '127.0.0.1', '65444')
+        # Yes we are maing sure port numbers can be strings or ints
+        await hub.com.pool.add_con('srv', 'bind', '127.0.0.1', 65444)
         hub.com.pool.create('client', hub.com.test.echo_router)
         await hub.com.pool.add_con('client', 'client', '127.0.0.1', '65444')
-        await hub.com.pool.add_con('client', 'client', '127.0.0.1', '65444')
+        await hub.com.pool.add_con('client', 'client', '127.0.0.1', 65444)
         await hub.com.pool.add_con('client', 'client', '127.0.0.1', '65444')
         await hub.com.pool.add_con('client', 'client', '127.0.0.1', '65444')
         snd = 'no one expects the spanish inquisition'

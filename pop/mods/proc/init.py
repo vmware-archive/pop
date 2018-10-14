@@ -126,7 +126,7 @@ def ret_work(hub, callback):
         '''
         inbound = await reader.readuntil(hub.proc.DELIM)
         inbound = inbound[:-len(hub.proc.DELIM)]
-        payload = msgpack.loads(inbound, encoding='utf8')
+        payload = msgpack.loads(inbound, raw=False)
         ret = await callback(payload)
         ret = msgpack.dumps(ret, use_bin_type=True)
         ret += hub.proc.DELIM

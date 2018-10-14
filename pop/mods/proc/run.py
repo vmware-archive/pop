@@ -152,7 +152,7 @@ async def send(hub, worker, payload):
         ret = await reader.readuntil(hub.proc.DELIM)
         p_ret = ret[:-len(hub.proc.DELIM)]
         i_flag = p_ret[-1:]
-        ret = msgpack.loads(p_ret[:-1], encoding='utf8')
+        ret = msgpack.loads(p_ret[:-1], raw=False)
         if i_flag == hub.proc.D_FLAG:
             # break for the end of the sequence
             break

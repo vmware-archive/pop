@@ -4,7 +4,7 @@
 pkg/arch/*.tar.xz
 *.sw[pon]
 doc/_build
-dist
+/dist
 MANIFEST
 .pytest_cache/
 *~

@@ -51,7 +51,7 @@ the correct arguments and return a simple serializable message.
     async def echo_router(hub, ctx, msg):
         return msg
 
-Thats it! Teh router is just a referenceable function on the hub.
+Thats it! The router is just a referenceable function on the hub.
 
 Now that we have a router we can create a named connection pool.
 

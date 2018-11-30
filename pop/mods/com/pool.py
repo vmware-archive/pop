@@ -54,12 +54,12 @@ async def pub(hub, pool_name, msg):
     '''
     Publish the message to all membbers of the named pool
     '''
-    coros = []
+    gens = []
     for cname in hub.com.POOLS[pool_name]['cons']:
-        coro = hub.com.con.send(pool_name, cname, msg)
-        coros.append(coro)
-    for ret in asyncio.as_completed(coros):
-        yield await ret
+        gen = hub.com.con.send(pool_name, cname, msg)
+        gens.append(gen)
+    async for ret in hub.com.init.as_yielded(gens):
+        yield ret
 
 
 async def rand(hub, pool_name, msg):
@@ -67,7 +67,8 @@ async def rand(hub, pool_name, msg):
     Randomly select a member of the pool to send a message out
     '''
     cname = random.choice(list(hub.com.POOLS[pool_name]['cons']))
-    return await hub.com.con.send(pool_name, cname, msg)
+    async for ret in hub.com.con.send(pool_name, cname, msg):
+        yield ret
 
 
 async def avail(hub, pool_name, msg):
@@ -88,4 +89,5 @@ async def avail(hub, pool_name, msg):
         if qlen < best['len']:
             best = {'cname': cname, 'len': data['que'].qsize()}
     cname = best['cname']
-    return await hub.com.con.send(pool_name, cname, msg)
+    async for ret in hub.com.con.send(pool_name, cname, msg):
+        yield ret

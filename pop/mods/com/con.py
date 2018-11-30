@@ -4,6 +4,7 @@ Set up and manage the network connections
 # Import python libs
 import asyncio
 import os
+import types
 
 # Import third party libs
 import aiohttp
@@ -17,8 +18,18 @@ async def f_router(hub, router, pool_name, cname, data):
         rtag = data['stag']
     else:
         rtag = None
-    rmsg = await router(ctx, data['msg'])
-    await hub.com.con.send(pool_name, cname, rmsg, rtag)
+    ret = router(ctx, data['msg'])
+    if isinstance(ret, types.AsyncGeneratorType):
+        async for rmsg in ret:
+            await hub.com.con.send_ret(pool_name, cname, rmsg, rtag, done=False)
+        await hub.com.con.send_ret(pool_name, cname, {}, rtag, done=True)
+    elif isinstance(ret, types.GeneratorType):
+        for rmsg in ret:
+            await hub.com.con.send_ret(pool_name, cname, rmsg, rtag, done=False)
+        await hub.com.con.send_ret(pool_name, cname, {}, rtag, done=True)
+    elif asyncio.iscoroutine(ret):
+        rmsg = await ret
+        await hub.com.con.send_ret(pool_name, cname, rmsg, rtag)
 
 
 async def client(hub, pool_name, cname, addr, port, router):
@@ -38,7 +49,7 @@ async def client(hub, pool_name, cname, addr, port, router):
             # Data will either be a return or it will be an execution request
             # If the data has a tag it is a return
             if 'rtag' in data:
-                hub.com.RET[data['rtag']] = data['msg']
+                hub.com.RET[data['rtag']] = data
                 hub.com.EVENTS[data['rtag']].set()
                 continue
             else:
@@ -92,7 +103,7 @@ async def wsh(hub, request):
             # Data will either be a return or it will be an execution request
             # If the data has a tag it is a return
             if 'rtag' in data:
-                hub.com.RET[data['rtag']] = data['msg']
+                hub.com.RET[data['rtag']] = data
                 hub.com.EVENTS[data['rtag']].set()
                 continue
             else:
@@ -133,19 +144,32 @@ async def bind(hub, pool_name, addr, port, router):
             port)
 
 
-async def send(hub, pool_name, cname, msg, rtag=None):
+async def send(hub, pool_name, cname, msg, done=True):
     '''
     Sends the message by placing it on the router que and waiting for it
     to be completed
     '''
     data = {'msg': msg}
-    if not rtag:
-        data['stag'] = os.urandom(16)
-        event = asyncio.Event()
-        hub.com.EVENTS[data['stag']] = event
-        await hub.com.POOLS[pool_name]['cons'][cname]['que'].put(data)
+    if not done:
+        data['done'] = False
+    data['stag'] = os.urandom(16)
+    event = asyncio.Event()
+    hub.com.EVENTS[data['stag']] = event
+    await hub.com.POOLS[pool_name]['cons'][cname]['que'].put(data)
+    while True:
         await event.wait()
-        return hub.com.RET.pop(data['stag'])
-    else:
-        data['rtag'] = rtag
+        event.clear()
+        ret = hub.com.RET.pop(data['stag'])
+        yield ret['msg']
+        if ret.get('done'):
+            return
+
+
+async def send_ret(hub, pool_name, cname, msg, rtag, done=True):
+    '''
+    Send a return
+    '''
+    data = {'msg': msg, 'rtag': rtag}
+    if not done:
+        data['done'] = False
     await hub.com.POOLS[pool_name]['cons'][cname]['que'].put(data)

@@ -37,9 +37,13 @@ def test_connections():
             count += 1
             assert ret == snd
         assert count == 4
-        assert snd == await hub.com.pool.rand('client', snd)
-        assert snd == await hub.com.pool.rand('srv', snd)
-        assert snd == await hub.com.pool.avail('client', snd)
-        assert snd == await hub.com.pool.avail('srv', snd)
+        async for ret in hub.com.pool.rand('client', snd):
+            assert ret == snd
+        async for ret in hub.com.pool.rand('srv', snd):
+            assert ret == snd
+        async for ret in hub.com.pool.avail('client', snd):
+            assert ret == snd
+        async for ret in hub.com.pool.avail('srv', snd):
+            assert ret == snd
     hub = _setup()
     hub.tools.loop.start(_test(hub))

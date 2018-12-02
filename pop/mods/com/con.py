@@ -137,11 +137,10 @@ async def bind(hub, pool_name, addr, port, router):
     app['router'] = router
     app['pool_name'] = pool_name
     app.router.add_route('GET', '/ws', hub.com.con.wsh)
-    handler = app.make_handler()
-    await hub.tools.Loop.create_server(
-            handler,
-            addr,
-            port)
+    runner = aiohttp.web.AppRunner(app)
+    await runner.setup()
+    site = aiohttp.web.TCPSite(runner, addr, port)
+    await site.start()
 
 
 async def send(hub, pool_name, cname, msg, done=True):
@@ -169,7 +168,5 @@ async def send_ret(hub, pool_name, cname, msg, rtag, done=True):
     '''
     Send a return
     '''
-    data = {'msg': msg, 'rtag': rtag}
-    if not done:
-        data['done'] = False
+    data = {'msg': msg, 'done': done, 'rtag': rtag}
     await hub.com.POOLS[pool_name]['cons'][cname]['que'].put(data)

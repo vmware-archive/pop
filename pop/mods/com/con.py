@@ -12,24 +12,6 @@ import aiohttp.web
 import msgpack
 
 
-async def f_router(hub, router, pool_name, cname, data):
-    ctx = {'pool_name': pool_name, 'cname': cname, 'data': data}
-    if 'stag' in data:
-        rtag = data['stag']
-    else:
-        rtag = None
-    ret = router(ctx, data['msg'])
-    if isinstance(ret, types.AsyncGeneratorType):
-        async for rmsg in ret:
-            await hub.com.con.send_ret(pool_name, cname, rmsg, rtag, done=False)
-        await hub.com.con.send_ret(pool_name, cname, {}, rtag, done=True)
-    elif isinstance(ret, types.GeneratorType):
-        for rmsg in ret:
-            await hub.com.con.send_ret(pool_name, cname, rmsg, rtag, done=False)
-        await hub.com.con.send_ret(pool_name, cname, {}, rtag, done=True)
-    elif asyncio.iscoroutine(ret):
-        rmsg = await ret
-        await hub.com.con.send_ret(pool_name, cname, rmsg, rtag)
 
 
 async def client(hub, pool_name, cname, addr, port, router):
@@ -55,7 +37,7 @@ async def client(hub, pool_name, cname, addr, port, router):
             else:
                 futures.append(
                     asyncio.ensure_future(
-                        f_router(
+                        hub.com.init.f_router(
                             router,
                             pool_name,
                             cname,
@@ -109,7 +91,7 @@ async def wsh(hub, request):
             else:
                 futures.append(
                     asyncio.ensure_future(
-                        f_router(
+                        hub.com.init.f_router(
                             router,
                             pool_name,
                             cname,
@@ -126,7 +108,6 @@ async def wsh(hub, request):
     que.put({'msg': 'BREAK'})
     await send_future
     await ws.close()
-
 
 
 async def bind(hub, pool_name, addr, port, router):
@@ -148,9 +129,7 @@ async def send(hub, pool_name, cname, msg, done=True):
     Sends the message by placing it on the router que and waiting for it
     to be completed
     '''
-    data = {'msg': msg}
-    if not done:
-        data['done'] = False
+    data = {'msg': msg, 'done': done}
     data['stag'] = os.urandom(16)
     event = asyncio.Event()
     hub.com.EVENTS[data['stag']] = event

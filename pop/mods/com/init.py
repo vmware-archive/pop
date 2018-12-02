@@ -3,6 +3,7 @@ Set up the dflow system on the hub
 '''
 # Import python libs
 import os
+import types
 import asyncio
 
 
@@ -13,6 +14,27 @@ def new(hub):
     hub.com.POOLS = {}
     hub.com.RET = {}
     hub.com.EVENTS = {}
+    hub.com.DELIM = b'd\xff\xcfCO)\xfe='
+
+
+async def f_router(hub, router, pool_name, cname, data):
+    ctx = {'pool_name': pool_name, 'cname': cname, 'data': data}
+    if 'stag' in data:
+        rtag = data['stag']
+    else:
+        rtag = None
+    ret = router(ctx, data['msg'])
+    if isinstance(ret, types.AsyncGeneratorType):
+        async for rmsg in ret:
+            await hub.com.con.send_ret(pool_name, cname, rmsg, rtag, done=False)
+        await hub.com.con.send_ret(pool_name, cname, {}, rtag, done=True)
+    elif isinstance(ret, types.GeneratorType):
+        for rmsg in ret:
+            await hub.com.con.send_ret(pool_name, cname, rmsg, rtag, done=False)
+        await hub.com.con.send_ret(pool_name, cname, {}, rtag, done=True)
+    elif asyncio.iscoroutine(ret):
+        rmsg = await ret
+        await hub.com.con.send_ret(pool_name, cname, rmsg, rtag)
 
 
 async def as_yielded(hub, gens):

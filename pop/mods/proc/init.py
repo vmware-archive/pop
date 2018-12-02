@@ -17,7 +17,7 @@ def new(hub):
     '''
     Create constants used by the client and server side of procs
     '''
-    hub.proc.DELIM = b'f1d219f8c8c01f11'
+    hub.proc.DELIM = b'd\xff\xcfCO)\xfe='
     hub.proc.D_FLAG = b'D'
     hub.proc.I_FLAG = b'I'
     hub.proc.Workers = {}

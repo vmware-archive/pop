@@ -20,6 +20,35 @@ def create(hub, pool_name, router):
     raise KeyError('Pool named "{}" already exists'.format(pool_name))
 
 
+async def add_unix_con(hub, pool_name, con_type, path):
+    '''
+    Add a unix socket connection to a named pool.
+
+    YES! You can have a pool with websocket connections and socket
+    connections, once they are in a pool they all behave the same way!
+    '''
+    cname = os.urandom(8)
+    if cname in hub.com.POOLS:
+        raise KeyError(f'Connection {cname} already exists')
+    router = hub.com.POOLS[pool_name]['router']
+    que = asyncio.Queue()
+    if con_type == 'client':
+        hub.com.POOLS[pool_name]['cons'][cname] = {'que': que}
+        bound = asyncio.ensure_future(
+                hub.com.unix.client(
+                    pool_name,
+                    cname,
+                    path,
+                    router))
+        hub.com.POOLS[pool_name]['cons'][cname]['con'] = bound
+    elif con_type == 'bind':
+        bound = asyncio.ensure_future(
+                hub.com.unix.bind(
+                    pool_name,
+                    path,
+                    router))
+
+
 async def add_con(hub, pool_name, con_type, addr, port, proto='ipv4'):
     '''
     Add a connection to the pool that will connect to a remote port and

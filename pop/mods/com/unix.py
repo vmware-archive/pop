@@ -74,7 +74,10 @@ async def gen_worker(hub, pool_name, path, router):
         await asyncio.sleep(0.01)
         futures = []
         while True:
-            msg = await reader.readuntil(hub.com.DELIM)
+            try:
+                msg = await reader.readuntil(hub.com.DELIM)
+            except asyncio.IncompleteReadError as exc:
+                break
             data = msg[:-len(hub.com.DELIM)]
             data = msgpack.loads(data, raw=False)
             # Data will either be a return or it will be an execution request

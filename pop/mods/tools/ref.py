@@ -2,6 +2,7 @@
 Used to resolve resolutions to paths on the hub
 '''
 
+
 def last(hub, ref):
     '''
     Takes a string that references the desired ref and returns the last object

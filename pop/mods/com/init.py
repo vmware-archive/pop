@@ -13,7 +13,6 @@ def new(hub):
     '''
     hub.com.POOLS = {}
     hub.com.RET = {}
-    hub.com.EVENTS = {}
     hub.com.DELIM = b'd\xff\xcfCO)\xfe='
 
 
@@ -25,13 +24,19 @@ async def f_router(hub, router, pool_name, cname, data):
         rtag = None
     ret = router(ctx, data['msg'])
     if isinstance(ret, types.AsyncGeneratorType):
+        count = 0
         async for rmsg in ret:
-            await hub.com.con.send_ret(pool_name, cname, rmsg, rtag, done=False)
-        await hub.com.con.send_ret(pool_name, cname, {}, rtag, done=True)
+            count += 1
+            await hub.com.con.send_ret(pool_name, cname, rmsg, rtag, done=False, count=count)
+        count += 1
+        await hub.com.con.send_ret(pool_name, cname, '', rtag, done=True, count=count, eof=True)
     elif isinstance(ret, types.GeneratorType):
+        count = 0
         for rmsg in ret:
-            await hub.com.con.send_ret(pool_name, cname, rmsg, rtag, done=False)
-        await hub.com.con.send_ret(pool_name, cname, {}, rtag, done=True)
+            count += 1
+            await hub.com.con.send_ret(pool_name, cname, rmsg, rtag, done=False, count=count)
+        count += 1
+        await hub.com.con.send_ret(pool_name, cname, '', rtag, done=True, count=count, eof=True)
     elif asyncio.iscoroutine(ret):
         rmsg = await ret
         await hub.com.con.send_ret(pool_name, cname, rmsg, rtag)

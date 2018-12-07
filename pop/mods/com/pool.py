@@ -1,5 +1,5 @@
 '''
-Mannage multiple connection pools
+Manage multiple connection pools
 '''
 # Import python libs
 import os
@@ -34,19 +34,18 @@ async def add_unix_con(hub, pool_name, con_type, path):
     que = asyncio.Queue()
     if con_type == 'client':
         hub.com.POOLS[pool_name]['cons'][cname] = {'que': que}
-        bound = asyncio.ensure_future(
-                hub.com.unix.client(
-                    pool_name,
-                    cname,
-                    path,
-                    router))
-        hub.com.POOLS[pool_name]['cons'][cname]['con'] = bound
+        hub.tools.loop.ensure_future(
+            'com.unix.client',
+            pool_name,
+            cname,
+            path,
+            router)
     elif con_type == 'bind':
-        bound = asyncio.ensure_future(
-                hub.com.unix.bind(
-                    pool_name,
-                    path,
-                    router))
+        hub.tools.loop.ensure_future(
+            'com.unix.bind',
+            pool_name,
+            path,
+            router)
 
 
 async def add_con(hub, pool_name, con_type, addr, port, proto='ipv4'):
@@ -62,21 +61,20 @@ async def add_con(hub, pool_name, con_type, addr, port, proto='ipv4'):
     que = asyncio.Queue()
     if con_type == 'client':
         hub.com.POOLS[pool_name]['cons'][cname] = {'que': que}
-        bound = asyncio.ensure_future(
-                hub.com.con.client(
-                    pool_name,
-                    cname,
-                    addr,
-                    port,
-                    router))
-        hub.com.POOLS[pool_name]['cons'][cname]['con'] = bound
+        hub.tools.loop.ensure_future(
+            'com.con.client',
+            pool_name,
+            cname,
+            addr,
+            port,
+            router)
     elif con_type == 'bind':
-        bound = asyncio.ensure_future(
-                hub.com.con.bind(
-                    pool_name,
-                    addr,
-                    port,
-                    router))
+        hub.tools.loop.ensure_future(
+            'com.con.bind',
+            pool_name,
+            addr,
+            port,
+            router)
 
 
 async def pub(hub, pool_name, msg):

@@ -37,10 +37,16 @@ def call_soon(hub, ref, *args, **kwargs):
 def ensure_future(hub, ref, *args, **kwargs):
     '''
     Schedule a coroutine to be called when the loop has time. This needs
-    to be called after the creation fo the loop
+    to be called after the creation fo the loop. This function also uses
+    the hold system to await the future when it is done making it easy
+    to create a future that will be cleanly awaited in the background.
     '''
-    fun = hub.tools.ref.get_func(ref)
-    asyncio.ensure_future(fun(*args, **kwargs))
+    fun = hub.tools.ref.last(ref)
+    future = asyncio.ensure_future(fun(*args, **kwargs))
+
+    def callback(fut):
+        hub.tools.loop.QUE.put_nowait(fut)
+    future.add_done_callback(callback)
 
 
 def start(hub, *coros, hold=False):
@@ -50,7 +56,7 @@ def start(hub, *coros, hold=False):
     hub.tools.loop.create()
     if hold:
         coros = list(coros)
-        coros.append(_holder())
+        coros.append(_holder(hub))
     # DO NOT CHANGE THIS CALL TO run_forever! If we do that then the tracebacks
     # do not get resolved.
     return hub.tools.Loop.run_until_complete(
@@ -58,13 +64,15 @@ def start(hub, *coros, hold=False):
             )
 
 
-async def _holder():
+async def _holder(hub):
     '''
     Just a sleeping while loop to hold the loop open while it runs until
     complete
     '''
+    hub.tools.loop.QUE = asyncio.Queue()
     while True:
-        await asyncio.sleep(60)
+        future = await hub.tools.loop.QUE.get()
+        await future
 
 
 async def kill(hub, wait=0):

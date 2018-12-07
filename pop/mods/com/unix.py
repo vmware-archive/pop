@@ -21,8 +21,7 @@ async def client(hub, pool_name, cname, path, router):
         # Data will either be a return or it will be an execution request
         # If the data has a tag it is a return
         if 'rtag' in data:
-            hub.com.RET[data['rtag']] = data
-            hub.com.EVENTS[data['rtag']].set()
+            await hub.com.RET[data['rtag']].put(data)
             continue
         else:
             futures.append(
@@ -83,8 +82,7 @@ async def gen_worker(hub, pool_name, path, router):
             # Data will either be a return or it will be an execution request
             # If the data has a tag it is a return
             if 'rtag' in data:
-                hub.com.RET[data['rtag']] = data
-                hub.com.EVENTS[data['rtag']].set()
+                await hub.com.RET[data['rtag']].put(data)
                 continue
             else:
                 futures.append(

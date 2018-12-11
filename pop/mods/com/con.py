@@ -5,6 +5,8 @@ Set up and manage the network connections
 import asyncio
 import os
 import types
+import random
+import time
 
 # Import third party libs
 import aiohttp
@@ -14,45 +16,54 @@ import msgpack
 
 async def client(hub, pool_name, cname, addr, port, router):
     '''
+    Creates a client connection to a remote server and keeps the
+    connection alive if the server goes down
+    '''
+    while True:
+        start = time.time()
+        await _client(hub, pool_name, cname, addr, port, router)
+        end = time.time()
+        if end - start < 1:
+            # TODO: Make this configurable
+            await asyncio.sleep(random.randrange(2, 20))
+
+
+async def _client(hub, pool_name, cname, addr, port, router):
+    '''
     Creates a client connection to a remote server
     '''
+    tgt = f'http://{addr}:{port}/ws'
+    session = aiohttp.ClientSession()
     try:
-        tgt = f'http://{addr}:{port}/ws'
-        session = aiohttp.ClientSession()
-        ws = await session.ws_connect(tgt)
-        send_future = asyncio.ensure_future(hub.com.con.sender(ws, pool_name, cname))
-        # release the loop so the future can run
-        await asyncio.sleep(0.1)
-        futures = []
-        async for msg in ws:
-            raise
-            if msg.type == aiohttp.WSMsgType.BINARY:
-                data = msgpack.loads(msg.data, raw=False)
-                # Data will either be a return or it will be an execution request
-                # If the data has a tag it is a return
-                if 'rtag' in data:
-                    await hub.com.RET[data['rtag']].put(data)
-                    continue
-                else:
-                    futures.append(
-                        asyncio.ensure_future(
-                            hub.com.init.f_router(
-                                router,
-                                pool_name,
-                                cname,
-                                data)))
-            elif msg.type == aiohttp.WSMsgType.CLOSED:
-                print('Session closed from remote')
-                break
-            elif msg.type == aiohttp.WSMsgType.ERROR:
-                print('remote error')
-                break
-            for future in futures:
-                if future.done():
-                    await future
+        async with session.ws_connect(tgt) as ws:
+            hub.tools.loop.ensure_future('com.con.sender', ws, pool_name, cname)
+            # release the loop so the future can run
+            await asyncio.sleep(0.1)
+            futures = []
+            async for msg in ws:
+                if msg.type == aiohttp.WSMsgType.BINARY:
+                    data = msgpack.loads(msg.data, raw=False)
+                    # Data will either be a return or it will be an execution request
+                    # If the data has a tag it is a return
+                    if 'rtag' in data:
+                        await hub.com.RET[data['rtag']].put(data)
+                        continue
+                    else:
+                        hub.tools.loop.ensure_future(
+                            'com.init.f_router',
+                            router,
+                            pool_name,
+                            cname,
+                            data)
+                elif msg.type == aiohttp.WSMsgType.CLOSED:
+                    print('Session closed from remote')
+                    break
+                elif msg.type == aiohttp.WSMsgType.ERROR:
+                    print('remote error')
+                    break
     except aiohttp.client_exceptions.ClientConnectorError:
-        print('Exception')
-    await send_future
+        # Float back up to the recon sequence
+        pass
     await session.close()
 
 
@@ -77,8 +88,7 @@ async def wsh(hub, request):
     r_str = os.urandom(4).hex()
     cname = f'{request.host}|{r_str}'
     hub.com.POOLS[pool_name]['cons'][cname] = {'que': que}
-    send_future = asyncio.ensure_future(hub.com.con.sender(ws, pool_name, cname))
-    futures = []
+    hub.tools.loop.ensure_future('com.con.sender', ws, pool_name, cname)
     await asyncio.sleep(0.01)
     async for msg in ws:
         if msg.type == aiohttp.WSMsgType.BINARY:
@@ -89,24 +99,19 @@ async def wsh(hub, request):
                 await hub.com.RET[data['rtag']].put(data)
                 continue
             else:
-                futures.append(
-                    asyncio.ensure_future(
-                        hub.com.init.f_router(
-                            router,
-                            pool_name,
-                            cname,
-                            data)))
+                hub.tools.loop.ensure_future(
+                    'com.init.f_router',
+                    router,
+                    pool_name,
+                    cname,
+                    data)
         elif msg.type == aiohttp.WSMsgType.CLOSED:
             print('Session closed from remote')
             break
         elif msg.type == aiohttp.WSMsgType.ERROR:
             print('remote error')
             break
-        for future in futures:
-            if future.done():
-                await future
     que.put({'msg': 'BREAK'})
-    await send_future
     await ws.close()
 
 

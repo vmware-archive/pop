@@ -10,10 +10,9 @@ async def client(hub, pool_name, cname, path, router):
     Create a unix socket client creation to the given path
     '''
     reader, writer = await asyncio.open_unix_connection(path)
-    send_future = asyncio.ensure_future(hub.com.unix.sender(writer, pool_name, cname))
+    hub.tools.loop.ensure_future('com.unix.sender', writer, pool_name, cname)
     # release the loop so the future can run
     await asyncio.sleep(0.01)
-    futures = []
     while True:
         msg = await reader.readuntil(hub.com.DELIM)
         data = msg[:-len(hub.com.DELIM)]
@@ -24,17 +23,12 @@ async def client(hub, pool_name, cname, path, router):
             await hub.com.RET[data['rtag']].put(data)
             continue
         else:
-            futures.append(
-                asyncio.ensure_future(
-                    hub.com.init.f_router(
-                        router,
-                        pool_name,
-                        cname,
-                        data)))
-        for future in futures:
-            if future.done():
-                await future
-    await send_future
+            hub.tools.loop.ensure_future(
+                'com.init.f_router',
+                router,
+                pool_name,
+                cname,
+                data)
 
 
 async def bind(hub, pool_name, path, router):
@@ -69,9 +63,8 @@ async def gen_worker(hub, pool_name, path, router):
         cname = os.urandom(8)
         que = asyncio.Queue()
         hub.com.POOLS[pool_name]['cons'][cname] = {'que': que}
-        send_future = asyncio.ensure_future(hub.com.unix.sender(writer, pool_name, cname))
+        hub.tools.loop.ensure_future('com.unix.sender', writer, pool_name, cname)
         await asyncio.sleep(0.01)
-        futures = []
         while True:
             try:
                 msg = await reader.readuntil(hub.com.DELIM)
@@ -85,14 +78,10 @@ async def gen_worker(hub, pool_name, path, router):
                 await hub.com.RET[data['rtag']].put(data)
                 continue
             else:
-                futures.append(
-                    asyncio.ensure_future(
-                        hub.com.init.f_router(
-                            router,
-                            pool_name,
-                            cname,
-                            data)))
-            for future in futures:
-                if future.done():
-                    await future
+                hub.tools.loop.ensure_future(
+                    'com.init.f_router',
+                    router,
+                    pool_name,
+                    cname,
+                    data)
     return worker

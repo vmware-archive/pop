@@ -12,7 +12,7 @@ async def client(hub, pool_name, cname, path, router):
     reader, writer = await asyncio.open_unix_connection(path)
     hub.tools.loop.ensure_future('com.unix.sender', writer, pool_name, cname)
     # release the loop so the future can run
-    await asyncio.sleep(0.01)
+    await asyncio.sleep(0)
     while True:
         msg = await reader.readuntil(hub.com.DELIM)
         data = msg[:-len(hub.com.DELIM)]
@@ -64,7 +64,7 @@ async def gen_worker(hub, pool_name, path, router):
         que = asyncio.Queue()
         hub.com.POOLS[pool_name]['cons'][cname] = {'que': que}
         hub.tools.loop.ensure_future('com.unix.sender', writer, pool_name, cname)
-        await asyncio.sleep(0.01)
+        await asyncio.sleep(0)
         while True:
             try:
                 msg = await reader.readuntil(hub.com.DELIM)

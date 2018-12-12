@@ -38,7 +38,7 @@ async def _client(hub, pool_name, cname, addr, port, router):
         async with session.ws_connect(tgt) as ws:
             hub.tools.loop.ensure_future('com.con.sender', ws, pool_name, cname)
             # release the loop so the future can run
-            await asyncio.sleep(0.1)
+            await asyncio.sleep(0)
             futures = []
             async for msg in ws:
                 if msg.type == aiohttp.WSMsgType.BINARY:
@@ -89,7 +89,7 @@ async def wsh(hub, request):
     cname = f'{request.host}|{r_str}'
     hub.com.POOLS[pool_name]['cons'][cname] = {'que': que}
     hub.tools.loop.ensure_future('com.con.sender', ws, pool_name, cname)
-    await asyncio.sleep(0.01)
+    await asyncio.sleep(0)
     async for msg in ws:
         if msg.type == aiohttp.WSMsgType.BINARY:
             data = msgpack.loads(msg.data, raw=False)

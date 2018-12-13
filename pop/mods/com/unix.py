@@ -84,4 +84,6 @@ async def gen_worker(hub, pool_name, path, router):
                     pool_name,
                     cname,
                     data)
+        hub.com.POOLS[pool_name]['cons'].pop(cname)
+        del(que)
     return worker

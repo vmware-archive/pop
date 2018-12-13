@@ -48,7 +48,7 @@ async def add_unix_con(hub, pool_name, con_type, path):
             router)
 
 
-async def add_con(hub, pool_name, con_type, addr, port, proto='ipv4'):
+async def add_con(hub, pool_name, con_type, addr, port, proto='ipv4', meta=None):
     '''
     Add a connection to the pool that will connect to a remote port and
     listen for inbound data

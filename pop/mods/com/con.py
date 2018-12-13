@@ -14,21 +14,22 @@ import aiohttp.web
 import msgpack
 
 
-async def client(hub, pool_name, cname, addr, port, router):
+async def client(hub, pool_name, cname, addr, port, router, meta=None):
     '''
     Creates a client connection to a remote server and keeps the
     connection alive if the server goes down
     '''
+    meta = {} if meta is None else meta
     while True:
         start = time.time()
-        await _client(hub, pool_name, cname, addr, port, router)
+        await _client(hub, pool_name, cname, addr, port, router, meta)
         end = time.time()
         if end - start < 1:
             # TODO: Make this configurable
             await asyncio.sleep(random.randrange(2, 20))
 
 
-async def _client(hub, pool_name, cname, addr, port, router):
+async def _client(hub, pool_name, cname, addr, port, router, meta):
     '''
     Creates a client connection to a remote server
     '''
@@ -36,13 +37,23 @@ async def _client(hub, pool_name, cname, addr, port, router):
     session = aiohttp.ClientSession()
     try:
         async with session.ws_connect(tgt) as ws:
-            hub.tools.loop.ensure_future('com.con.sender', ws, pool_name, cname)
+            hub.tools.loop.ensure_future(
+                'com.con.sender',
+                ws,
+                pool_name,
+                cname)
             # release the loop so the future can run
             await asyncio.sleep(0)
-            futures = []
+            # send the initial metadata
+            if meta:
+                msg = {'meta': meta}
+                async for ret in hub.com.con.send(pool_name, cname, msg):
+                    pass
             async for msg in ws:
                 if msg.type == aiohttp.WSMsgType.BINARY:
                     data = msgpack.loads(msg.data, raw=False)
+                    if 'meta' in data:
+                        hub.com.POOLS[pool_name]['cons'][cname]['meta'] = data['meta']
                     # Data will either be a return or it will be an execution request
                     # If the data has a tag it is a return
                     if 'rtag' in data:
@@ -85,14 +96,23 @@ async def wsh(hub, request):
     que = asyncio.Queue()
     pool_name = request.app['pool_name']
     router = request.app['router']
+    meta = request.app['meta']
     r_str = os.urandom(4).hex()
     cname = f'{request.host}|{r_str}'
     hub.com.POOLS[pool_name]['cons'][cname] = {'que': que}
     hub.tools.loop.ensure_future('com.con.sender', ws, pool_name, cname)
     await asyncio.sleep(0)
+    # send the initial metadata
+    if meta:
+        msg = {'meta': meta}
+        async for ret in hub.com.con.send(pool_name, cname, msg):
+            pass
     async for msg in ws:
         if msg.type == aiohttp.WSMsgType.BINARY:
             data = msgpack.loads(msg.data, raw=False)
+            # If metadata is in the message, then update the metadata
+            if 'meta' in data:
+                hub.com.POOLS[pool_name]['cons'][cname]['meta'] = data['meta']
             # Data will either be a return or it will be an execution request
             # If the data has a tag it is a return
             if 'rtag' in data:
@@ -113,15 +133,18 @@ async def wsh(hub, request):
             break
     que.put({'msg': 'BREAK'})
     await ws.close()
+    hub.com.POOLS[pool_name]['cons'].pop(cname)
+    del(que)
 
 
-async def bind(hub, pool_name, addr, port, router):
+async def bind(hub, pool_name, addr, port, router, meta=None):
     '''
     Binds to a local port and listens
     '''
     app = aiohttp.web.Application(debug=True)
     app['router'] = router
     app['pool_name'] = pool_name
+    app['meta'] = {} if meta is None else meta
     app.router.add_route('GET', '/ws', hub.com.con.wsh)
     runner = aiohttp.web.AppRunner(app)
     await runner.setup()

@@ -120,3 +120,32 @@ def test_mixed():
             assert ret == snd
     hub = _setup()
     hub.tools.loop.start(_test(hub))
+
+
+def test_tgt():
+    async def _test(hub):
+        '''
+        '''
+        hub.com.pool.create('srv', hub.com.test.echo_router)
+        # Yes we are making sure port numbers can be strings or ints
+        await hub.com.pool.add_con('srv', 'bind', '127.0.0.1', 65446, {'id': 's1'})
+        hub.com.pool.create('client', hub.com.test.echo_router)
+        await hub.com.pool.add_con('client', 'client', '127.0.0.1', '65446', {'id': 'c1'})
+        await hub.com.pool.add_con('client', 'client', '127.0.0.1', 65446, {'id': 'c2'})
+        await hub.com.pool.add_con('client', 'client', '127.0.0.1', '65446', {'id': 'c3', 'grains': {'os': 'Arch'}})
+        await hub.com.pool.add_con('client', 'client', '127.0.0.1', '65446', {'id': 'c4', 'grains': {'os': 'Arch'}})
+        snd = 'no one expects the spanish inquisition'
+        count = 0
+        print(hub.com.POOLS['srv'])
+        async for ret in hub.com.pool.tgt('srv', snd, 'glob', {'id': 'c*'}):
+            count += 1
+            assert ret == snd
+        assert count == 4
+        count = 0
+        async for ret in hub.com.pool.tgt('srv', snd, 'match', {'grains': 'Arch'}):
+            count += 1
+            assert ret == snd
+        assert count == 2
+
+    hub = _setup()
+    hub.tools.loop.start(_test(hub))

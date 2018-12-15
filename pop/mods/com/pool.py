@@ -98,6 +98,19 @@ async def rand(hub, pool_name, msg):
         yield ret
 
 
+async def tgt(hub, pool_name, msg, tgt_type, tdat):
+    '''
+    Send a target to evaluate, only the targetted connections will
+    be hit
+    '''
+    gens = []
+    for cname, cdat in hub.com.POOLS[pool_name]['cons'].items():
+        if hub.tgt.init.eval(tgt_type, cdat['meta'], tdat):
+            gens.append(hub.com.con.send(pool_name, cname, msg))
+    async for ret in hub.com.init.as_yielded(gens):
+        yield ret
+
+
 async def avail(hub, pool_name, msg):
     '''
     Send the message to the first connection to pick it up, or the most

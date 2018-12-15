@@ -11,6 +11,7 @@ def new(hub):
     '''
     Set up the keys and structures used by dflow
     '''
+    hub.tools.sub.add('tgt', pypath='pop.mods.tgt')
     hub.com.POOLS = {}
     hub.com.RET = {}
     hub.com.DELIM = b'd\xff\xcfCO)\xfe='

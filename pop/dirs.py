@@ -22,6 +22,7 @@ def dir_list(subname, p_name, pypath=None, static=None, pyroot=None, staticroot=
         rfn = os.path.dirname(rmod.__file__)
         full = os.path.join(rfn, p_name, subname)
         py_full = os.path.join(full, '__init__.py')
+        # QUESTION: Would it be faster to catch an exception?
         if os.path.isfile(py_full):
             mod = importlib.import_module(p_full)
             ret.append(os.path.dirname(mod.__file__))

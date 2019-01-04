@@ -17,6 +17,19 @@ EXT_SUFFIXES = tuple([suffix[0] for suffix in imp.get_suffixes() if suffix[-1] =
 log = logging.getLogger(__name__)
 
 
+def ex_path(path):
+    '''
+    Take a path that is sent to the Sub and expand it if it is a string or not
+    '''
+    if path is None:
+        return []
+    elif isinstance(path, str):
+        return path.split(',')
+    elif isinstance(path, list):
+        return path
+    return []
+
+
 class Hub:
     '''
     The redistributed pop central hub. All components of the system are
@@ -98,6 +111,8 @@ class Sub:
             contracts_pypath=None,
             contracts_static=None,
             default_contracts=None,
+            pyroot=None,
+            staticroot=None,
             virtual=True,
             omit_start=('_'),
             omit_end=(),
@@ -114,13 +129,15 @@ class Sub:
         self._mem = {}
         self._modname = modname
         self._subname = subname if subname else modname
-        self._pypath = pypath
-        self._static = static
-        self._contracts_pypath = contracts_pypath
-        self._contracts_static = contracts_static
+        self._pypath = ex_path(pypath)
+        self._static = ex_path(static)
+        self._contracts_pypath = ex_path(contracts_pypath)
+        self._contracts_static = ex_path(contracts_static)
         if isinstance(default_contracts, str):
             default_contracts = [default_contracts]
         self._default_contracts = default_contracts or ()
+        self._pyroot = ex_path(pyroot)
+        self._staticroot = ex_path(staticroot)
         self._virtual = virtual
         self._omit_start = omit_start
         self._omit_end = omit_end
@@ -130,11 +147,25 @@ class Sub:
         self._mod_basename = mod_basename
         self._stop_on_failures = stop_on_failures
         self._init = init
-        self.__prepare__()
+        self._prepare()
 
-    def __prepare__(self):
-        self._dirs = pop.dirs.dir_list(self._pypath, self._static)
-        self._contract_dirs = pop.dirs.dir_list(self._contracts_pypath, self._contracts_static)
+    def _prepare(self):
+        self._dirs = pop.dirs.dir_list(
+            self._subname,
+            'mods',
+            self._pypath,
+            self._static,
+            self._pyroot,
+            self._staticroot,
+            )
+        self._contract_dirs = pop.dirs.dir_list(
+            self._subname,
+            'contracts',
+            self._contracts_pypath,
+            self._contracts_static,
+            self._pyroot,
+            self._staticroot,
+            )
         if self._contract_dirs:
             self._contracts = ContractSub(
                     self._hub,
@@ -174,7 +205,7 @@ class Sub:
 
     def __setstate__(self, state):
         self.__dict__.update(state)
-        self.__prepare__()
+        self._prepare()
 
     @property
     def _(self):

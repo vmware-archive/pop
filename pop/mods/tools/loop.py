@@ -19,6 +19,7 @@ def create(hub):
     Create the loop at hub.tools.Loop
     '''
     if not hub.tools.Loop:
+        hub.tools.loop.FUT_QUE = asyncio.Queue()
         if sys.platform == 'win32':
             hub.tools.Loop = asyncio.ProactorEventLoop()
         else:
@@ -45,7 +46,7 @@ def ensure_future(hub, ref, *args, **kwargs):
     future = asyncio.ensure_future(fun(*args, **kwargs))
 
     def callback(fut):
-        hub.tools.loop.QUE.put_nowait(fut)
+        hub.tools.loop.FUT_QUE.put_nowait(fut)
     future.add_done_callback(callback)
 
 
@@ -69,9 +70,8 @@ async def _holder(hub):
     Just a sleeping while loop to hold the loop open while it runs until
     complete
     '''
-    hub.tools.loop.QUE = asyncio.Queue()
     while True:
-        future = await hub.tools.loop.QUE.get()
+        future = await hub.tools.loop.FUT_QUE.get()
         await future
 
 

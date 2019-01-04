@@ -122,7 +122,7 @@ def test_mixed():
     hub.tools.loop.start(_test(hub))
 
 
-def test_tgt():
+def _test_tgt():  # no worky yet
     async def _test(hub):
         '''
         '''

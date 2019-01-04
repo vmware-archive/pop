@@ -17,6 +17,8 @@ def add(hub,
         contracts_pypath=None,
         contracts_static=None,
         default_contracts=None,
+        pyroot=None,
+        staticroot=None,
         virtual=True,
         omit_start=('_'),
         omit_end=(),
@@ -47,6 +49,8 @@ def add(hub,
             contracts_pypath,
             contracts_static,
             default_contracts,
+            pyroot,
+            staticroot,
             virtual,
             omit_start,
             omit_end,
@@ -124,3 +128,49 @@ def load_subdirs(hub, sub):
                         omit_vars=sub._omit_vars,
                         mod_basename=sub._mod_basename,
                         stop_on_failures=sub._stop_on_failures)
+
+
+def reload(hub, subname):
+    '''
+    Instruct the hub to reload the modules for the given sub. This does not call
+    the init.new function or remove sub level variables. But it does re-read the
+    directory list and re-initialize the loader causing all modules to be re-evaluated
+    when started.
+    '''
+    if hasattr(hub, subname):
+        sub = getattr(hub, subname)
+        sub._prepare()
+        return True
+    else:
+        return False
+
+
+def extend(
+        hub,
+        subname,
+        pypath=None,
+        static=None,
+        contracts_pypath=None,
+        contracts_static=None,
+        pyroot=None,
+        staticroot=None):
+    '''
+    Extend the directory lookup for a given sub. Any of the directory lookup
+    arguments can be passed.
+    '''
+    if not hasattr(hub, subname):
+        return False
+    sub = getattr(hub, subname)
+    if pypath:
+        sub._pypath.extend(pop.hub.ex_path(pypath))
+    if static:
+        sub._static.extend(pop.hub.ex_path(static))
+    if contracts_pypath:
+        sub._contracts_pypath.extend(pop.hub.ex_path(contracts_pypath))
+    if contracts_static:
+        sub._contracts_static.extend(pop.hub.ex_path(contracts_static))
+    if pyroot:
+        sub._pyroot.extend(pop.hub.ex_path(pyroot))
+    if staticroot:
+        sub._staticroot.extend(pop.hub.ex_path(staticroot))
+    sub._prepare()

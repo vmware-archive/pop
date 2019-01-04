@@ -20,7 +20,7 @@ def test_basic():
 
 def test_pyroots():
     hub = pop.hub.Hub()
-    hub.tools.sub.add('cheese', pyroot='tests.pyroot')
+    hub.tools.sub.add('cheese', pyroot=['tests.pyroot', 'tests.NOTHINGHERE'])
     assert hub.cheese.test.ping() == 'cheese'
     with pytest.raises(AttributeError) as exc:
         # Make sure that only the cheese module is picked

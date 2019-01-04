@@ -18,14 +18,11 @@ def dir_list(subname, p_name, pypath=None, static=None, pyroot=None, staticroot=
         ret.append(os.path.dirname(mod.__file__))
     for path in pyroot:
         p_full = f'{path}.{p_name}.{subname}'
-        rmod = importlib.import_module(path)
-        rfn = os.path.dirname(rmod.__file__)
-        full = os.path.join(rfn, p_name, subname)
-        py_full = os.path.join(full, '__init__.py')
-        # QUESTION: Would it be faster to catch an exception?
-        if os.path.isfile(py_full):
+        try:
             mod = importlib.import_module(p_full)
             ret.append(os.path.dirname(mod.__file__))
+        except ModuleNotFoundError:
+            continue
     for path in staticroot:
         full = os.path.join(path, p_name, subname)
         if os.path.isdir(full):

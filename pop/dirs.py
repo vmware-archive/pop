@@ -17,10 +17,13 @@ def dir_list(subname, p_name, pypath=None, static=None, pyroot=None, staticroot=
         mod = importlib.import_module(path)
         ret.append(os.path.dirname(mod.__file__))
     for path in pyroot:
-        full = os.path.join(path, p_name, subname)
+        p_full = f'{path}.{p_name}.{subname}'
+        rmod = importlib.import_module(path)
+        rfn = os.path.dirname(rmod.__file__)
+        full = os.path.join(rfn, p_name, subname)
         py_full = os.path.join(full, '__init__.py')
-        if os.path.file(py_full):
-            mod = importlib.import_module(path)
+        if os.path.isfile(py_full):
+            mod = importlib.import_module(p_full)
             ret.append(os.path.dirname(mod.__file__))
     for path in staticroot:
         full = os.path.join(path, p_name, subname)

@@ -75,6 +75,17 @@ async def _holder(hub):
         await future
 
 
+async def await_futures(hub):
+    '''
+    Scan over the futures that have completed and manually await them.
+    This function is used to clean up futures when the loop is not opened
+    up with hold=True so that ensured futures can be cleaned up on demand
+    '''
+    while not hub.tools.loop.FUT_QUE.empty():
+        future = await hub.tools.loop.FUT_QUE.get()
+        await future
+
+
 async def kill(hub, wait=0):
     '''
     Close out the loop

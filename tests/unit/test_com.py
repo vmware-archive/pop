@@ -46,6 +46,7 @@ def test_connections():
             assert ret == snd
         async for ret in hub.com.pool.avail('srv', snd):
             assert ret == snd
+        await hub.tools.loop.await_futures()
     hub = _setup()
     hub.tools.loop.start(_test(hub))
 
@@ -79,6 +80,7 @@ def test_unix():
             assert ret == snd
         async for ret in hub.com.pool.avail('srv', snd):
             assert ret == snd
+        await hub.tools.loop.await_futures()
     hub = _setup()
     hub.tools.loop.start(_test(hub))
 
@@ -118,6 +120,7 @@ def test_mixed():
             assert ret == snd
         async for ret in hub.com.pool.avail('srv', snd):
             assert ret == snd
+        await hub.tools.loop.await_futures()
     hub = _setup()
     hub.tools.loop.start(_test(hub))
 
@@ -146,6 +149,7 @@ def _test_tgt():  # no worky yet
             count += 1
             assert ret == snd
         assert count == 2
+        await hub.tools.loop.await_futures()
 
     hub = _setup()
     hub.tools.loop.start(_test(hub))

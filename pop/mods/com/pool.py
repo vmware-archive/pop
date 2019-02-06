@@ -85,7 +85,7 @@ async def pub(hub, pool_name, msg):
     for cname in hub.com.POOLS[pool_name]['cons']:
         gen = hub.com.con.send(pool_name, cname, msg)
         gens.append(gen)
-    async for ret in hub.com.init.as_yielded(gens):
+    async for ret in hub.tools.loop.as_yielded(gens):
         yield ret
 
 
@@ -107,7 +107,7 @@ async def tgt(hub, pool_name, msg, tgt_type, tdat):
     for cname, cdat in hub.com.POOLS[pool_name]['cons'].items():
         if hub.tgt.init.eval(tgt_type, cdat['meta'], tdat):
             gens.append(hub.com.con.send(pool_name, cname, msg))
-    async for ret in hub.com.init.as_yielded(gens):
+    async for ret in hub.tools.loop.as_yielded(gens):
         yield ret
 
 

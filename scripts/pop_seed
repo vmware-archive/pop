@@ -4,8 +4,8 @@ import pop.hub
 
 CONFIG = {
         'seed_name': {
-            'default': 'tester_test',
-            'help': 'The name of the project that is being created'
+            'positional': True,
+            'help': 'The name of the project that is being created',
             },
         }
 

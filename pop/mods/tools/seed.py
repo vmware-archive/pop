@@ -95,11 +95,15 @@ INIT = '''def new(hub):
     print('%%NAME%% works!')
 '''
 
+REQ = 'pop'
+
+
 def new(hub):
     '''
     Given the option in hub.opts "seed_name" create a directory tree for a
     new pop project
     '''
+    hub.PATH = os.getcwd()
     name = hub.opts['seed_name']
     hub.tools.seed.mkdir('scripts')
     hub.tools.seed.mkdir(name, 'mods', name)
@@ -108,31 +112,42 @@ def new(hub):
     hub.tools.seed.mkscript(name)
     hub.tools.seed.mkinit(name)
     hub.tools.seed.mkversion(name)
+    hub.tools.seed.mkreq(name)
 
 
 def mkdir(hub, *args):
     '''
     Create the named dir
     '''
-    path = os.getcwd()
+    path = hub.PATH
     for dir_ in args:
         path = os.path.join(path, dir_)
         init_fn = os.path.join(path, '__init__.py')
-        try:
-            os.makedirs(path)
-        except Exception:
-            print('Failed to make {}'.format(path))
-            continue
-        with open(init_fn, 'w+') as fp:
-            fp.write('')
+        if not os.path.isdir(path):
+            try:
+                os.makedirs(path)
+            except Exception:
+                print('Failed to make {}'.format(path))
+                continue
+            if dir_ == 'scripts' and len(args) == 1:
+                continue
+            with open(init_fn, 'w+') as fp:
+                fp.write('')
+
+
+def mkreq(hub, name):
+    '''
+    '''
+    path = os.path.join(hub.PATH, 'requirements.txt')
+    with open(path, 'w+') as fp:
+        fp.write(REQ)
 
 
 def mksetup(hub, name):
     '''
     Create and write out a setup.py file
     '''
-    path = os.getcwd()
-    path = os.path.join(path, 'setup.py')
+    path = os.path.join(hub.PATH, 'setup.py')
     setup_str = SETUP.replace('%%NAME%%', name)
     with open(path, 'w+') as fp:
         fp.write(setup_str)
@@ -142,8 +157,7 @@ def mkscript(hub, name):
     '''
     Create and write out a setup.py file
     '''
-    path = os.getcwd()
-    path = os.path.join(path, 'scripts', name)
+    path = os.path.join(hub.PATH, 'scripts', name)
     script_str = SCRIPT.replace('%%NAME%%', name)
     with open(path, 'w+') as fp:
         fp.write(script_str)
@@ -153,8 +167,7 @@ def mkinit(hub, name):
     '''
     Create the intial init.py
     '''
-    path = os.getcwd()
-    path = os.path.join(path, name, 'mods', name, 'init.py')
+    path = os.path.join(hub.PATH, name, 'mods', name, 'init.py')
     init_str = INIT.replace('%%NAME%%', name)
     with open(path, 'w+') as fp:
         fp.write(init_str)
@@ -164,7 +177,6 @@ def mkversion(hub, name):
     '''
     Create the version.py file
     '''
-    path = os.getcwd()
-    path = os.path.join(path, name, 'version.py')
+    path = os.path.join(hub.PATH, name, 'version.py')
     with open(path, 'w+') as fp:
         fp.write('version = \'1.0.0\'')

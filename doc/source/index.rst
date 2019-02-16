@@ -8,8 +8,11 @@ Welcome to pop's documentation!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
+   topics/quickstart
+   topics/pop
+   topics/com
+   topics/proc
 
 
 Indices and tables

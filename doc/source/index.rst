@@ -11,6 +11,7 @@ Welcome to pop's documentation!
 
    topics/quickstart
    topics/pop
+   topics/story
    topics/com
    topics/proc
 

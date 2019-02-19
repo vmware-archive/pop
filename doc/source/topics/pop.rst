@@ -119,18 +119,3 @@ to be accesed in a safe, namespaced way, while still honoring valuable OOP conce
 encapsulation, without overencapsulating data that is so often useful in the broader application.
 This namespaced approach to development makes data sharing between coroutines safe,
 easy and reliable.
-
-Challenges to face
-==================
-
-Increasing maintainability
-
-Sprawling open source code
-
-microservices on a coding scale, or "nanoservices"
-
-Concurrency models
-
-Distributed development for monolithic applications
-
-Distributed testing

@@ -28,8 +28,10 @@ def load_file(hub, paths, defaults=None, overrides=None, includes=True):
     for fn_ in paths:
         if hub.conf._loader == 'yaml':
             opts.update(hub.conf.yaml.load(fn_))
-        else:
+        elif hub.conf._loader == 'json':
             opts.update(hub.conf.json.load(fn_))
+        elif hub.conf._loader == 'toml':
+            opts.update(hub.conf.toml.load(fn_))
     if includes:
         hub.conf.file.proc_include(opts)
     if isinstance(overrides, dict):

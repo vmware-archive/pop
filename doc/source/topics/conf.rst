@@ -7,8 +7,8 @@ configuration and options to CLI programs. The problem is that configuration
 data needs to come from multiple sources. Defaults need to be set, CLI options
 need to be accepted, config file(s) needs to exist. Config file settings need to
 override defaults, while CLI options need to override both, but the CLI needs
-to be able to define the location of the config file(s). Finaly there ends up
-being multiple sources of truth. Config options are documented in mone place
+to be able to define the location of the config file(s). Finally there ends up
+being multiple sources of truth. Config options are documented in more place
 while config file options are documented elsewhere.
 
 This little issue can get confusing, and turns into a manual process for many
@@ -52,8 +52,63 @@ values on the hub so they are available to your application.
 Adding Extra CLI Options
 ========================
 
+The CLI option is determined by the top level dict key, but often it is preferred
+to add an alternative or a shortcut option to the CLI, this can be easily added:
+
+.. code-block:: python
+
+    CONFIG = {
+        'cache_dir': {
+            'options': ['-C', '--cacheland'],
+            'default': '/var/cache/',
+            'help': 'The place to cache stuff!',
+            },
+        }
+
+Actions
+=======
+
+The `conf` system supports setting actions. This allows for a flag to set an action
+within the parser. All of the flags for action that are supported by Argparser are
+supported here: https://docs.python.org/3/library/argparse.html#action
+
+.. code-block:: python
+
+    CONFIG = {
+        'cheese': {
+            'default': False,
+            'action': 'store_true',
+            'help': 'Say yes to cheese!',
+            },
+        }
+
 Grouping CLI Options
 ====================
+
+Sometimes it is helpful for multiple CLI arguments to appear as a group. Just
+adding the `group` key is all you need:
+
+.. code-block:: python
+
+    CONFIG = {
+        'cache_dir': {
+            'options': ['-C', '--cacheland'],
+            'group': 'global',
+            'default': '/var/cache/',
+            'help': 'The place to cache stuff!',
+            },
+        'config': {
+            'default': '/etc/config.toml',
+            'group': 'global',
+            'help': 'The location of the config file',
+            },
+        'cheese': {
+            'default': False,
+            'action': 'store_true',
+            'group': 'app',
+            'help': 'Say yes to cheese!',
+            },
+        }
 
 Using Config Files
 ==================
@@ -91,7 +146,7 @@ https://docs.python.org/3/library/argparse.html#nargs
 Using Positional args
 =====================
 
-Often is makes sense to use positional arguments for your cli options. This
+Often is makes sense to use positional arguments for your CLI options. This
 can be easily added to `conf`:
 
 .. code-block:: python
@@ -111,7 +166,7 @@ can be easily added to `conf`:
             },
         }
 
-Bys using `positional` and `display_priority` you can determine the order of
+By using `positional` and `display_priority` you can determine the order of
 positional arguments. Keep in mind that if you set nargs to '*' that will need
 to be the last argument.
 

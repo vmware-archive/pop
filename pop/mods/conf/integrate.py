@@ -96,7 +96,11 @@ def load(hub, imports, override=None):
         if len(ops_to_ref[opt]) > 1:
             collides.append({opt: ops_to_ref[opt]})
     for key in key_to_ref:
-        if len(key_to_ref[key]) > 1:
+        col = []
+        for ref in key_to_ref[key]:
+            if not ref.startswith('global.'):
+                col.append(ref)
+        if len(col) > 1:
             collides.append({key: key_to_ref[key]})
     if collides:
         raise KeyError(collides)
@@ -106,10 +110,10 @@ def load(hub, imports, override=None):
     # if someone tries to add a key willy nilly it should fail
     for key in opts:
         if key.startswith('sub.'):
-            imp = key[key.index('.') + 1 : key.rindex('.')]
+            imp = key[key.index('.')+1:key.rindex('.')]
             if imp not in f_opts:
                 f_opts[imp] = {}
-            f_key = key[:key.rindex('.')]
+            f_key = key[key.rindex('.')+1:]
             f_opts[imp][f_key] = opts[key]
             continue
         for ref in key_to_ref[key]:

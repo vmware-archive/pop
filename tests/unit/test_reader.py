@@ -686,5 +686,36 @@ def test_integrate_simple():
         'conf',
         pypath='pop.mods.conf',
     )
-    hub.conf.integrate.load('tests.conf')
-    assert hub.OPT == {'global': {'cache_dir': '/var/cache'}, 'tests.conf': {'sub.tests.conf': 'Not just anybody!', 'test': False}}
+    hub.conf.integrate.load('tests.conf1')
+    assert hub.OPT == {'global': {'cache_dir': '/var/cache'}, 'tests.conf1': {'someone': 'Not just anybody!', 'test': False}}
+
+
+def test_integrate_merge():
+    hub = pop.hub.Hub()
+    hub.tools.sub.add(
+        'conf',
+        pypath='pop.mods.conf',
+    )
+    hub.conf.integrate.load(['tests.conf1', 'tests.conf2'])
+    assert hub.OPT == {'global': {'cache_dir': '/var/cache'}, 'tests.conf2': {'monty': False, 'someone': 'Not just anybody!'}, 'tests.conf1': {'someone': 'Not just anybody!', 'test': False}}
+
+
+def test_integrate_collide():
+    hub = pop.hub.Hub()
+    hub.tools.sub.add(
+        'conf',
+        pypath='pop.mods.conf',
+    )
+    with pytest.raises(KeyError):
+        hub.conf.integrate.load(['tests.conf1', 'tests.conf2', 'tests.conf3'])
+
+
+def test_integrate_override():
+    hub = pop.hub.Hub()
+    hub.tools.sub.add(
+        'conf',
+        pypath='pop.mods.conf',
+    )
+    over = {'tests.conf1.test': {'key': 'test2', 'options': ['--test2']}}
+    hub.conf.integrate.load(['tests.conf1', 'tests.conf2', 'tests.conf3'], over)
+    assert hub.OPT == {'global': {'cache_dir': '/var/cache'}, 'tests.conf2': {'monty': False, 'someone': 'Not just anybody!'}, 'tests.conf1': {'someone': 'Not just anybody!', 'test2': False}, 'tests.conf3': {'someone': 'Not just anybody!', 'test': False}}

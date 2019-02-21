@@ -141,7 +141,7 @@ async def bind(hub, pool_name, addr, port, router, meta=None):
     '''
     Binds to a local port and listens
     '''
-    app = aiohttp.web.Application(debug=True)
+    app = aiohttp.web.Application()
     app['router'] = router
     app['pool_name'] = pool_name
     app['meta'] = {} if meta is None else meta

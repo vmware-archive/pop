@@ -678,3 +678,13 @@ def test_subs_positional_missing(capsys):
         hub.conf.reader.read(copy.deepcopy(C8), SUB)
     _, err = capsys.readouterr()
     assert 'error: the following arguments are required: foo_positional_1' in err
+
+
+def test_integrate_simple():
+    hub = pop.hub.Hub()
+    hub.tools.sub.add(
+        'conf',
+        pypath='pop.mods.conf',
+    )
+    hub.conf.integrate.load('tests.conf')
+    assert hub.OPT == {'global': {'cache_dir': '/var/cache'}, 'tests.conf': {'sub.tests.conf': 'Not just anybody!', 'test': False}}

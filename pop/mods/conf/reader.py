@@ -41,7 +41,7 @@ def _merge_dicts(opts, updates, explicit_cli_args):
 def read(hub,
         defaults,
         subs=None,
-        loader='toml',
+        loader='json',
         process_cli=True,
         process_cli_known_args_only=False,
         args=None,

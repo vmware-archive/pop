@@ -38,3 +38,44 @@ CLI_CONFIG
 The `CLI_CONFIG` dict is used for configuration data data specific to the command line.
 It is typical to set positional arguments here, things that define the structure of how
 the CLI should be processed.
+
+GLOBAL
+------
+
+The `GLOBAL` dict is used for configuration that is likely shared with other projects. Like
+the root location of a cache directory.
+
+Usage
+=====
+
+Now, with the config.py file in place loading the configuration data up is easier then ever!
+Just add this one line to your project:
+
+.. code-block:: python
+
+    hub.tools.conf.integrate(<project_name>)
+
+The conf system will get loaded for you and hub.OPT will be populated with namespaced configuration
+data as defined in the three configuration dicts.
+
+Override Usage
+==============
+
+Sometimes configuration options collide. Since the integrate system is used to dynamically merge
+multiple projects' configuration options we need to be able to handle these collisions. This
+is where the `override` setting cimes into play.
+
+If there is a conflict in the configs, then the `conf` system will throw and exception listing
+the colliding options. These options will be shown as the package name folowed by the config key.
+So if the project name passed into integrate is `poppy` and the configuration key is test, then
+the collision will be on key `poppy.test`. To overcome the collision we need to create a new
+key and potentially new options for the command.
+
+To use the override just define the override dict and pass it into `tools.conf.integrate`:
+
+.. code-block:: python
+
+    override = {'poppy.test': {'key': 'test2', 'options': ['--test2', '-T']}}
+    hub.tools.conf.integrate('poppy', override)
+
+Now the collisions are explicitly re-routed and fixed!

@@ -97,6 +97,11 @@ INIT = '''def new(hub):
 
 REQ = 'pop'
 
+CONF = '''CLI_CONFIG = {}
+CONFIG = {}
+GLOBAL = {}
+'''
+
 
 def new(hub):
     '''
@@ -112,6 +117,7 @@ def new(hub):
     hub.tools.seed.mkscript(name)
     hub.tools.seed.mkinit(name)
     hub.tools.seed.mkversion(name)
+    hub.tools.seed.mkconf(name)
     hub.tools.seed.mkreq(name)
 
 
@@ -180,3 +186,12 @@ def mkversion(hub, name):
     path = os.path.join(hub.PATH, name, 'version.py')
     with open(path, 'w+') as fp:
         fp.write('version = \'1.0.0\'')
+
+
+def mkconf(hub, name):
+    '''
+    Create the version.py file
+    '''
+    path = os.path.join(hub.PATH, name, 'config.py')
+    with open(path, 'w+') as fp:
+        fp.write(CONF)

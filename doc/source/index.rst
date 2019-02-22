@@ -10,11 +10,15 @@ Welcome to pop's documentation!
    :maxdepth: 2
 
    topics/quickstart
+   topics/basics
    topics/learning
    topics/pop
    topics/story
+   topics/sub_patterns
    topics/com
    topics/proc
+   topics/conf
+   topics/conf_integrate
 
 
 Indices and tables

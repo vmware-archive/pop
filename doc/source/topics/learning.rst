@@ -16,7 +16,7 @@ and overencapsulation. When data is tied to a class it becomes isolated, and
 so does the functionality. Instances are like little data prisons. Data should
 be available to the entire program.
 
-Woah you will say! Globals a bad!
+Woah you will say! Globals are bad!
 
 You are right! Arbitrary globals are bad! But namespaces are not. The first
 thing to accept with POP is the global namespace, the `Hub`. The Hub is the

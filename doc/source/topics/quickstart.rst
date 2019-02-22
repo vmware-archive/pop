@@ -12,7 +12,7 @@ Just pick a directory to start in and run pop_seed:
 
     pop_seed poppy
 
-This command will make a new project called poppy, the sertup.py, requirements.txt, a
+This command will make a new project called poppy, the setup.py, requirements.txt, a
 script to run the project and the directories to hold your first plugin subsystem.
 
 With these assets at hand you can run the application however you please, via system

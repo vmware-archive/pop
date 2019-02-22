@@ -12,10 +12,10 @@ Create the Project Structure
 
 There are only a few things you need to know to get started with `pop`. We can
 easily start on the creation of the `hub`. These first steps can be done with
-the `pop_seed` script, bot for completeleness they will be covered here. If
+the `pop_seed` script, but for completeleness they will be covered here. If
 you used the quickstart guide or the `pop_seed` script, then you can skip to
 the next section. When normally starting a `pop` project it is suggested you use
-`pop_seed` as it gives you a lot more than you get in this breif intro.
+`pop_seed` as it gives you a lot more than you get in this brief intro.
 
 Start by making some directories. In `pop` you first need to make a hub, this
 is the only code that is not a plugin. Since it is only a few lines you can
@@ -36,7 +36,7 @@ points to where the plugins are stored. When making a pop program place the `mod
 mods and the `contacts` under contracts inside the python package. In this case the pypath
 `poppy.mods.poppy` refers to the path python finds when importing `poppy.mods.poppy`. Now
 `pop` will populate the plugin subsystem with files from that path. The argument `init=True`
-means that when once the pubgin system is started it will run the `init.new` function in
+means that when once the plugin system is started it will run the `init.new` function in
 the newly created sub. So lets put some plugins in the there!
 
 Start by making the diectories:

@@ -2,15 +2,15 @@
 Learning POP
 ============
 
-Learning POP means thinking about programming differntly, like any
-programming paradigmn. Start by letting go of how you think about programming.
+Learning POP means thinking about programming differently, like any
+programming paradigm. Start by letting go of how you think about programming.
 
 Rule 1 - Memory Management
 ==========================
 
 Classes are useful, but they are not the end all model for programming. Instead
-of thinking about classes as the ultimaate container of code and data think about
-them as interface to make types. This is the origin of classes and they are
+of thinking about classes as the ultimate container of code and data think about
+them as an interface to make types. This is the origin of classes and they are
 very good about it. The problem with Classes has to do with data access
 and overencapsulation. When data is tied to a class it becomes isolated, and
 so does the functionality. Instances are like little data prisons. Data should
@@ -51,7 +51,7 @@ code that is small and contained to be good, and monotithic, oversized and unwie
 to be bad.
 
 But as complexity grows, we can't have our clean small applications, they grow with
-lives of thier own into sprawling and often unmaintainable codebases.
+lives of their own into sprawling and often unmaintainable codebases.
 
 So in POP we break apart code differently, instead of encapsulating code in classes
 and instances, we encapsulate functionality inside of plugin subsystems, or Subs.
@@ -68,7 +68,7 @@ configuration data. Instead of creating instances bound to data, you store data 
 functions.
 
 Rule 2 - Complexity is dealt with through breaking apart Classes. Functions work
-on thier own, morphed with data stored alongside them on the namespace. Instead of
+on their own, morphed with data stored alongside them on the namespace. Instead of
 encapsulation, namespace isolation.
 
 Rule 3 - Subs and Patterns

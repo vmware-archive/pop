@@ -12,12 +12,12 @@ Create the Project Structure
 
 There are only a few things you need to know to get started with `pop`. We can
 easily start on the creation of the `hub`. These first steps can be done with
-the `pop_seed` script, but for completeleness they will be covered here. If
+the `pop_seed` script, but for completeness they will be covered here. If
 you used the quickstart guide or the `pop_seed` script, then you can skip to
 the next section. When normally starting a `pop` project it is suggested you use
 `pop_seed` as it gives you a lot more than you get in this brief intro.
 
-Start by making some directories. In `pop` you first need to make a hub, this
+Start by making some directories. In `pop` you first need to make a hub. This
 is the only code that is not a plugin. Since it is only a few lines you can
 still call an application 100% pluggable.
 
@@ -33,7 +33,7 @@ Start by making a directory called `scripts` and adding a file called `poppy`:
 
 In this code you import pop, create the hub and add your first sub. The `pypath` argument
 points to where the plugins are stored. When making a pop program place the `modules` under
-mods and the `contacts` under contracts inside the python package. In this case the pypath
+mods and the `contracts` under contracts inside the python package. In this case the pypath
 `poppy.mods.poppy` refers to the path python finds when importing `poppy.mods.poppy`. Now
 `pop` will populate the plugin subsystem with files from that path. The argument `init=True`
 means that when once the plugin system is started it will run the `init.new` function in
@@ -60,6 +60,6 @@ poppy/mods/poppy/init.py:
 Bring in Configuration Data
 ===========================
 
-Since this is a full blown application, we should start with loading soem configuration options.
+Since this is a full blown application, we should start with loading some configuration options.
 When loading configuration options there is a problem, you want a config file, and cli options.
 But you also want to load the arguments in the right order, for instance you want

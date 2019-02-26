@@ -6,7 +6,7 @@ The proc system is unlike other process management systems. It is inspired by
 the process systems found in Julia and allows for functions to be completly
 farmed out to async executions. The proc processes are not forked but are
 fresh python executions. These new processes will execute many async python
-functions simultaniously.
+functions simultaneously.
 
 When sending a fresh command into a proc process just send in the pop reference
 and the kwargs, then the function will be started up and the return will be
@@ -55,12 +55,13 @@ passed to the called function.
 Generators
 ==========
 
-Generators and async geenrators are also supported, but you need to call a differet
+Generators and async genrators are also supported, but you need to call a different
 function with `proc.run` to return a generator. The function to call is `proc.run.gen`.
 
 Calling this function will always return an async generator, even if the function
 called in the proc process is a classic generator, so remember to `async for`, not
 just `for`:
+
 .. code-block:: python
 
     async for ind in hub.proc.run.gen('Workers', 'act.test.iterate'):

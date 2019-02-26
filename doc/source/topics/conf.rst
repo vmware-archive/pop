@@ -8,7 +8,7 @@ data needs to come from multiple sources. Defaults need to be set, CLI options
 need to be accepted, config file(s) needs to exist. Config file settings need to
 override defaults, while CLI options need to override both, but the CLI needs
 to be able to define the location of the config file(s). Finally there ends up
-being multiple sources of truth. Config options are documented in more place
+being multiple sources of truth. Config options are documented in one place
 while config file options are documented elsewhere.
 
 This little issue can get confusing, and turns into a manual process for many

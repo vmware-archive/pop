@@ -49,6 +49,10 @@ Now with a configuration dict you can call `conf.reader.read` on it:
 Following `pop` conventions it would make sense to save your configuration
 values on the hub so they are available to your application.
 
+.. note::
+    Typically loading configuration is done at the beginning of an application. A good place therefore
+    to load up configs could be as early as in the primary init.new function in your first subsystem.
+
 Adding Extra CLI Options
 ========================
 

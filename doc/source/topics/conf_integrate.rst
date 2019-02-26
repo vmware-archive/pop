@@ -63,15 +63,26 @@ Just add this one line to your project:
 The conf system will get loaded for you and hub.OPT will be populated with namespaced configuration
 data as defined in the three configuration dicts.
 
+Multiple Projects
+-----------------
+
+If multiple projects are used the the first argument is a list of projects. The `CLI_CONFIG`
+will only be taken from one project. So when using multiple projects the `cli` option can be
+passed to specify which project to pull the CLI_CONFIG from:
+
+.. code-block:: python
+
+    hub.tools.conf.integrate(['act', 'grains', 'rem'], cli='rem')
+
 Override Usage
 ==============
 
 Sometimes configuration options collide. Since the integrate system is used to dynamically merge
 multiple projects' configuration options we need to be able to handle these collisions. This
-is where the `override` setting cimes into play.
+is where the `override` setting comes into play.
 
 If there is a conflict in the configs, then the `conf` system will throw and exception listing
-the colliding options. These options will be shown as the package name folowed by the config key.
+the colliding options. These options will be shown as the package name followed by the config key.
 So if the project name passed into integrate is `poppy` and the configuration key is test, then
 the collision will be on key `poppy.test`. To overcome the collision we need to create a new
 key and potentially new options for the command.

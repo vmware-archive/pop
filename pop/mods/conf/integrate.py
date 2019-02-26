@@ -10,6 +10,7 @@ is loaded into the sub as `OPTS`
 #
 # Import python libs
 import importlib
+import copy
 
 
 def _ex_final(confs, final, override, key_to_ref, ops_to_ref, globe=False):
@@ -53,7 +54,7 @@ def _sub_final(subs, final, subs_final, sub_map):
             final[f_key]['sub'] = imp
 
 
-def load(hub, imports, override=None):
+def load(hub, imports, override=None, cli=None):
     '''
     This function takes a list of python packages to load and look for
     respective configs. The configs are then loaded in a non-collision
@@ -70,6 +71,8 @@ def load(hub, imports, override=None):
     if override is None:
         override = {}
     if isinstance(imports, str):
+        if cli is None:
+            cli = imports
         imports = [imports]
     confs = {}
     subs = {}
@@ -83,14 +86,17 @@ def load(hub, imports, override=None):
     for imp in imports:
         cmod = importlib.import_module(f'{imp}.config')
         if hasattr(cmod, 'CONFIG'):
-            confs[imp] = cmod.CONFIG
+            confs[imp] = copy.deepcopy(cmod.CONFIG)
         if hasattr(cmod, 'CLI_CONFIG'):
-            subs[imp] = cmod.CLI_CONFIG
+            if cli == imp:
+                confs[imp].update(copy.deepcopy(cmod.CLI_CONFIG))
+            else:
+                subs[imp] = copy.deepcopy(cmod.CLI_CONFIG)
         if hasattr(cmod, 'GLOBAL'):
-            globe[imp] = cmod.GLOBAL
+            globe[imp] = copy.deepcopy(cmod.GLOBAL)
     _ex_final(confs, final, override, key_to_ref, ops_to_ref)
     _ex_final(globe, final, override, key_to_ref, ops_to_ref, True)
-    _sub_final(subs, final, subs_final, sub_map)
+    #_sub_final(subs, final, subs_final, sub_map)
     for opt in ops_to_ref:
         g_count = 0
         if len(ops_to_ref[opt]) > 1:
@@ -104,7 +110,8 @@ def load(hub, imports, override=None):
             collides.append({key: key_to_ref[key]})
     if collides:
         raise KeyError(collides)
-    opts = hub.conf.reader.read(final, subs_final)
+    #opts = hub.conf.reader.read(final, subs_final)
+    opts = hub.conf.reader.read(final)
     # seperate the opts into subs
     f_opts = {}  # I don't want this to be a defaultdict,
     # if someone tries to add a key willy nilly it should fail

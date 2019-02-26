@@ -36,8 +36,13 @@ CLI_CONFIG
 ----------
 
 The `CLI_CONFIG` dict is used for configuration data data specific to the command line.
-It is typical to set positional arguments here, things that define the structure of how
+It is only used to set positional arguments, things that define the structure of how
 the CLI should be processed.
+
+When using `CLI_CONFIG` the options should still be defined in the `CONFIG` section. The
+top level key in the `CLI_CONFIG` will override the `CONFIG` values but having them set
+in the `CONFIG` section will allow for the values to be absorbed by plugin systems
+that are using your application.
 
 GLOBAL
 ------

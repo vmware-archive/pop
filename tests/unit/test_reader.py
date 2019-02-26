@@ -696,8 +696,8 @@ def test_integrate_merge():
         'conf',
         pypath='pop.mods.conf',
     )
-    hub.conf.integrate.load(['tests.conf1', 'tests.conf2'])
-    assert hub.OPT == {'global': {'cache_dir': '/var/cache'}, 'tests.conf2': {'monty': False, 'someone': 'Not just anybody!'}, 'tests.conf1': {'someone': 'Not just anybody!', 'test': False}}
+    hub.conf.integrate.load(['tests.conf1', 'tests.conf2'], cli='tests.conf1')
+    assert hub.OPT == {'global': {'cache_dir': '/var/cache'}, 'tests.conf2': {'monty': False}, 'tests.conf1': {'test': False, 'someone': 'Not just anybody!'}}
 
 
 def test_integrate_collide():
@@ -718,4 +718,4 @@ def test_integrate_override():
     )
     over = {'tests.conf1.test': {'key': 'test2', 'options': ['--test2']}}
     hub.conf.integrate.load(['tests.conf1', 'tests.conf2', 'tests.conf3'], over)
-    assert hub.OPT == {'global': {'cache_dir': '/var/cache'}, 'tests.conf2': {'monty': False, 'someone': 'Not just anybody!'}, 'tests.conf1': {'someone': 'Not just anybody!', 'test2': False}, 'tests.conf3': {'someone': 'Not just anybody!', 'test': False}}
+    assert hub.OPT == {'global': {'cache_dir': '/var/cache'}, 'tests.conf2': {'monty': False}, 'tests.conf1': {'test2': False}, 'tests.conf3': {'test': False}}

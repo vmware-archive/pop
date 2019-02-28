@@ -21,6 +21,8 @@ def roots(hub, opts, cdir):
     if opts.get('root_dir', root) != root:
         root = opts['root_dir']
         change = True
+    if not root.endswith(os.sep):
+        root = f'{root}{os.sep}'
     if change:
         for key in opts:
             if key == 'root_dir':

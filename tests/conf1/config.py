@@ -4,7 +4,12 @@ CONFIG = {
         'action': 'store_true',
         'help': 'Help, I need sombody!'
         },
+    'stuff_dir': {
+        'default': '/tmp/stuff',
+        'help': 'A directory dedicated to stuff',
+        },
     }
+
 
 GLOBAL = {
     'cache_dir': {

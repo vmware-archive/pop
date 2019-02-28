@@ -16,14 +16,14 @@ When making a `pop` project, everything is a plugin, but you may have noticed th
 `version.py` and `config.py`. The `version.py` file is hopefully self explanitory. But
 the `config.py` file needs a little explanation.
 
-The Three Config Dicts
-======================
+The Config Dicts
+================
 
 The integrate system uses this config.py file to simply define CLI options, local config
-options, and options that we assume other systems would share. These three types of
-configuration data are defined in three configuration dicts in `config.py`.
+options, and options that we assume other systems would share. These types of
+configuration data are defined in configuration dicts in `config.py`.
 
-Simple populate these three dicts with configuration data and it can be easily
+Simply populate these dicts with configuration data and it can be easily
 and dynamically loaded by other `pop` projects.
 
 CONFIG
@@ -31,6 +31,12 @@ CONFIG
 
 The `CONFIG` dict is where the configuration options used specifically by the subsystems
 defined in this project.
+
+GLOBAL
+------
+
+The `GLOBAL` dict is used for configuration that is likely shared with other projects. Like
+the root location of a cache directory.
 
 CLI_CONFIG
 ----------
@@ -44,11 +50,11 @@ top level key in the `CLI_CONFIG` will override the `CONFIG` values but having t
 in the `CONFIG` section will allow for the values to be absorbed by plugin systems
 that are using your application.
 
-GLOBAL
-------
+SUBS
+----
 
-The `GLOBAL` dict is used for configuration that is likely shared with other projects. Like
-the root location of a cache directory.
+The `SUBS` dict compliments the `CLI_CONFIG` dict in specifying what subparsers should be
+added to the cli when importing this config as the primary cli interface.
 
 Usage
 =====
@@ -61,7 +67,7 @@ Just add this one line to your project:
     hub.tools.conf.integrate(<project_name>)
 
 The conf system will get loaded for you and hub.OPT will be populated with namespaced configuration
-data as defined in the three configuration dicts.
+data as defined in the configuration dicts.
 
 Multiple Projects
 -----------------

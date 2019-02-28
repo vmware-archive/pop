@@ -6,7 +6,6 @@ is loaded into the sub as `OPTS`
 # Take an *args list of modules to import and look for config.py
 # Import config.py if present
 # After gathering all dicts, modify them to merge CLI options
-# Include subs so that cli_confgis can be loaded into respective named subs
 #
 # Import python libs
 import importlib
@@ -42,18 +41,6 @@ def _ex_final(confs, final, override, key_to_ref, ops_to_ref, globe=False):
                     ops_to_ref = [ref]
 
 
-def _sub_final(subs, final, subs_final, sub_map):
-    '''
-    '''
-    for imp in subs:
-        desc = f'CLI Options for {imp}'
-        subs_final[imp] = {'desc': desc, 'help': desc}
-        for key in subs[imp]:
-            f_key = f'sub.{imp}.{key}'
-            final[f_key] = subs[imp][key]
-            final[f_key]['sub'] = imp
-
-
 def load(hub, imports, override=None, cli=None):
     '''
     This function takes a list of python packages to load and look for
@@ -64,9 +51,10 @@ def load(hub, imports, override=None, cli=None):
 
     override = {'<package>.key': 'key': 'new_key', 'options': ['--option1', '--option2']}
 
-    CONFIG: The main configuration for this package - loads to hub.<sub>.OPTS
-    GLOBAL: Global configs to be used by other packages - loads to hub.OPTS
-    CLI_CONFIG: Loaded into a subcommand named after the package
+    CONFIG: The main configuration for this package - loads to hub.OPT['<import>']
+    GLOBAL: Global configs to be used by other packages - loads to hub.OPT['global]
+    CLI_CONFIG: Loaded only if this is the only import or if specified in the cli option
+    SUBS: Used to define the subcommands, only loaded if this is the cli config
     '''
     if override is None:
         override = {}
@@ -75,28 +63,25 @@ def load(hub, imports, override=None, cli=None):
             cli = imports
         imports = [imports]
     confs = {}
-    subs = {}
     globe = {}
     final = {}
     collides = []
     key_to_ref = {}
     ops_to_ref = {}
-    subs_final = {}
-    sub_map = {}
+    subs = {}
     for imp in imports:
         cmod = importlib.import_module(f'{imp}.config')
         if hasattr(cmod, 'CONFIG'):
             confs[imp] = copy.deepcopy(cmod.CONFIG)
-        if hasattr(cmod, 'CLI_CONFIG'):
-            if cli == imp:
+        if cli == imp:
+            if hasattr(cmod, 'CLI_CONFIG'):
                 confs[imp].update(copy.deepcopy(cmod.CLI_CONFIG))
-            else:
-                subs[imp] = copy.deepcopy(cmod.CLI_CONFIG)
+            if hasattr(cmod, 'SUBS'):
+                subs = copy.deepcopy(cmod.SUBS)
         if hasattr(cmod, 'GLOBAL'):
             globe[imp] = copy.deepcopy(cmod.GLOBAL)
     _ex_final(confs, final, override, key_to_ref, ops_to_ref)
     _ex_final(globe, final, override, key_to_ref, ops_to_ref, True)
-    #_sub_final(subs, final, subs_final, sub_map)
     for opt in ops_to_ref:
         g_count = 0
         if len(ops_to_ref[opt]) > 1:
@@ -110,19 +95,10 @@ def load(hub, imports, override=None, cli=None):
             collides.append({key: key_to_ref[key]})
     if collides:
         raise KeyError(collides)
-    #opts = hub.conf.reader.read(final, subs_final)
-    opts = hub.conf.reader.read(final)
-    # seperate the opts into subs
+    opts = hub.conf.reader.read(final, subs)
     f_opts = {}  # I don't want this to be a defaultdict,
     # if someone tries to add a key willy nilly it should fail
     for key in opts:
-        if key.startswith('sub.'):
-            imp = key[key.index('.')+1:key.rindex('.')]
-            if imp not in f_opts:
-                f_opts[imp] = {}
-            f_key = key[key.rindex('.')+1:]
-            f_opts[imp][f_key] = opts[key]
-            continue
         for ref in key_to_ref[key]:
             imp = ref[:ref.rindex('.')]
             if imp not in f_opts:

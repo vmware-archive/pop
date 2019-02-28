@@ -99,6 +99,8 @@ def load(hub, imports, override=None, cli=None):
     f_opts = {}  # I don't want this to be a defaultdict,
     # if someone tries to add a key willy nilly it should fail
     for key in opts:
+        if key == '_subparser_':
+            f_opts['_subparser_'] = opts['_subparser_']
         for ref in key_to_ref[key]:
             imp = ref[:ref.rindex('.')]
             if imp not in f_opts:

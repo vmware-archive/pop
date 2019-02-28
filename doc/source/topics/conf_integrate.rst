@@ -101,3 +101,15 @@ To use the override just define the override dict and pass it into `tools.conf.i
     hub.tools.conf.integrate('poppy', override)
 
 Now the collisions are explicitly re-routed and fixed!
+
+Using The Roots System
+======================
+
+In many applications directories need to be created and verified. Often the directories also
+need to be set up for a specific user if not run with admin privileges. This is where the
+`roots` system comes into place.
+
+If you have set up any option(s) that ends in `_dir`, then you can have `conf.integrate` do
+some work for you! By setting the `roots` option `conf` will create the directory if it does
+not already exist and it will change the paths to those directories to be in a hidden directory
+in the user's home directory if not running as the root user.

@@ -41,7 +41,7 @@ def _ex_final(confs, final, override, key_to_ref, ops_to_ref, globe=False):
                     ops_to_ref = [ref]
 
 
-def load(hub, imports, override=None, cli=None):
+def load(hub, imports, override=None, cli=None, roots=False):
     '''
     This function takes a list of python packages to load and look for
     respective configs. The configs are then loaded in a non-collision
@@ -96,6 +96,9 @@ def load(hub, imports, override=None, cli=None):
     if collides:
         raise KeyError(collides)
     opts = hub.conf.reader.read(final, subs)
+    if roots:
+        hub.conf.dirs.roots(opts, f'.{cli}')
+        hub.conf.dirs.verify(opts)
     f_opts = {}  # I don't want this to be a defaultdict,
     # if someone tries to add a key willy nilly it should fail
     for key in opts:

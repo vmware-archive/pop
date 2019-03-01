@@ -729,5 +729,4 @@ def test_integrate_dirs():
         pypath='pop.mods.conf',
     )
     hub.conf.integrate.load('tests.conf1', roots=True)
-    print(hub.OPT['tests.conf1']['stuff_dir'])
     assert os.path.isdir(hub.OPT['tests.conf1']['stuff_dir'])

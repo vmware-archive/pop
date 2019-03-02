@@ -174,6 +174,36 @@ By using `positional` and `display_priority` you can determine the order of
 positional arguments. Keep in mind that if you set nargs to '*' that will need
 to be the last argument.
 
+Enable OS Variables (Environment Vars and Registry)
+===================================================
+
+Enabling OS variables as configuration sources for a given value can be easily done.
+An OS source is defined as an environment variable on Unix style systems and as an
+entry in the registry on Windows
+
+Just add the `os` option to the values passed to the key in the configuration dict:
+
+.. code-block:: python
+
+    CONFIG = {
+        'output_color': {
+            'default': 'red',
+            'os': True,
+            'help': 'The color to print out',
+            },
+        'test_extra_options': {
+            'default': 'reactive',
+            'os': 'TESTEXTRAOPTS',
+            'help': 'Test mode for the extra options',
+            },
+        }
+
+The `os` option can be set to `True`, in which case the variable that will be read
+is the key. Or the `os` option can be set to a string which will
+be used to read the option. In the case os unix style systems the environment variable
+will be all uppercase to follow the standard convention.
+
+
 Using Subcommands
 =================
 

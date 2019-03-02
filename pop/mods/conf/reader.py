@@ -10,10 +10,16 @@ __virtualname__ = 'reader'
 __contracts__ = [__virtualname__]
 
 
-def _merge_dicts(opts, updates, explicit_cli_args):
+def _merge_dicts(opts, updates, os_opts, explicit_cli_args):
     '''
     recursively merge updates into opts
     '''
+    for key, val in os_opts.items():
+        if not val:
+            # Don't use empty os vals
+            continue
+        if key in opts:
+            opts[key] = val
     for key, val in updates.items():
         if isinstance(val, dict):
             _merge_dicts(opts.get(key, {}), val, explicit_cli_args)
@@ -59,6 +65,7 @@ def read(hub,
     if subs:
         hub.conf.args.subs(subs)
     opts = hub.conf.args.setup(defaults)['return']
+    os_opts = hub.conf.os.gather(defaults)
     if process_cli is True:
         cli_opts = hub.conf.args.parse(args, namespace, process_cli_known_args_only)['return']
     else:
@@ -89,7 +96,7 @@ def read(hub,
             kwargs['paths'] = opts['config']
         f_func = hub.conf.file.load_file
     else:
-        return _merge_dicts(opts, cli_opts, explicit_cli_args)
+        return _merge_dicts(opts, cli_opts, os_opts, explicit_cli_args)
     f_opts = f_func(**kwargs)
     opts.update(f_opts)
-    return _merge_dicts(opts, cli_opts, explicit_cli_args)
+    return _merge_dicts(opts, cli_opts, os_opts, explicit_cli_args)

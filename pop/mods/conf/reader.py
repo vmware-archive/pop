@@ -15,7 +15,7 @@ def _merge_dicts(opts, updates, explicit_cli_args):
     recursively merge updates into opts
     '''
     for key, val in updates.items():
-        if isinstance(val, dict):
+        if isinstance(val, dict) and isinstance(opts.get(key), dict):
             _merge_dicts(opts.get(key, {}), val, explicit_cli_args)
         elif val is not None:
             if key not in opts:
@@ -64,10 +64,12 @@ def read(hub,
     else:
         cli_opts = {}
     explicit_cli_args = cli_opts.pop('_explicit_cli_args_', set())
+    cli_opts = hub.conf.args.render(defaults, cli_opts, explicit_cli_args)
     kwargs = {}
     # Due to the order of priorities and the representation of defaults in the
     # Argparser we need to manually check if the config option values are from
     # the cli or from defaults
+    f_func = False
     if 'config_dir' in cli_opts:
         if cli_opts['config_dir']:
             kwargs['confdir'] = cli_opts['config_dir']
@@ -88,8 +90,10 @@ def read(hub,
         else:
             kwargs['paths'] = opts['config']
         f_func = hub.conf.file.load_file
+    # Render args before config parsing
+    if f_func:
+        f_opts = f_func(**kwargs)
+        opts.update(f_opts)
+        return _merge_dicts(opts, cli_opts, explicit_cli_args)
     else:
         return _merge_dicts(opts, cli_opts, explicit_cli_args)
-    f_opts = f_func(**kwargs)
-    opts.update(f_opts)
-    return _merge_dicts(opts, cli_opts, explicit_cli_args)

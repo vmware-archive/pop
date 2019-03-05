@@ -174,6 +174,32 @@ By using `positional` and `display_priority` you can determine the order of
 positional arguments. Keep in mind that if you set nargs to '*' that will need
 to be the last argument.
 
+Rendering CLI Data
+==================
+
+Sometimes options on the command line need to represent complex data, such
+as `dicts`. To accomplish this the `render` flag can be set. This allows
+for a cli argument to be rendered through something like yaml or json:
+
+.. code-block:: python
+
+    CONFIG = {
+        'mapping': {
+            'default': {'foo': 'bar', 'baz': 'quo'},
+            'render': yaml,
+            'help': 'A map of the things',
+            },
+        }
+
+Now this command line will load into a dict:
+
+.. code-block:: bash
+
+    my_command --mapping 'cheese: yes, bread: no'
+
+More importantly, this allows for complex default data to be made available
+without sacrificing command line flexibility.
+
 Using Subcommands
 =================
 

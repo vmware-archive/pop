@@ -201,6 +201,13 @@ C9 = {
     },
 }
 
+C10 = {
+    'foo': {
+        'default': {'bar': 'baz'},
+        'render': 'json',
+    },
+}
+
 
 @pytest.yield_fixture(autouse=True)
 def _clean_argv():
@@ -221,6 +228,30 @@ def test_default():
     )
     opts = hub.conf.reader.read(C1)
     assert opts['foo'] == 'bar'
+    assert '_subparser_' not in opts
+
+
+def test_render():
+    hub = pop.hub.Hub()
+    hub.tools.sub.add(
+        'conf',
+        pypath='pop.mods.conf',
+    )
+    sys.argv.append('--foo')
+    sys.argv.append('{"bar": "baz"}')
+    opts = hub.conf.reader.read(C10)
+    assert opts['foo'] == {'bar': 'baz'}
+    assert '_subparser_' not in opts
+
+
+def test_render_sans():
+    hub = pop.hub.Hub()
+    hub.tools.sub.add(
+        'conf',
+        pypath='pop.mods.conf',
+    )
+    opts = hub.conf.reader.read(C10)
+    assert opts['foo'] == {'bar': 'baz'}
     assert '_subparser_' not in opts
 
 

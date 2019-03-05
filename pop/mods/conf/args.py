@@ -238,3 +238,16 @@ def parse(hub, args=None, namespace=None, only_parse_known_arguments=False):
         opts = hub.conf._mem['args']['parser'].parse_args(args, namespace)
         opts_dict = opts.__dict__
     return {'result': True, 'return': opts_dict}
+
+
+def render(hub, defaults, cli_opts, explicit_cli_args):
+    '''
+    For options specified as such, take the string passed into the cli and
+    render it using the specified render flag
+    '''
+    for key in explicit_cli_args:
+        rend = defaults.get(key, {}).get('render')
+        if rend:
+            ref = f'conf.{rend}.render'
+            cli_opts[key] = hub.tools.ref.last(ref)(cli_opts[key])
+    return cli_opts

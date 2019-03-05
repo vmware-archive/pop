@@ -115,6 +115,8 @@ async def gen(hub, payload, reader, writer):
             await writer.drain()
     elif asyncio.iscoroutine(ret):
         return await ret
+    else:
+        return ret
     return ''
 
 

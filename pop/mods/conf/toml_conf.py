@@ -30,3 +30,9 @@ def load(hub, path):
     except FileNotFoundError:
         pass
     return {}
+
+def render(hub, val):
+    '''
+    Take the string and render it in json
+    '''
+    return toml.loads(val)

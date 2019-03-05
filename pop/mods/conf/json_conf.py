@@ -24,3 +24,10 @@ def load(hub, path):
         return ret
     except FileNotFoundError:
         return {}
+
+
+def render(hub, val):
+    '''
+    Take the string and render it in json
+    '''
+    return json.loads(val)

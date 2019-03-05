@@ -100,6 +100,11 @@ REQ = 'pop'
 CONF = '''CLI_CONFIG = {}
 CONFIG = {}
 GLOBAL = {}
+SUBS = {}
+'''
+
+VER = '''# All pop projects follow semantic versioning version 2.0.0: https://semver.org/
+version = '1.0.0'
 '''
 
 
@@ -185,7 +190,7 @@ def mkversion(hub, name):
     '''
     path = os.path.join(hub.PATH, name, 'version.py')
     with open(path, 'w+') as fp:
-        fp.write('version = \'1.0.0\'')
+        fp.write(VER)
 
 
 def mkconf(hub, name):

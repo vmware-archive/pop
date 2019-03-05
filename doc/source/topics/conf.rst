@@ -183,7 +183,6 @@ for a cli argument to be rendered through something like yaml or json:
 
 .. code-block:: python
 
-    CONFIG = {
         'mapping': {
             'default': {'foo': 'bar', 'baz': 'quo'},
             'render': yaml,
@@ -199,6 +198,35 @@ Now this command line will load into a dict:
 
 More importantly, this allows for complex default data to be made available
 without sacrificing command line flexibility.
+
+Enable OS Variables (Environment Vars and Registry)
+===================================================
+
+Enabling OS variables as configuration sources for a given value can be easily done.
+An OS source is defined as an environment variable on Unix style systems and as an
+entry in the registry on Windows
+
+Just add the `os` option to the values passed to the key in the configuration dict:
+
+.. code-block:: python
+
+    CONFIG = {
+        'output_color': {
+            'default': 'red',
+            'os': True,
+            'help': 'The color to print out',
+            },
+        'test_extra_options': {
+            'default': 'reactive',
+            'os': 'TESTEXTRAOPTS',
+            'help': 'Test mode for the extra options',
+            },
+        }
+
+The `os` option can be set to `True`, in which case the variable that will be read
+is the key. Or the `os` option can be set to a string which will
+be used to read the option. In the case os unix style systems the environment variable
+will be all uppercase to follow the standard convention.
 
 Using Subcommands
 =================

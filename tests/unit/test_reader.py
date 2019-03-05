@@ -21,6 +21,12 @@ C1 = {
         'default': 'bar',
         'help': 'Some text.',
         'group': 'spam',
+        'os': True,
+    },
+    'osvar': {
+        'default': 'bad',
+        'help': 'Override with os var',
+        'os': 'poptestosvar',
     },
     'false': {
         'default': True,
@@ -253,6 +259,19 @@ def test_render_sans():
     opts = hub.conf.reader.read(C10)
     assert opts['foo'] == {'bar': 'baz'}
     assert '_subparser_' not in opts
+
+
+def test_os():
+    hub = pop.hub.Hub()
+    hub.tools.sub.add(
+        'conf',
+        pypath='pop.mods.conf',
+    )
+    os.environ['FOO'] = 'osvar'
+    os.environ['POPTESTOSVAR'] = 'good'
+    opts = hub.conf.reader.read(C1)
+    assert opts['foo'] == 'osvar'
+    assert opts['osvar'] == 'good'
 
 
 def test_pass():

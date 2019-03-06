@@ -25,7 +25,7 @@ def new(hub):
     hub.proc.WorkersTrack = {}
 
 
-def _get_cmd(hub, ind, ref, ret_ref):
+def _get_cmd(hub, ind, ref, ret_ref, sock_dir):
     '''
     Return the shell command to execute that will start up the worker
     '''
@@ -33,25 +33,25 @@ def _get_cmd(hub, ind, ref, ret_ref):
     code += 'import pop.hub; '
     code += 'hub = pop.hub.Hub(); '
     code += 'hub.tools.sub.add("proc", pypath="pop.mods.proc", init=True); '
-    code += 'hub.proc.worker.start("{}", "{}", "{}", "{}")'.format(hub.opts['sock_dir'], ind, ref, ret_ref)
-    cmd = '{} -c \'{}\''.format(sys.executable, code)
+    code += f'hub.proc.worker.start("{sock_dir}", "{ind}", "{ref}", "{ret_ref}")'
+    cmd = f'{sys.executable} -c \'{code}\''
     return cmd
 
 
-def mk_proc(hub, ind, workers, ret_ref):
+def mk_proc(hub, ind, workers, ret_ref, sock_dir):
     '''
     Create the process and add it to the passed in workers dict at the
     specified index
     '''
     ref = os.urandom(3).hex() + '.sock'
     workers[ind] = {'ref': ref}
-    workers[ind]['path'] = os.path.join(hub.opts['sock_dir'], ref)
-    cmd = _get_cmd(hub, ind, ref, ret_ref)
+    workers[ind]['path'] = os.path.join(sock_dir, ref)
+    cmd = _get_cmd(hub, ind, ref, ret_ref, sock_dir)
     workers[ind]['proc'] = subprocess.Popen(cmd, shell=True)
     workers[ind]['pid'] = workers[ind]['proc'].pid
 
 
-async def pool(hub, num, name='Workers', callback=None):
+async def pool(hub, num, name='Workers', callback=None, sock_dir=None):
     '''
     Create a new local pool of process based workers
 
@@ -62,7 +62,7 @@ async def pool(hub, num, name='Workers', callback=None):
         back
     '''
     ret_ref = os.urandom(3).hex() + '.sock'
-    ret_sock_path = os.path.join(hub.opts['sock_dir'], ret_ref)
+    ret_sock_path = os.path.join(sock_dir, ret_ref)
     if not hub.proc.Tracker:
         hub.proc.init.mk_tracker()
     workers = {}
@@ -71,11 +71,14 @@ async def pool(hub, num, name='Workers', callback=None):
                 hub.proc.init.ret_work(callback),
                 path=ret_sock_path)
     for ind in range(num):
-        hub.proc.init.mk_proc(ind, workers, ret_ref)
+        hub.proc.init.mk_proc(ind, workers, ret_ref, sock_dir)
     w_iter = itertools.cycle(workers)
     hub.proc.Workers[name] = workers
     hub.proc.WorkersIter[name] = w_iter
-    hub.proc.WorkersTrack[name] = {'subs': [], 'ret_ref': ret_ref}
+    hub.proc.WorkersTrack[name] = {
+        'subs': [],
+        'ret_ref': ret_ref,
+        'sock_dir': sock_dir}
     up = set()
     while True:
         for ind in workers:

@@ -31,12 +31,13 @@ async def add_proc(hub, worker_name):
     '''
     # grab and extrapolate the data we need
     ret_ref = hub.proc.WorkersTrack[worker_name]['ret_ref']
+    sock_dir = hub.proc.WorkersTrack[worker_name]['sock_dir']
     workers = hub.proc.Workers[worker_name]
     ind = len(workers) + 1
     for s_ind in range(len(workers) + 1):
         if s_ind not in workers:
             ind = s_ind
-    hub.proc.init.mk_proc(ind, workers, ret_ref)
+    hub.proc.init.mk_proc(ind, workers, ret_ref, sock_dir)
     # Make sure the process is up with a live socket
     while True:
         if os.path.exists(workers[ind]['path']):

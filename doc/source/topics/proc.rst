@@ -25,9 +25,10 @@ Now the proc subsystem is available. Create a new process pool:
 
 .. code-block:: python
 
-    await hub.proc.init.pool(3, 'Workers')
+    await hub.proc.init.pool(3, 'Workers', sock_dir='/tmp')
 
-You now have a worker pool named `Workers` with 3 processes.
+You now have a worker pool named `Workers` with 3 processes and the unix sockets
+for communication will be placed in the `/tmp` directory.
 
 Before sending function calls to the pool add a new subsystem to the workers.
 Remember that these processes are not forks, they need to have the subsystems

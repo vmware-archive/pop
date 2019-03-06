@@ -57,6 +57,7 @@ def start(hub, *coros, hold=False):
     '''
     hub.tools.loop.create()
     if hold:
+        coros = list(coros)
         coros.append(_holder(hub))
     # DO NOT CHANGE THIS CALL TO run_forever! If we do that then the tracebacks
     # do not get resolved.

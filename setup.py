@@ -49,6 +49,8 @@ def discover_packages():
     modules = []
     for package in ('pop', ):
         for root, _, files in os.walk(os.path.join(SETUP_DIRNAME, package)):
+            if '__init__.py' not in files:
+                continue
             pdir = os.path.relpath(root, SETUP_DIRNAME)
             modname = pdir.replace(os.sep, '.')
             modules.append(modname)

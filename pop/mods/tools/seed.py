@@ -56,8 +56,6 @@ def discover_packages():
     modules = []
     for package in (NAME, ):
         for root, _, files in os.walk(os.path.join(SETUP_DIRNAME, package)):
-            if '__init__.py' not in files:
-                continue
             pdir = os.path.relpath(root, SETUP_DIRNAME)
             modname = pdir.replace(os.sep, '.')
             modules.append(modname)
@@ -133,7 +131,6 @@ def mkdir(hub, *args):
     path = hub.PATH
     for dir_ in args:
         path = os.path.join(path, dir_)
-        init_fn = os.path.join(path, '__init__.py')
         if not os.path.isdir(path):
             try:
                 os.makedirs(path)
@@ -142,8 +139,6 @@ def mkdir(hub, *args):
                 continue
             if dir_ == 'scripts' and len(args) == 1:
                 continue
-            with open(init_fn, 'w+') as fp:
-                fp.write('')
 
 
 def mkreq(hub, name):

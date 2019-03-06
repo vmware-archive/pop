@@ -9,7 +9,7 @@ def test_contract_context():
     hub.tools.sub.add(
             'mods',
             pypath='tests.mods.contract_ctx',
-            contracts_pypath='tests.contracts.ctx'
+            contracts_pypath='tests.contracts'
             )
     assert hub.mods.ctx.test() == 'contract executed'
     # Multiple calls have the same outcome
@@ -21,7 +21,7 @@ def test_contract_context_update():
     hub.tools.sub.add(
             'mods',
             pypath='tests.mods.contract_ctx',
-            contracts_pypath='tests.contracts.ctx'
+            contracts_pypath='tests.contracts'
             )
     assert hub.mods.ctx_update.test(True) == 'contract executed'
     # Multiple calls have the same outcome
@@ -33,7 +33,7 @@ def test_contract_ctx_argument_retrieval():
     hub.tools.sub.add(
             'mods',
             pypath='tests.mods.contract_ctx',
-            contracts_pypath='tests.contracts.ctx'
+            contracts_pypath='tests.contracts'
             )
     assert hub.mods.ctx_args.test('yes', yes=True) is True
     assert hub.mods.ctx_args.test('yes', yes=False) is False

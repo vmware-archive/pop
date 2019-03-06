@@ -15,12 +15,14 @@ def dir_list(subname, p_name, pypath=None, static=None, pyroot=None, staticroot=
     ret = []
     for path in pypath:
         mod = importlib.import_module(path)
-        ret.append(os.path.dirname(mod.__file__))
+        for path in mod.__path__:
+            ret.append(path)
     for path in pyroot:
         p_full = f'{path}.{p_name}.{subname}'
         try:
             mod = importlib.import_module(p_full)
-            ret.append(os.path.dirname(mod.__file__))
+            for path in mod.__path__:
+                ret.append(path)
         except ModuleNotFoundError:
             continue
     for path in staticroot:

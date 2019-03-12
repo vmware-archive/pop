@@ -15,7 +15,6 @@ Welcome to pop's documentation!
    topics/pop
    topics/story
    topics/sub_patterns
-   topics/com
    topics/proc
    topics/conf
    topics/conf_integrate

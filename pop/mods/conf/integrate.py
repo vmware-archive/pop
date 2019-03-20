@@ -97,7 +97,7 @@ def load(hub, imports, override=None, cli=None, roots=False):
         raise KeyError(collides)
     opts = hub.conf.reader.read(final, subs)
     if roots:
-        hub.conf.dirs.roots(opts, f'.{cli}')
+        hub.conf.dirs.roots(final.get('root_dir', {}).get('default', '/'), opts, f'.{cli}')
         hub.conf.dirs.verify(opts)
     f_opts = {}  # I don't want this to be a defaultdict,
     # if someone tries to add a key willy nilly it should fail

@@ -19,7 +19,7 @@ def roots(hub, default_root, opts, cdir):
         root = os.path.join(os.environ['HOME'], cdir)
         change = True
     if opts.get('root_dir', root) != default_root:
-        root = opts['root_dir']
+        root = opts.get('root_dir', root)
         change = True
     if not root.endswith(os.sep):
         root = f'{root}{os.sep}'

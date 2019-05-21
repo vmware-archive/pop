@@ -4,7 +4,7 @@ Origins of POP
 
 I (Thomas Hatch) am the creator of a major systems management platform called Salt and
 the founder and CTO of SaltStack. As I developed Salt I found that a plugin approach
-suited out needs so well that I became increasingly enamored with plugins.
+suited our needs so well that I became increasingly enamored with plugins.
 
 Salt was originally developed with and for plugins, but only in isolated areas. But
 over time I added more and more plugin subsystems. As things moved forward I discovered

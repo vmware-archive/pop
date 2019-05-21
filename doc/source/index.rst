@@ -10,7 +10,6 @@ Welcome to pop's documentation!
    :maxdepth: 2
 
    topics/quickstart
-   topics/basics
    topics/learning
    topics/pop
    topics/story

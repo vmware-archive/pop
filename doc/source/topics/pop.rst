@@ -2,8 +2,8 @@
 Plugin Oriented Programming
 ===========================
 
-Plugin Oriented Programming, or POP, is a new programming paradigmn targetting a number of
-modern software enginerring problems. POP presents a new way of looking at programming,
+Plugin Oriented Programming, or POP, is a new programming paradigm targeting a number of
+modern software engineering problems. POP presents a new way of looking at programming,
 merging concepts from OOP, Functional, DataFlow, Configuration Management concepts and
 more.
 
@@ -15,7 +15,7 @@ The Components of POP
 Everything is a Plugin
 ----------------------
 
-When developing large codebases it is extreamly common to need to move code into a modular
+When developing large codebases it is extremely common to need to move code into a modular
 design over time. This typically means that the application needs to be overhauled after
 the first few years of development to be modular and pluggable. So why not just start with
 a plugin design to begin with?
@@ -24,7 +24,7 @@ POP is turtles all the way down. Using the POP design forces you to make your co
 The unique design allows for all of the code components to be easily replaced so long
 as the exposed interfaces remain the same.
 
-When everythning is a plugin from the begining it becomes easy to replace individual
+When everything is a plugin from the beginning it becomes easy to replace individual
 components and compartments of an application. When the application gets split up cleanly
 into plugin subsystems then entire plugin subsystems can be replaced or updated
 wholesale. When needed, instead of being stuck with code not intended to scale to the
@@ -35,7 +35,7 @@ Global Namespace - The Hub
 
 The first thing you will notice in POP is the `hub` object. The hub is passed automatically
 as the first argument to all functions, much like `self` inside a python class. This hub
-can be infinately extended to include new plugin subsystems as well as namespaces and
+can be infinitely extended to include new plugin subsystems as well as namespaces and
 variables.
 
 The hub is critical as it serves as a vehicle for accessing all of the plugin subsystems
@@ -44,9 +44,9 @@ that are made available to the application.
 Plugin Subsystems
 -----------------
 
-Plugin Subsystems, which are simply refered to as `subs` allow for new plugin systems to be added
-to the hub. This makes mergine codebases easy. Other applications can be merged together by
-including thier plugin subsystems. For instance an application can be written that creates
+Plugin Subsystems, which are simply referred to as `subs` allow for new plugin systems to be added
+to the hub. This makes merging codebases easy. Other applications can be merged together by
+including their plugin subsystems. For instance an application can be written that creates
 an authentication system, and then the entire structure of that application can then be
 added to another application as a subsystem.
 
@@ -54,10 +54,10 @@ Contracts
 ---------
 
 Plugin systems need to be able to support interfaces. In fact interfaces as a programming
-construct become more important than ever. Instead of having the overhead of class inheritence,
+construct become more important than ever. Instead of having the overhead of class inheritance,
 contracts can server and transparent interfaces to enforce and guide plugin developers.
 
-Contracts get executed tranparently, this allows for a developer to simply impliment
+Contracts get executed transparently, this allows for a developer to simply implement
 the interface without needing to also inherit an Abstract Base Class. Beyond this
 contracts allow for pre and post hooks to be applied to function in contracted plugins.
 
@@ -67,7 +67,7 @@ well as load time enforcement of the validity of the interface.
 Multi Homed Subsystems
 ----------------------
 
-Many problems in computer science are bi-directional. Much of what has been said referes to making
+Many problems in computer science are bi-directional. Much of what has been said refers to making
 an application from many smaller parts and then merging it together with plugin subsystems.
 But what if you want to make many projects that extend the support of a core application
 onto multiple systems or interfaces? This is where multi homing comes in. Multi homing
@@ -107,15 +107,15 @@ development model.
 Concurrency Models
 ------------------
 
-Over the last few years now concepts about mconcurrency have emererged, primarily in the
+Over the last few years now concepts about concurrency have emerged, primarily in the
 sense of modern co-routines. Coroutines allow for concurrent processing without threading
-but they also impoer unique challenges. The POP model presents a way for coroutines to
+but they also impose unique challenges. The POP model presents a way for coroutines to
 cross communicate in clean and reliable ways, and allow for coroutines to be run without
-the headackes that so often occur using things like callbacks and having multiple
+the headaches that so often occur using things like callbacks and having multiple
 coroutine streams running.
 
-This is accomplished using the `Hub`. The hub in POP allows for clean, globally accesible memory
-to be accesed in a safe, namespaced way, while still honoring valuable OOP concepts of
+This is accomplished using the `Hub`. The hub in POP allows for clean, globally accessible memory
+to be accessed in a safe, namespaced way, while still honoring valuable OOP concepts of
 encapsulation, without overencapsulating data that is so often useful in the broader application.
 This namespaced approach to development makes data sharing between coroutines safe,
 easy and reliable.

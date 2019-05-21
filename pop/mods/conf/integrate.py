@@ -41,7 +41,7 @@ def _ex_final(confs, final, override, key_to_ref, ops_to_ref, globe=False):
                     ops_to_ref = [ref]
 
 
-def load(hub, imports, override=None, cli=None, roots=False, home_root=None):
+def load(hub, imports, override=None, cli=None, roots=False, home_root=None, loader='json'):
     '''
     This function takes a list of python packages to load and look for
     respective configs. The configs are then loaded in a non-collision
@@ -97,7 +97,7 @@ def load(hub, imports, override=None, cli=None, roots=False, home_root=None):
             collides.append({key: key_to_ref[key]})
     if collides:
         raise KeyError(collides)
-    opts = hub.conf.reader.read(final, subs)
+    opts = hub.conf.reader.read(final, subs, loader=loader)
     if roots:
         hub.conf.dirs.roots(final.get('root_dir', {}).get('default', '/'), opts, f'.{home_root}')
         hub.conf.dirs.verify(opts)

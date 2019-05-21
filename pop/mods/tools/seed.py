@@ -12,19 +12,10 @@ SETUP = '''#!/usr/bin/env python3
 import os
 import sys
 import shutil
-
-# SETUPTOOLS WILL NOT BE TOLERATED!!
-# I have made MANY python projects and those idiotic setuptools
-# create pkg_resources deps and unnecessarily muddy up the
-# startup process. They add NO useful features that cannot be
-# easily derived from distutils, which is a clean and reasonable
-# packaging system!
-
-from distutils.core import setup
-from distutils.core import Command
+from setuptools import setup, Command
 
 NAME = '%%NAME%%'
-DESC = ("")
+DESC = ('')
 
 # Version info -- read without importing
 _locals = {}

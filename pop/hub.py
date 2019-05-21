@@ -358,7 +358,6 @@ class Sub:
                 if name.endswith(ext):
                     name = name.split(ext)[0]
                     break
-        pop.loader.mod_init(self._hub, mod)
         mod_dict = pop.loader.prep_mod_dict(
                 self,
                 mod,
@@ -370,6 +369,8 @@ class Sub:
         self._vmap[mod.__file__] = name
         # Let's mark the module as loaded
         self._scan[iface][bname]['loaded'] = True
+        # Now that the module has been added to the sub, call mod_init
+        pop.loader.mod_init(self._hub, mod)
 
     def _load_all(self):
         '''

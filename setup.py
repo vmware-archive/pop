@@ -5,16 +5,7 @@
 import os
 import sys
 import shutil
-
-# SETUPTOOLS WILL NOT BE TOLERATED!!
-# I have made MANY python projects and those idiotic setuptools
-# create pkg_resources deps and unnecessarily muddy up the
-# startup process. They add NO useful features that cannot be
-# easily derived from distutils, which is a clean and reasonable
-# packaging system!
-
-from distutils.core import setup
-from distutils.core import Command
+from setuptools import setup, Command
 
 NAME = 'pop'
 DESC = ('The Plugin Oriented Programming System')
@@ -57,8 +48,8 @@ def discover_packages():
 
 setup(name=NAME,
       author='Thomas S Hatch',
-      author_email='thatch45@gmail.com',
-      url='https://rossosoft.com',
+      author_email='thatch@saltstack.com',
+      url='https://saltstack.com',
       version=VERSION,
       description=DESC,
       classifiers=[
@@ -66,6 +57,7 @@ setup(name=NAME,
           'Programming Language :: Python',
           'Programming Language :: Python :: 3.5',
           'Programming Language :: Python :: 3.6',
+          'Programming Language :: Python :: 3.7',
           'Development Status :: 5 - Production/Stable',
           ],
       scripts=['scripts/pop_seed'],

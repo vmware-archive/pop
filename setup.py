@@ -5,7 +5,7 @@
 import os
 import sys
 import shutil
-from setuptools import setup, Command
+from distutils.core import setup, Command
 
 NAME = 'pop'
 DESC = ('The Plugin Oriented Programming System')

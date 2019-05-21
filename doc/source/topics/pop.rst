@@ -58,8 +58,8 @@ construct become more important than ever. Instead of having the overhead of cla
 contracts can server and transparent interfaces to enforce and guide plugin developers.
 
 Contracts get executed transparently, this allows for a developer to simply implement
-the interface without needing to also inherit an Abstract Base Class. Beyond this
-contracts allow for pre and post hooks to be applied to function in contracted plugins.
+the interface without needing to also inherit an Abstract Base Class. Beyond this,
+contracts allow for pre and post hooks to be applied to functions in contracted plugins.
 
 This allows for things like interface input validation. Built in pre and post hooks. As
 well as load time enforcement of the validity of the interface.

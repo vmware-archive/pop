@@ -3,7 +3,7 @@ Proc Process Management
 =======================
 
 The proc system is unlike other process management systems. It is inspired by
-the process systems found in Julia and allows for functions to be completly
+the process systems found in Julia and allows for functions to be completely
 farmed out to async executions. The proc processes are not forked but are
 fresh python executions. These new processes will execute many async python
 functions simultaneously.
@@ -56,7 +56,7 @@ passed to the called function.
 Generators
 ==========
 
-Generators and async genrators are also supported, but you need to call a different
+Generators and async generators are also supported, but you need to call a different
 function with `proc.run` to return a generator. The function to call is `proc.run.gen`.
 
 Calling this function will always return an async generator, even if the function

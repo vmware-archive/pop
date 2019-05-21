@@ -8,7 +8,7 @@ try:
 except ImportError:
     HAS_TORNADO = False
 
-# Import pack
+# Import pop
 import pop.hub
 
 

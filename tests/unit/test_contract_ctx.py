@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Import pack
+# Import pop
 import pop.hub
 
 

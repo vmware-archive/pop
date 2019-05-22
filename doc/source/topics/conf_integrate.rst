@@ -13,7 +13,7 @@ configuration system follows a clear model.
 
 When making a `pop` project, everything is a plugin, but you may have noticed that the
 `pop_seed` script makes two python files outside of the plugin system. These files are
-`version.py` and `config.py`. The `version.py` file is hopefully self explanitory. But
+`version.py` and `config.py`. The `version.py` file is hopefully self explanatory. But
 the `config.py` file needs a little explanation.
 
 The Config Dicts
@@ -72,7 +72,7 @@ data as defined in the configuration dicts.
 Multiple Projects
 -----------------
 
-If multiple projects are used the the first argument is a list of projects. The `CLI_CONFIG`
+If multiple projects are used the first argument is a list of projects. The `CLI_CONFIG`
 will only be taken from one project. So when using multiple projects the `cli` option can be
 passed to specify which project to pull the CLI_CONFIG from:
 
@@ -87,7 +87,7 @@ Sometimes configuration options collide. Since the integrate system is used to d
 multiple projects' configuration options we need to be able to handle these collisions. This
 is where the `override` setting comes into play.
 
-If there is a conflict in the configs, then the `conf` system will throw and exception listing
+If there is a conflict in the configs, then the `conf` system will throw an exception listing
 the colliding options. These options will be shown as the package name followed by the config key.
 So if the project name passed into integrate is `poppy` and the configuration key is test, then
 the collision will be on key `poppy.test`. To overcome the collision we need to create a new

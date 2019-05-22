@@ -27,4 +27,4 @@ that I feel is finally ready to be shared with the world.
 
 I hope that this iteration will allow people to make the most of the POP paradigm and
 to be able to help fill out how to use POP to solve more software engineering problems
-that we face today, given the moden way in which software is developed.
+that we face today, given the modern way in which software is developed.

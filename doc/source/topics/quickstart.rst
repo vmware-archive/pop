@@ -16,7 +16,7 @@ This command will make a new project called poppy, the setup.py, requirements.tx
 script to run the project and the directories to hold your first plugin subsystem.
 
 With these assets at hand you can run the application however you please, via system
-instalation, pyvenv, docker etc.
+installation, pyvenv, docker etc.
 
 In the scripts directory you will find a script called `poppy`. If you open it up you
 will see the simple creation of a pop project. The creation of the hub, and the setup of

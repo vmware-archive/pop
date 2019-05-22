@@ -47,7 +47,7 @@ beyond its bounds. This is where software complexity comes from.
 
 All well designed code works well when it is small, it is traceable, elegant, algorithmic.
 The aspects of software development is still clean and tight. We subsequently look at
-code that is small and contained to be good, and monotithic, oversized and unwieldly code
+code that is small and contained to be good, and monolithic, oversized and unwieldy code
 to be bad.
 
 But as complexity grows, we can't have our clean small applications, they grow with

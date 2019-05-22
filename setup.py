@@ -55,7 +55,6 @@ setup(name=NAME,
       classifiers=[
           'Operating System :: OS Independent',
           'Programming Language :: Python',
-          'Programming Language :: Python :: 3.5',
           'Programming Language :: Python :: 3.6',
           'Programming Language :: Python :: 3.7',
           'Development Status :: 5 - Production/Stable',

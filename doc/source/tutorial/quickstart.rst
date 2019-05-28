@@ -3,14 +3,14 @@ Quickstart
 ==========
 
 Using pop to create a plugin oriented project is easy. Pop comes with a simple script to build
-the basic parts of a pop project. The `pop_seed` script builds the directory structure and
+the basic parts of a pop project. The `pop-seed` script builds the directory structure and
 adds a setup.py that autodetects all new plugins and a script for your new project.
 
-Just pick a directory to start in and run pop_seed:
+Just pick a directory to start in and run `pop-seed`:
 
 .. code-block:: bash
 
-    pop_seed poppy
+    pop-seed poppy
 
 This command will make a new project called poppy, the setup.py, requirements.txt, a
 script to run the project and the directories to hold your first plugin subsystem.
@@ -38,5 +38,4 @@ Next open up the poppy subsystem's `init.py` file:
 
 With a project up and running you can now add more plugins, more code and more subsystems!
 
-Next take a look at how to call functions within a pop application, then the pop conventions
-and how to think in pop.
+

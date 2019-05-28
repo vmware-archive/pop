@@ -59,7 +59,7 @@ setup(name=NAME,
           'Programming Language :: Python :: 3.7',
           'Development Status :: 5 - Production/Stable',
           ],
-      scripts=['scripts/pop_seed'],
+      scripts=['scripts/pop-seed'],
       packages=discover_packages(),
       cmdclass={'clean': Clean},
       )

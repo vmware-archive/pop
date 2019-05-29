@@ -18,10 +18,8 @@ Usage
 Using `pop` is amazingly easy, but deeply powerful. To start  an application
 with `pop` just install pop and run the `pop-seed` script:
 
-```
-pip install pop
-pop-seed poppy
-```
+`pip install pop`
+`pop-seed poppy`
 
 Now a new python project has been created for you with a setup.py file,
 execution script and your first plugin subsystem called `poppy`.

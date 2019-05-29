@@ -5,6 +5,7 @@ Contracts to enforce loader objects
 
 # Import python libs
 import inspect
+import os
 from collections import namedtuple
 
 # Import pop libs
@@ -22,12 +23,27 @@ class ContractedContext(namedtuple('ContractedContext', ('func', 'args', 'kwargs
 
     def get_argument(self, name):
         '''
-        Get the passed argument name value after binding the contract context argument and
-        keyword arguments to the function signature.
+        Return the value corresponding to a function argument after binding the contract context
+        argument and keyword arguments to the function signature.
+        '''
+        return self.get_arguments()[name]
+
+    def get_arguments(self):
+        '''
+        Return a dictionary of all arguments that will be passed to the function and their
+        values, including default arguments.
         '''
         if '__bound_signature__' not in self.cache:
-            self.cache['__bound_signature__'] = self.signature.bind(*self.args, **self.kwargs)
-        return self.cache['__bound_signature__'].arguments[name]
+            try:
+                self.cache['__bound_signature__'] = self.signature.bind(*self.args, **self.kwargs)
+            except TypeError as e:
+                for frame in inspect.trace():
+                    if frame.function == 'bind' and frame.filename.endswith(os.sep+'inspect.py'):
+                        raise pop.exc.BindError(e)
+                raise
+            # Apply any default values from the signature
+            self.cache['__bound_signature__'].apply_defaults()
+        return self.cache['__bound_signature__'].arguments
 
 
 def load_contract(contracts, default_contracts, mod):

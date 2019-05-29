@@ -46,3 +46,10 @@ class ProcessNotStarted(PopBaseException):
     '''
     Exception raised when failing to start a process on the process manager
     '''
+
+
+class BindError(PopBaseException):
+    '''
+    Exception raised when arguments for a function in a ContractedContext cannot be bound
+    Indicates invalid function arguments.
+    '''

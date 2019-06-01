@@ -73,7 +73,7 @@ def load_contract(contracts, default_contracts, mod):
     return raws
 
 
-def verify_contract(parent, raws, mod):  # pylint: disable=unused-argument
+def verify_contract(hub, raws, mod):  # pylint: disable=unused-argument
     '''
     Verify module level contract - functions only
     '''
@@ -98,8 +98,8 @@ class Contracted:  # pylint: disable=too-few-public-methods
     This class wraps functions that have a contract associated with them
     and executes the contract routines
     '''
-    def __init__(self, parent, contracts, func):
-        self.parent = parent
+    def __init__(self, hub, contracts, func):
+        self.hub = hub
         self.contracts = contracts if contracts else []
         self.func = func
         self.func_name = func.__name__
@@ -126,11 +126,9 @@ class Contracted:  # pylint: disable=too-few-public-methods
                 'post': self._get_contracts_by_type('post')}
 
     def __call__(self, *args, **kwargs):
-        if args and (args[0] is self.parent or isinstance(args[0], self.parent.__class__)):
-            # The hub(parent) is being passed directly, remove it from args
-            # since we'll inject it further down
-            args = list(args)[1:]
-        args = tuple([self.parent] + list(args))
+        if not args or not (args[0] is self.hub or isinstance(args[0], self.hub.__class__)):
+            # The hub isn't being passed, insert it
+            args = tuple([self.hub] + list(args))
         if not self._has_contracts:
             return self.func(*args, **kwargs)
         contract_context = ContractedContext(self.func, args, kwargs, self.signature)

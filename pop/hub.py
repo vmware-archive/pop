@@ -119,7 +119,7 @@ class Sub:
             omit_func=False,
             omit_class=True,
             omit_vars=False,
-            mod_basename='pop.poped',
+            mod_basename='pop',
             stop_on_failures=False,
             init=None,
             ):

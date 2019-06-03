@@ -73,7 +73,7 @@ def load_contract(contracts, default_contracts, mod):
     return raws
 
 
-def verify_contract(parent, raws, mod):  # pylint: disable=unused-argument
+def verify_contract(hub, raws, mod):  # pylint: disable=unused-argument
     '''
     Verify module level contract - functions only
     '''
@@ -98,54 +98,52 @@ class Contracted:  # pylint: disable=too-few-public-methods
     This class wraps functions that have a contract associated with them
     and executes the contract routines
     '''
-    def __init__(self, parent, contracts, func):
-        self.parent = parent
+    def __init__(self, hub, contracts, func):
+        self.hub = hub
         self.contracts = contracts if contracts else []
         self.func = func
         self.func_name = func.__name__
         self.__name__ = func.__name__
         self.signature = inspect.signature(self.func)
+        self.contract_functions = self._get_contracts()
+        self._has_contracts = sum([len(l) for l in self.contract_functions.values()]) > 0
 
-    def __call__(self, *args, **kwargs):  # pylint: disable=too-many-branches
-        if args and (args[0] is self.parent or isinstance(args[0], self.parent.__class__)):
-            # The hub(parent) is being passed directly, remove it from args
-            # since we'll inject it further down
-            args = list(args)[1:]
-        args = tuple([self.parent] + list(args))
-        if not self.contracts:
+    def _get_contracts_by_type(self, contract_type='pre'):
+        matches = []
+
+        fn_contract_name = '{}_{}'.format(contract_type, self.func_name)
+        for contract in self.contracts:
+            if hasattr(contract, fn_contract_name):
+                matches.append(getattr(contract, fn_contract_name))
+            if hasattr(contract, contract_type):
+                matches.append(getattr(contract, contract_type))
+
+        return matches
+
+    def _get_contracts(self):
+        return {'pre': self._get_contracts_by_type('pre'),
+                'call': self._get_contracts_by_type('call')[:1],
+                'post': self._get_contracts_by_type('post')}
+
+    def __call__(self, *args, **kwargs):
+        if not args or not (args[0] is self.hub or isinstance(args[0], self.hub.__class__)):
+            # The hub isn't being passed, insert it
+            args = tuple([self.hub] + list(args))
+        if not self._has_contracts:
             return self.func(*args, **kwargs)
         contract_context = ContractedContext(self.func, args, kwargs, self.signature)
-        pre = 'pre_{}'.format(self.func_name)
-        post = 'post_{}'.format(self.func_name)
-        call = 'call_{}'.format(self.func_name)
-        # Build the context containing the function to call, the arguments and
-        # the keyword arguments. This context can also be used to pass data
-        # between the pre/call/post steps.
-        for contract in self.contracts:
-            if hasattr(contract, pre):
-                getattr(contract, pre)(contract_context)
-            if hasattr(contract, 'pre'):
-                getattr(contract, 'pre')(contract_context)
-        if self.contracts:
-            if hasattr(self.contracts[0], call):
-                ret = getattr(self.contracts[0], call)(contract_context)
-            elif hasattr(self.contracts[0], 'call'):
-                ret = getattr(self.contracts[0], 'call')(contract_context)
-            else:
-                ret = self.func(*args, **kwargs)
+
+        for fn in self.contract_functions['pre']:
+            fn(contract_context)
+        if self.contract_functions['call']:
+            ret = self.contract_functions['call'][0](contract_context)
         else:
             ret = self.func(*args, **kwargs)
-        for contract in self.contracts:
-            if hasattr(contract, post):
-                post_func = getattr(contract, post)
-            elif hasattr(contract, 'post'):
-                post_func = getattr(contract, 'post')
-            else:
-                post_func = None
-            if post_func is not None:
-                post_ret = post_func(contract_context._replace(ret=ret))
-                if post_ret is not None:
-                    ret = post_ret
+        for fn in self.contract_functions['post']:
+            post_ret = fn(contract_context._replace(ret=ret))
+            if post_ret is not None:
+                ret = post_ret
+
         return ret
 
     def __repr__(self):

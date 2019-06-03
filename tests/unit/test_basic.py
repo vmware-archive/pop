@@ -18,6 +18,16 @@ def test_basic():
     assert hub.mods.test.ping() == hub.mods.foo.bar()
 
 
+def test_getattr():
+    hub = pop.hub.Hub()
+    hub.tools.sub.add('mods', pypath='tests.mods')
+    hub.mods.test.ping()
+    assert getattr(hub, 'mods.test.ping')() == {}
+    assert getattr(hub.mods, 'test.this_pack')() == {}
+    assert getattr(hub.mods.test, 'demo')() is False
+    assert hub.mods.test.ping() == getattr(hub, 'mods.foo.bar')()
+
+
 def test_pyroots():
     hub = pop.hub.Hub()
     hub.tools.sub.add('cheese', pyroot=['tests.pyroot', 'tests.NOTHINGHERE'])

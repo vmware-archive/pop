@@ -92,6 +92,8 @@ class Hub:
     def __getattr__(self, item):
         if item.startswith('_'):
             return self.__getattribute__(item)
+        if '.' in item:
+            return self.tools.ref.last(item)
         if item in self._subs:
             return self._subs[item]
         return self.__getattribute__(item)
@@ -223,6 +225,8 @@ class Sub:
         '''
         if item.startswith('_'):
             return self.__getattribute__(item)
+        if '.' in item:
+            return self._hub.tools.ref.last(f'{self._subname}.{item}')
         if item in self._loaded:
             ret = self._loaded[item]
             # If this previously errored on load, try it again,

@@ -29,6 +29,16 @@ execution script and your first plugin subsystem called `poppy`.
 When you run your project it will set up `pop` for you and the application
 starts with the `new` function inside newly created file `poppy/mods/poppy/init.py`.
 
+Examples and Tutorial
+=====================
+
+The are a lot of capabilities even though it is easy to use `pop`. There is a
+greap example repo called `poppy` that shows some of the basics of using `pop`::
+
+    https://github.com/saltstack/poppy
+
+Also check out our tutorial
+
 Plugin Oriented Programming Manifesto
 =====================================
 

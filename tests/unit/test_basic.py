@@ -13,7 +13,6 @@ def test_basic():
     hub.tools.sub.add('mods', pypath='tests.mods')
     hub.mods.test.ping()
     assert hub.mods.test.ping() == {}
-    assert hub.mods.test.this_pack() == {}
     assert hub.mods.test.demo() is False
     assert hub.mods.test.ping() == hub.mods.foo.bar()
 
@@ -23,7 +22,6 @@ def test_getattr():
     hub.tools.sub.add('mods', pypath='tests.mods')
     hub.mods.test.ping()
     assert getattr(hub, 'mods.test.ping')() == {}
-    assert getattr(hub.mods, 'test.this_pack')() == {}
     assert getattr(hub.mods.test, 'demo')() is False
     assert hub.mods.test.ping() == getattr(hub, 'mods.foo.bar')()
 
@@ -79,9 +77,8 @@ def test_this():
     hub = pop.hub.Hub()
     hub.tools.sub.add('mods', pypath='tests.mods')
     hub.mods.test.ping()
-    assert hub.mods.test.this_pack() == {}
     assert hub.mods.test.this_mod() == {}
-    assert hub.mods.test.this_this() == {}
+    assert hub.mods.test.this() == {}
 
 
 def test_ref_sys():

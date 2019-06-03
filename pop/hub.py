@@ -70,11 +70,10 @@ class Hub:
         This should only ever be called from within a hub module, otherwise
         it should stack trace, or return heaven knows what...
         '''
-        dirname = os.path.dirname(inspect.stack()[1].filename)
-        for sub in self._subs:
-            if dirname in self._subs[sub]._dirs:
-                return self._subs[sub]
-        raise pop.exc.PopLookupError('Called from outside a pop!')
+        frame = inspect.stack()[1]
+        f_name = frame[3]
+        contracted = frame[0].f_globals[f_name]
+        return contracted._mod
 
     def _remove_subsystem(self, subname):
         '''

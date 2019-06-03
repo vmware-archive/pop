@@ -19,16 +19,12 @@ def demo(hub):
     return False
 
 
-def this_pack(hub):
-    return hub._.test.ping()
+def this(hub):
+    return hub._.ping()
 
 
 def this_mod(hub):
     return hub.mods._.ping()
-
-
-def this_this(hub):
-    return hub._._.ping()
 
 
 def module_level_non_aliased_ping_call(hub):

@@ -98,7 +98,7 @@ class Contracted:  # pylint: disable=too-few-public-methods
     This class wraps functions that have a contract associated with them
     and executes the contract routines
     '''
-    def __init__(self, hub, contracts, func):
+    def __init__(self, hub, mod, contracts, func):
         self.hub = hub
         self.contracts = contracts if contracts else []
         self.func = func
@@ -107,6 +107,7 @@ class Contracted:  # pylint: disable=too-few-public-methods
         self.signature = inspect.signature(self.func)
         self.contract_functions = self._get_contracts()
         self._has_contracts = sum([len(l) for l in self.contract_functions.values()]) > 0
+        self._mod = mod
 
     def _get_contracts_by_type(self, contract_type='pre'):
         matches = []

@@ -126,7 +126,7 @@ class Contracted:  # pylint: disable=too-few-public-methods
                 'post': self._get_contracts_by_type('post')}
 
     def __call__(self, *args, **kwargs):
-        if not args or not (args[0] is self.hub or isinstance(args[0], self.hub.__class__)):
+        if not args or not (isinstance(args[0], self.hub.__class__)):
             # The hub isn't being passed, insert it
             args = tuple([self.hub] + list(args))
         if not self._has_contracts:

@@ -53,15 +53,10 @@ class Hub:
         self.__dict__.update(state)
 
     def __iter__(self):
-        return self
-
-    def __next__(self):
-        if self._iter_ind == len(self._iter_subs):
-            self._iter_subs = sorted(self._subs.keys())
-            self._iter_ind = 0
-            raise StopIteration
-        self._iter_ind += 1
-        return self._subs[self._iter_subs[self._iter_ind - 1]]
+        def iter(subs):
+            for sub in sorted(subs.keys()):
+                yield subs[sub]
+        return iter(self._subs)
 
     @property
     def _(self):
@@ -241,12 +236,12 @@ class Sub:
         return '{}.{}'.format(self._mod_basename, self._modname)
 
     def __iter__(self):
-        return self
+        def iter(loaded):
+            for l in sorted(loaded.keys()):
+                yield loaded[l]
+        return iter(self._loaded)
 
     def __next__(self):
-        if self._loaded_all is False:
-            self._load_all()
-            self._iter_keys = sorted(self._loaded.keys())
         if self._iter_ind == len(self._iter_keys):
             self._iter_ind = 0
             raise StopIteration

@@ -77,7 +77,6 @@ def test_this():
     hub = pop.hub.Hub()
     hub.tools.sub.add('mods', pypath='tests.mods')
     hub.mods.test.ping()
-    assert hub.mods.test.this_mod() == {}
     assert hub.mods.test.this() == {}
 
 

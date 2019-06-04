@@ -23,10 +23,6 @@ def this(hub):
     return hub._.ping()
 
 
-def this_mod(hub):
-    return hub.mods._.ping()
-
-
 def module_level_non_aliased_ping_call(hub):
     return ping_()  # pylint: disable=no-value-for-parameter
 

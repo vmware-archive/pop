@@ -208,16 +208,6 @@ class Sub:
         self.__dict__.update(state)
         self._prepare()
 
-    @property
-    def _(self):
-        '''
-        Return the local relative module on this pop, this will not work if
-        called from outside a pop.
-        '''
-        fn = inspect.stack()[1].filename
-        vname = self._vmap[fn]
-        return getattr(self, vname)
-
     def __getattr__(self, item):
         '''
         If the item should be loaded, load it, else serve it

@@ -113,7 +113,7 @@ class Sub:
             omit_start=('_'),
             omit_end=(),
             omit_func=False,
-            omit_class=True,
+            omit_class=False,
             omit_vars=False,
             mod_basename='pop',
             stop_on_failures=False,

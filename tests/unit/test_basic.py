@@ -45,6 +45,17 @@ def test_iter_sub():
     assert mods == sorted(hub.mods._loaded.keys())
 
 
+def test_iter_sub_nested():
+    hub = pop.hub.Hub()
+    hub.tools.sub.add('mods', pypath='tests.mods')
+    mods = []
+    for _ in hub.mods:
+        for mod in hub.mods:
+            mods.append(mod.__sub_name__)
+        break
+    assert mods == sorted(hub.mods._loaded.keys())
+
+
 def test_iter_hub():
     hub = pop.hub.Hub()
     hub.tools.sub.add('mods', pypath='tests.mods')
@@ -54,12 +65,34 @@ def test_iter_hub():
     assert subs == sorted(hub._subs.keys())
 
 
+def test_iter_hub_nested():
+    hub = pop.hub.Hub()
+    hub.tools.sub.add('mods', pypath='tests.mods')
+    subs = []
+    for _ in hub:
+        for sub in hub:
+            subs.append(sub._modname)
+        break
+    assert subs == sorted(hub._subs.keys())
+
+
 def test_iter_vars():
     hub = pop.hub.Hub()
     hub.tools.sub.add('mods', pypath='tests.mods')
     funcs = []
     for var in hub.tools.sub:
         funcs.append(var.__name__)
+    assert funcs == sorted(hub.tools.sub._funcs.keys())
+
+
+def test_iter_vars_nested():
+    hub = pop.hub.Hub()
+    hub.tools.sub.add('mods', pypath='tests.mods')
+    funcs = []
+    for _ in hub.tools.sub:
+        for var in hub.tools.sub:
+            funcs.append(var.__name__)
+        break
     assert funcs == sorted(hub.tools.sub._funcs.keys())
 
 

@@ -131,7 +131,8 @@ def test_ref_sys():
 def test_module_level_direct_call():
     hub = pop.hub.Hub()
     hub.tools.sub.add('mods', pypath='tests.mods')
-    assert hub.mods.test.module_level_non_aliased_ping_call() == {}
+    with pytest.raises(Exception):
+        hub.mods.test.module_level_non_aliased_ping_call()
     assert hub.mods.test.module_level_non_aliased_ping_call_fw_hub() == {}
 
 

@@ -65,10 +65,16 @@ class Hub:
         This should only ever be called from within a hub module, otherwise
         it should stack trace, or return heaven knows what...
         '''
-        frame = inspect.stack()[1]
-        f_name = frame[3]
-        contracted = frame[0].f_globals[f_name]
-        return contracted._mod
+        call_frame = inspect.stack()[2]
+        contracted = call_frame[0].f_locals['self']
+        if contracted.hub is self:
+            return contracted._mod
+        else:
+            mod_path = contracted._mod.__name__.split('.')[2:]
+            # if the mod lookup fails, it will return an attribute error, and
+            # __getattr__ will be called, calling '_' again.
+            # the call stack will be different and will blow up.
+            return getattr(self, '.'.join(mod_path))
 
     def _remove_subsystem(self, subname):
         '''
@@ -118,6 +124,7 @@ class Sub:
             mod_basename='pop',
             stop_on_failures=False,
             init=None,
+            is_contract=False,
             ):
         self._iter_ind = 0
         self._hub = hub

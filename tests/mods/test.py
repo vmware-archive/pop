@@ -4,6 +4,8 @@
 import os
 
 # Import pack libs
+import pytest
+
 from pop.scanner import scan  # pylint: disable=unused-import
 
 __virtualname__ = 'test'

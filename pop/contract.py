@@ -93,21 +93,41 @@ def verify_contract(hub, raws, mod):  # pylint: disable=unused-argument
                     raise pop.exc.ContractFuncException('{} is not a function'.format(fun_name))
 
 
-class Contracted:  # pylint: disable=too-few-public-methods
-    '''
-    This class wraps functions that have a contract associated with them
-    and executes the contract routines
-    '''
-    def __init__(self, hub, mod, contracts, func):
-        self.hub = hub
-        self.contracts = contracts if contracts else []
+class ContractedRedirect:  # pylint: disable=too-few-public-methods
+    def __init__(self, func, ref):
         self.func = func
         self.func_name = func.__name__
         self.__name__ = func.__name__
         self.signature = inspect.signature(self.func)
-        self.contract_functions = self._get_contracts()
-        self._has_contracts = sum([len(l) for l in self.contract_functions.values()]) > 0
+        self.ref = ref
+
+    def __call__(self, *args, **kwargs):
+        # find hub, then strip it - it will be added later
+        if args:
+            hub = args[0]
+            args = args[1:]
+        else:
+            for hub_name in self.signature.parameters:
+                break
+            hub = kwargs.pop(hub_name)
+        # redirect to Contracted associated with the passed hub
+        return getattr(hub, self.ref)(*args, **kwargs)
+
+    def __repr__(self):
+        return '<{} func={}.{}>'.format(self.__class__.__name__, self.func.__module__, self.func.__name__)
+
+
+class Contracted(ContractedRedirect):  # pylint: disable=too-few-public-methods
+    '''
+    This class wraps functions that have a contract associated with them
+    and executes the contract routines
+    '''
+    def __init__(self, hub, mod, contracts, func, ref):
+        super().__init__(func, ref)
+        self.hub = hub
+        self.contracts = contracts if contracts else []
         self._mod = mod
+        self._load_contracts()
 
     def _get_contracts_by_type(self, contract_type='pre'):
         matches = []
@@ -121,15 +141,15 @@ class Contracted:  # pylint: disable=too-few-public-methods
 
         return matches
 
-    def _get_contracts(self):
-        return {'pre': self._get_contracts_by_type('pre'),
-                'call': self._get_contracts_by_type('call')[:1],
-                'post': self._get_contracts_by_type('post')}
+    def _load_contracts(self):
+        self.contract_functions = {'pre': self._get_contracts_by_type('pre'),
+                                   'call': self._get_contracts_by_type('call')[:1],
+                                   'post': self._get_contracts_by_type('post')}
+        self._has_contracts = sum([len(l) for l in self.contract_functions.values()]) > 0
 
     def __call__(self, *args, **kwargs):
-        if not args or not (isinstance(args[0], self.hub.__class__)):
-            # The hub isn't being passed, insert it
-            args = tuple([self.hub] + list(args))
+        args = tuple([self.hub] + list(args))
+
         if not self._has_contracts:
             return self.func(*args, **kwargs)
         contract_context = ContractedContext(self.func, args, kwargs, self.signature)
@@ -146,6 +166,3 @@ class Contracted:  # pylint: disable=too-few-public-methods
                 ret = post_ret
 
         return ret
-
-    def __repr__(self):
-        return '<{} func={}.{}>'.format(self.__class__.__name__, self.func.__module__, self.func.__name__)

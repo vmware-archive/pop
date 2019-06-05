@@ -122,11 +122,10 @@ class Contracted(ContractedRedirect):  # pylint: disable=too-few-public-methods
     This class wraps functions that have a contract associated with them
     and executes the contract routines
     '''
-    def __init__(self, hub, mod, contracts, func, ref):
+    def __init__(self, hub, contracts, func, ref):
         super().__init__(func, ref)
         self.hub = hub
         self.contracts = contracts if contracts else []
-        self._mod = mod
         self._load_contracts()
 
     def _get_contracts_by_type(self, contract_type='pre'):

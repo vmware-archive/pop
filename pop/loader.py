@@ -297,7 +297,7 @@ def prep_mod_dict(this_pack, mod, pack_name, contracts, loading_contract_sub=Fal
             continue
         if inspect.isfunction(func) or inspect.isbuiltin(func) or \
                 type(func).__name__ == 'cython_function_or_method':
-            obj = pop.contract.Contracted(this_pack._hub, mod_dict, contracts, func, ref)
+            obj = pop.contract.Contracted(this_pack._hub, contracts, func, ref)
             if not this_pack._omit_func:
                 if this_pack._pypath and not func.__module__.startswith(mod.__name__):
                     # We're only interested in functions defined in this module, not

@@ -57,7 +57,7 @@ To solve this issue `pop` comes with a system to make configuration loading easy
 
 When loading configuration data, the data can come from many sources, the command line,
 environment variables, windows registery, configuration files, etc. But certian sources
-should overwirtie other sources; config files overwrite defaults, environment variables overwrite
+should overwrite other sources; config files overwrite defaults, environment variables overwrite
 config files and cli overwrites all. Also, you end up defining default configuration values
 and paramaters in multiple places to enable supporting multiple mediums for configuration input.
 Finally, you only want to have to document your configuration options in one place.

@@ -144,6 +144,7 @@ class Sub:
         self._mod_basename = mod_basename
         self._stop_on_failures = stop_on_failures
         self._init = init
+        self._is_contract = is_contract
         self._prepare()
 
     def _prepare(self):
@@ -164,10 +165,12 @@ class Sub:
             self._staticroot,
             )
         if self._contract_dirs:
-            self._contracts = ContractSub(
-                    self._hub,
-                    '{}.contracts'.format(self._modname),
-                    static=self._contract_dirs)
+            self._contracts = Sub(
+                self._hub,
+                f'{self._modname}.contracts',
+                static=self._contract_dirs,
+                is_contract=True,
+            )
         else:
             self._contracts = None
         self._mem = {}
@@ -358,8 +361,7 @@ class Sub:
                 self,
                 mod,
                 name,
-                contracts,
-                loading_contract_sub=isinstance(self, ContractSub))
+                contracts)
         pop.contract.verify_contract(self._hub, contracts, mod_dict)
         self._loaded[name] = mod_dict
         self._vmap[mod.__file__] = name
@@ -382,9 +384,3 @@ class Sub:
                     continue
                 self._load_item(iface, bname)
         self._loaded_all = True
-
-
-class ContractSub(Sub):
-    '''
-    This class exists to deferentiate regular Pop's from Pop's loading contracts
-    '''

@@ -354,7 +354,7 @@ class Sub:
                 if name.endswith(ext):
                     name = name.split(ext)[0]
                     break
-        mod_dict = pop.loader.prep_mod_dict(
+        mod_dict = pop.loader.prep_loaded_mod(
                 self,
                 mod,
                 name,

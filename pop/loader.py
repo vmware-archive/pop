@@ -274,10 +274,10 @@ def mod_init(parent, mod):
         mod.__mod_init__(parent)
 
 
-def prep_loaded_mod(this_sub, mod, mod_name, contracts, loading_contract_sub=False):
+def prep_loaded_mod(this_sub, mod, mod_name, contracts):
     '''
-    Read the attributes of the loaded module and remap them and omit objects
-    that should not be exposed
+    Read the attributes of a python module and create a LoadedMod, which resolves
+    aliases and omits objects that should not be exposed.
     '''
     # pylint: disable=protected-access
     lmod = LoadedMod(mod_name)
@@ -305,7 +305,7 @@ def prep_loaded_mod(this_sub, mod, mod_name, contracts, loading_contract_sub=Fal
                     continue
                 lmod._funcs[name] = obj
                 lmod._attrs[name] = obj
-                if loading_contract_sub is False:
+                if this_sub._is_contract is False:
                     # Allow the function to be called directly from within the module while
                     # not breaking out of contracts. The original function name, not the aliased one
                     # or we'd risk overwriting python keywords, etc...

@@ -274,37 +274,37 @@ def mod_init(parent, mod):
         mod.__mod_init__(parent)
 
 
-def prep_mod_dict(this_pack, mod, pack_name, contracts, loading_contract_sub=False):
+def prep_loaded_mod(this_sub, mod, mod_name, contracts, loading_contract_sub=False):
     '''
     Read the attributes of the loaded module and remap them and omit objects
     that should not be exposed
     '''
     # pylint: disable=protected-access
-    mod_dict = LoadedMod(pack_name)
+    lmod = LoadedMod(mod_name)
     for attr in getattr(mod, '__load__', dir(mod)):
         name = getattr(mod, '__func_alias__', {}).get(attr, attr)
         func = getattr(mod, attr)
-        ref = f'{this_pack._subname}.{pack_name}.{name}'  # getattr(hub, ref) should resolve to this Contracted
-        if not this_pack._omit_vars:
+        ref = f'{this_sub._subname}.{mod_name}.{name}'  # getattr(hub, ref) should resolve to this Contracted
+        if not this_sub._omit_vars:
             if not inspect.isfunction(func) and not inspect.isclass(func) and \
                     type(func).__name__ != 'cython_function_or_method':
-                mod_dict._vars[name] = func
-                mod_dict._attrs[name] = func
+                lmod._vars[name] = func
+                lmod._attrs[name] = func
                 continue
-        if attr.startswith(this_pack._omit_start):
+        if attr.startswith(this_sub._omit_start):
             continue
-        if attr.endswith(this_pack._omit_end):
+        if attr.endswith(this_sub._omit_end):
             continue
         if inspect.isfunction(func) or inspect.isbuiltin(func) or \
                 type(func).__name__ == 'cython_function_or_method':
-            obj = pop.contract.Contracted(this_pack._hub, contracts, func, ref)
-            if not this_pack._omit_func:
-                if this_pack._pypath and not func.__module__.startswith(mod.__name__):
+            obj = pop.contract.Contracted(this_sub._hub, contracts, func, ref)
+            if not this_sub._omit_func:
+                if this_sub._pypath and not func.__module__.startswith(mod.__name__):
                     # We're only interested in functions defined in this module, not
                     # imported functions
                     continue
-                mod_dict._funcs[name] = obj
-                mod_dict._attrs[name] = obj
+                lmod._funcs[name] = obj
+                lmod._attrs[name] = obj
                 if loading_contract_sub is False:
                     # Allow the function to be called directly from within the module while
                     # not breaking out of contracts. The original function name, not the aliased one
@@ -313,14 +313,14 @@ def prep_mod_dict(this_pack, mod, pack_name, contracts, loading_contract_sub=Fal
                     setattr(sys.modules[mod.__name__], attr, direct_obj)
         else:
             klass = func
-            if not this_pack._omit_class and inspect.isclass(klass):
-                if not klass.__module__.startswith((this_pack._pypath, mod.__name__)):
+            if not this_sub._omit_class and inspect.isclass(klass):
+                if not klass.__module__.startswith((this_sub._pypath, mod.__name__)):
                     # We're only interested in classes defined in this module, not
                     # imported classes
                     continue
-                mod_dict._classes[name] = klass
-                mod_dict._attrs[name] = klass
-    return mod_dict
+                lmod._classes[name] = klass
+                lmod._attrs[name] = klass
+    return lmod
 
 
 class LoadedMod:

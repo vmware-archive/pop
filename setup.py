@@ -5,7 +5,7 @@
 import os
 import sys
 import shutil
-from distutils.core import setup, Command
+from setuptools import setup, Command
 
 NAME = 'pop'
 DESC = ('The Plugin Oriented Programming System')
@@ -59,7 +59,11 @@ setup(name=NAME,
           'Programming Language :: Python :: 3.7',
           'Development Status :: 5 - Production/Stable',
           ],
-      scripts=['scripts/pop-seed'],
+      entry_points={
+          'console_scripts': [
+              'pop-seed = pop.scripts:pop_seed',
+              ],
+          },
       packages=discover_packages(),
       cmdclass={'clean': Clean},
       )

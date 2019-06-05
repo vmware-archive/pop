@@ -12,7 +12,7 @@ SETUP = '''#!/usr/bin/env python3
 import os
 import sys
 import shutil
-from distutils.core import setup, Command
+from setuptools import setup, Command
 
 NAME = '%%NAME%%'
 DESC = ('')
@@ -66,18 +66,21 @@ setup(name=NAME,
           'Programming Language :: Python :: 3.6',
           'Development Status :: 5 - Production/Stable',
           ],
-      scripts=['scripts/%%NAME%%'],
+      entry_points={
+        'console_scripts': [
+            '%%NAME%% = %%NAME%%.scripts:start',
+            ],
+          },
       packages=discover_packages(),
       cmdclass={'clean': Clean},
       )
 '''
 
-SCRIPT = '''#!/usr/bin/env python3
+SCRIPT = '''import pop.hub
 
-import pop.hub
-
-hub = pop.hub.Hub()
-hub.tools.sub.add('%%NAME%%', pypath='%%NAME%%.mods.%%NAME%%', contracts_pypath='%%NAME%%.contracts.%%NAME%%', init=True)
+def start():
+    hub = pop.hub.Hub()
+    hub.tools.sub.add('%%NAME%%', pypath='%%NAME%%.mods.%%NAME%%', contracts_pypath='%%NAME%%.contracts.%%NAME%%', init=True)
 '''
 
 INIT = '''def new(hub):
@@ -104,7 +107,6 @@ def new(hub):
     '''
     hub.PATH = os.getcwd()
     name = hub.opts['seed_name']
-    hub.tools.seed.mkdir('scripts')
     hub.tools.seed.mkdir(name, 'mods', name)
     hub.tools.seed.mkdir(name, 'contracts', name)
     hub.tools.seed.mksetup(name)
@@ -154,7 +156,7 @@ def mkscript(hub, name):
     '''
     Create and write out a setup.py file
     '''
-    path = os.path.join(hub.PATH, 'scripts', name)
+    path = os.path.join(hub.PATH, name, 'scripts.py')
     script_str = SCRIPT.replace('%%NAME%%', name)
     with open(path, 'w+') as fp:
         fp.write(script_str)

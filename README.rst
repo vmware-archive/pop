@@ -20,7 +20,7 @@ with `pop` just install pop and run the `pop-seed` script:
 
 ::
 
-  pip install pop
+  pip3 install pop
   pop-seed poppy
 
 Now a new python project has been created for you with a setup.py file,

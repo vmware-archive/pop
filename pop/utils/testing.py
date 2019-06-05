@@ -164,7 +164,7 @@ class MockContracted:
         mock_func = create_autospec(c.func, spec_set=True)
         mock_func.__module__ = c.func.__module__
         mock_func.__dict__.update(copy.deepcopy(c.func.__dict__))
-        self.__dict__['contracted'] = Contracted(c.hub, c._mod, c.contracts, mock_func, c.ref)
+        self.__dict__['contracted'] = Contracted(c.hub, c.contracts, mock_func, c.ref)
         self.signature = c.signature
 
     def __call__(self, *args, **kwargs):

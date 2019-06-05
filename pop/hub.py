@@ -67,14 +67,8 @@ class Hub:
         '''
         call_frame = inspect.stack()[2]
         contracted = call_frame[0].f_locals['self']
-        if contracted.hub is self:
-            return contracted._mod
-        else:
-            mod_path = contracted._mod.__name__.split('.')[2:]
-            # if the mod lookup fails, it will return an attribute error, and
-            # __getattr__ will be called, calling '_' again.
-            # the call stack will be different and will blow up.
-            return getattr(self, '.'.join(mod_path))
+        mod_ref = contracted.ref.split('.')[:-1]
+        return getattr(self, '.'.join(mod_ref))
 
     def _remove_subsystem(self, subname):
         '''

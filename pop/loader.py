@@ -284,6 +284,7 @@ def prep_mod_dict(this_pack, mod, pack_name, contracts, loading_contract_sub=Fal
     for attr in getattr(mod, '__load__', dir(mod)):
         name = getattr(mod, '__func_alias__', {}).get(attr, attr)
         func = getattr(mod, attr)
+        ref = f'{this_pack._subname}.{pack_name}.{name}'  # getattr(hub, ref) should resolve to this Contracted
         if not this_pack._omit_vars:
             if not inspect.isfunction(func) and not inspect.isclass(func) and \
                     type(func).__name__ != 'cython_function_or_method':
@@ -296,7 +297,7 @@ def prep_mod_dict(this_pack, mod, pack_name, contracts, loading_contract_sub=Fal
             continue
         if inspect.isfunction(func) or inspect.isbuiltin(func) or \
                 type(func).__name__ == 'cython_function_or_method':
-            obj = pop.contract.Contracted(this_pack._hub, mod_dict, contracts, func)
+            obj = pop.contract.Contracted(this_pack._hub, contracts, func, ref)
             if not this_pack._omit_func:
                 if this_pack._pypath and not func.__module__.startswith(mod.__name__):
                     # We're only interested in functions defined in this module, not
@@ -308,7 +309,8 @@ def prep_mod_dict(this_pack, mod, pack_name, contracts, loading_contract_sub=Fal
                     # Allow the function to be called directly from within the module while
                     # not breaking out of contracts. The original function name, not the aliased one
                     # or we'd risk overwriting python keywords, etc...
-                    setattr(sys.modules[mod.__name__], attr, obj)
+                    direct_obj = pop.contract.ContractedRedirect(func=func, ref=ref)
+                    setattr(sys.modules[mod.__name__], attr, direct_obj)
         else:
             klass = func
             if not this_pack._omit_class and inspect.isclass(klass):

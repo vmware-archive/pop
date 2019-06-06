@@ -53,15 +53,10 @@ class Hub:
         self.__dict__.update(state)
 
     def __iter__(self):
-        return self
-
-    def __next__(self):
-        if self._iter_ind == len(self._iter_subs):
-            self._iter_subs = sorted(self._subs.keys())
-            self._iter_ind = 0
-            raise StopIteration
-        self._iter_ind += 1
-        return self._subs[self._iter_subs[self._iter_ind - 1]]
+        def iter(subs):
+            for sub in sorted(subs.keys()):
+                yield subs[sub]
+        return iter(self._subs)
 
     @property
     def _(self):
@@ -70,10 +65,10 @@ class Hub:
         This should only ever be called from within a hub module, otherwise
         it should stack trace, or return heaven knows what...
         '''
-        frame = inspect.stack()[1]
-        f_name = frame[3]
-        contracted = frame[0].f_globals[f_name]
-        return contracted._mod
+        call_frame = inspect.stack()[2]
+        contracted = call_frame[0].f_locals['self']
+        mod_ref = contracted.ref.split('.')[:-1]
+        return getattr(self, '.'.join(mod_ref))
 
     def _remove_subsystem(self, subname):
         '''
@@ -118,11 +113,12 @@ class Sub:
             omit_start=('_'),
             omit_end=(),
             omit_func=False,
-            omit_class=True,
+            omit_class=False,
             omit_vars=False,
             mod_basename='pop',
             stop_on_failures=False,
             init=None,
+            is_contract=False,
             ):
         self._iter_ind = 0
         self._hub = hub
@@ -208,16 +204,6 @@ class Sub:
         self.__dict__.update(state)
         self._prepare()
 
-    @property
-    def _(self):
-        '''
-        Return the local relative module on this pop, this will not work if
-        called from outside a pop.
-        '''
-        fn = inspect.stack()[1].filename
-        vname = self._vmap[fn]
-        return getattr(self, vname)
-
     def __getattr__(self, item):
         '''
         If the item should be loaded, load it, else serve it
@@ -251,12 +237,12 @@ class Sub:
         return '{}.{}'.format(self._mod_basename, self._modname)
 
     def __iter__(self):
-        return self
+        def iter(loaded):
+            for l in sorted(loaded.keys()):
+                yield loaded[l]
+        return iter(self._loaded)
 
     def __next__(self):
-        if self._loaded_all is False:
-            self._load_all()
-            self._iter_keys = sorted(self._loaded.keys())
         if self._iter_ind == len(self._iter_keys):
             self._iter_ind = 0
             raise StopIteration

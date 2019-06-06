@@ -4,6 +4,8 @@
 import os
 
 # Import pack libs
+import pytest
+
 from pop.scanner import scan  # pylint: disable=unused-import
 
 __virtualname__ = 'test'
@@ -21,10 +23,6 @@ def demo(hub):
 
 def this(hub):
     return hub._.ping()
-
-
-def this_mod(hub):
-    return hub.mods._.ping()
 
 
 def module_level_non_aliased_ping_call(hub):

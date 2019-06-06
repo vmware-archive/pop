@@ -27,14 +27,11 @@ def add(hub,
         omit_vars=False,
         mod_basename='pop.sub',
         stop_on_failures=False,
-        init=None,
+        init=True,
         ):
     '''
     Add a new subsystem to the hub
     '''
-    # Make sure that unintended funcs are not called with the init
-    if init is True:
-        init = 'init.new'
     subname = subname if subname else modname
     if sub:
         root = sub
@@ -59,7 +56,7 @@ def add(hub,
             omit_vars,
             mod_basename,
             stop_on_failures)
-    root._subs[modname]._pop_init(init)
+    root._subs[modname]._sub_init(init)
     root._iter_subs = sorted(root._subs.keys())
 
 

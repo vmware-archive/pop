@@ -85,7 +85,7 @@ class ArgumentParser(argparse.ArgumentParser):
         return namespace, arg_strings
 
 
-def __mod_init__(hub):
+def __init__(hub):
     '''
     Set up the local memory copy of the parser
     '''

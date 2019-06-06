@@ -235,24 +235,35 @@ def test_mod_init():
     hub = pop.hub.Hub()
     hub.context = {}
     hub.tools.sub.add(
-            'mods',
-            pypath='tests.mods.packinit',
-            contracts_pypath='tests.contracts')
-    assert hub.context == {}
+        'mods',
+        pypath='tests.mods.packinit',
+        contracts_pypath='tests.contracts'
+    )
+    assert hub.context == {'NEW': True}
     assert 'LOADED' not in hub.context
     assert hub.mods.packinit.loaded() is True
     # And now __mod_init__ has been executed
     assert 'LOADED' in hub.context
 
+    # don't run init
+    hub = pop.hub.Hub()
+    hub.context = {}
+    hub.tools.sub.add(
+        'mods',
+        pypath='tests.mods.packinit',
+        contracts_pypath='tests.contracts',
+        init=False
+    )
+    assert hub.context == {}
 
 def test_pack_init():
     hub = pop.hub.Hub()
     hub.context = {}
     hub.tools.sub.add(
-            'mods',
-            pypath='tests.mods.packinit',
-            contracts_pypath='tests.contracts',
-            init='init.new')
+        'mods',
+        pypath='tests.mods.packinit',
+        contracts_pypath='tests.contracts'
+    )
     assert hub.mods.init.check() is True
 
 

@@ -83,7 +83,7 @@ def start():
     hub.tools.sub.add('%%NAME%%', pypath='%%NAME%%.mods.%%NAME%%', contracts_pypath='%%NAME%%.contracts.%%NAME%%', init=True)
 '''
 
-INIT = '''def new(hub):
+INIT = '''def __init__(hub):
     print('%%NAME%% works!')
 '''
 

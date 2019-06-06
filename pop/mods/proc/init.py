@@ -13,7 +13,7 @@ import subprocess
 import msgpack
 
 
-def new(hub):
+def __init__(hub):
     '''
     Create constants used by the client and server side of procs
     '''

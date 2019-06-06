@@ -117,7 +117,7 @@ class Sub:
             omit_vars=False,
             mod_basename='pop',
             stop_on_failures=False,
-            init=None,
+            init=True,
             is_contract=False,
             ):
         self._iter_ind = 0
@@ -179,8 +179,6 @@ class Sub:
         self._vmap = {}
         self._load_errors = {}
         self._loaded_all = False
-        # Always do the pop_init last!
-        self._pop_init(self._init)
 
     def __getstate__(self):
         return dict(
@@ -252,18 +250,12 @@ class Sub:
         self._iter_ind += 1
         return self._loaded[self._iter_keys[self._iter_ind - 1]]
 
-    def _pop_init(self, init):
+    def _sub_init(self, init):
         '''
-        Run the new module initializer, basically the __init__ for the pop
+        Run load init.py for the sub, running '__init__' function if present
         '''
-        if not init:
-            # No init!
-            return
-        comps = init.split('.')
-        mod = self
-        for comp in comps:
-            mod = getattr(mod, comp)
-        mod()
+        if init:
+            self._find_mod('init', match_only=True)
 
     def _process_load_error(self, mod, skip_full_stop=False):
         if not isinstance(mod, pop.loader.LoadError):

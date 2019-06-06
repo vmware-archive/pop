@@ -2,7 +2,7 @@
 # pylint: disable=undefined-variable
 
 
-def __mod_init__(hub):
+def __init__(hub):
     hub.context['LOADED'] = True
 
 

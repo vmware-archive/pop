@@ -5,7 +5,7 @@ used to test the pack_init system
 # pylint: disable=undefined-variable
 
 
-def new(hub):
+def __init__(hub):
     '''
     Add a value to the context
     '''

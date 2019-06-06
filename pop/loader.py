@@ -266,12 +266,12 @@ def load_virtual(parent, virtual, mod, bname):
     return {'name': base_name, 'vname': name, 'error': err}
 
 
-def mod_init(parent, mod):
+def mod_init(hub, mod):
     '''
-    Process module's __mod_init__ function if one if defined
+    Process module's __init__ function if defined
     '''
-    if hasattr(mod, '__mod_init__'):
-        mod.__mod_init__(parent)
+    if '__init__' in dir(mod):
+        mod.__init__(hub)
 
 
 def prep_loaded_mod(this_sub, mod, mod_name, contracts):

@@ -287,17 +287,24 @@ class Sub:
             log.info(error)
         return True
 
-    def _find_mod(self, item):
+    def _find_mod(self, item, match_only=False):
         '''
         find the module named item
         '''
         for iface in self._scan:
             for bname in self._scan[iface]:
-                if self._scan[iface][bname].get('loaded'):
-                    continue
-                self._load_item(iface, bname)
-                if item in self._loaded:
-                    return self._loaded[item]
+                if os.path.basename(bname) == item:
+                    self._load_item(iface, bname)
+            if item in self._loaded:
+                return self._loaded[item]
+        if not match_only:
+            for iface in self._scan:
+                for bname in self._scan[iface]:
+                    if self._scan[iface][bname].get('loaded'):
+                        continue
+                    self._load_item(iface, bname)
+                    if item in self._loaded:
+                        return self._loaded[item]
         # Let's see if the module being lookup is in the load errors dictionary
         if item in self._load_errors:
             # Return the LoadError

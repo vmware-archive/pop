@@ -32,7 +32,7 @@ def _get_cmd(hub, ind, ref, ret_ref, sock_dir):
     code = 'import sys; '
     code += 'import pop.hub; '
     code += 'hub = pop.hub.Hub(); '
-    code += 'hub.tools.sub.add("proc", pypath="pop.mods.proc", init=True); '
+    code += 'hub.tools.sub.add("pop.mods.proc"); '
     code += f'hub.proc.worker.start("{sock_dir}", "{ind}", "{ref}", "{ret_ref}")'
     cmd = f'{sys.executable} -c \'{code}\''
     return cmd

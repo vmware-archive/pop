@@ -171,7 +171,7 @@ def test_contract_manipulate():
             pypath='tests.mods',
             contracts_pypath='tests.contracts'
             )
-    assert 'list' in hub.mods.all.list()
+    assert 'override' in hub.mods.all.list()
     assert 'post called' in hub.mods.all.list()
     assert 'post' in hub.mods.all.dict()
 

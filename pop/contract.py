@@ -103,7 +103,7 @@ class ContractedRedirect:  # pylint: disable=too-few-public-methods
     def __init__(self, func, ref):
         self.func = func
         self.func_name = func.__name__
-        self.__name__ = func.__name__
+        self.__name__ = ref.split('.')[-1]
         self.signature = inspect.signature(self.func)
         self.ref = ref
 
@@ -120,7 +120,7 @@ class ContractedRedirect:  # pylint: disable=too-few-public-methods
         return getattr(hub, self.ref)(*args, **kwargs)
 
     def __repr__(self):
-        return '<{} func={}.{}>'.format(self.__class__.__name__, self.func.__module__, self.func.__name__)
+        return '<{} func={}.{}>'.format(self.__class__.__name__, self.func.__module__, self.__name__)
 
 
 class Contracted(ContractedRedirect):  # pylint: disable=too-few-public-methods
@@ -137,7 +137,7 @@ class Contracted(ContractedRedirect):  # pylint: disable=too-few-public-methods
     def _get_contracts_by_type(self, contract_type='pre'):
         matches = []
 
-        fn_contract_name = '{}_{}'.format(contract_type, self.func_name)
+        fn_contract_name = '{}_{}'.format(contract_type, self.__name__)
         for contract in self.contracts:
             if hasattr(contract, fn_contract_name):
                 matches.append(getattr(contract, fn_contract_name))

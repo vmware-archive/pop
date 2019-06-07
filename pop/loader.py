@@ -1,16 +1,13 @@
-# -*- coding: utf-8 -*-
-'''
-Load the files detected from the scanner
-'''
-# Import Python libs
+# # -*- coding: utf-8 -*-
+# '''
+# Load the files detected from the scanner
+# '''
+# # Import Python libs
 import os
 import sys
 import inspect
-import logging
-import tempfile
 import importlib
 import importlib.machinery
-import imp as stdlib_imp
 import traceback as stdlib_traceback
 
 # Import 3rd-party libs
@@ -23,41 +20,6 @@ except ImportError:
 # Import pop libs
 import pop.exc
 import pop.contract
-
-log = logging.getLogger(__name__)
-
-
-def _generate_module(name):
-    '''
-    Generate a module at runtime and insert it in sys.modules
-    '''
-    if name in sys.modules:
-        return sys.modules[name]
-
-    code = "'''POP sub auto generated parent module for {0}'''".format(name.split('.')[-1])
-    module = stdlib_imp.new_module(name)
-    exec(code, module.__dict__)  # pylint: disable=exec-used
-    sys.modules[name] = module
-    return module
-
-
-def _populate_sys_modules(mod):
-    '''
-    This is a hack to populate sys.modules with the modules that pop loads
-    while making sure that parent modules have the attribute for the child
-    modules.
-    '''
-    mod_parts = mod.split('.')
-    imp_mod = mod_parts.pop(0)
-    gen_mod = _generate_module(imp_mod)
-    while True:
-        if not mod_parts:
-            break
-        part = mod_parts.pop(0)
-        imp_mod += '.' + part
-        gen_child_mod = _generate_module(imp_mod)
-        setattr(gen_mod, part, gen_child_mod)
-        gen_mod = gen_child_mod
 
 
 class LoadError:
@@ -99,20 +61,6 @@ class LoadError:
         return '<{} edict={!r}>'.format(self.__class__.__name__, self.edict)
 
 
-def load_all(modname, scan):
-    '''
-    Load the modules from the scanner
-    '''
-    this = sys.modules[__name__]
-    mods = {}
-    for fname in scan:
-        func = getattr(this, fname)
-        for bname in scan[fname]:
-            for path in scan[fname][bname]:
-                mods[bname] = func(modname, path)
-    return mods
-
-
 def load_mod(modname, form, path, parent):
     '''
     Load a single module
@@ -121,82 +69,18 @@ def load_mod(modname, form, path, parent):
     return getattr(this, form)(modname, path, parent)
 
 
-def ext(modname, path, parent):
-    '''
-    Attempt to load the named python modules
-    '''
-    modname = '.'.join(modname.split('.')[:-1])
-    _populate_sys_modules(modname)
-    try:
-        return stdlib_imp.load_dynamic(modname, path)
-    except Exception as exc:  # pylint: disable=broad-except
-        return LoadError(
-                'Failed to load python module {} at path {}'.format(modname, path),
-                exception=exc,
-                traceback=stdlib_traceback.format_exc())
-
-
 def python(modname, path, parent):
     '''
     Attempt to load the named python modules
     '''
     try:
-        if not hasattr(importlib.machinery, "SourceFileLoader"):
-            return stdlib_imp.load_source(modname, path)
-        else:
-            sfl = importlib.machinery.SourceFileLoader(modname, path)
-            return sfl.load_module()
+        sfl = importlib.machinery.SourceFileLoader(modname, path)
+        return sfl.load_module()
     except Exception as exc:  # pylint: disable=broad-except
         return LoadError(
                 'Failed to load python module {} at path {}'.format(modname, path),
                 exception=exc,
                 traceback=stdlib_traceback.format_exc())
-
-
-def cython(modname, path, parent):
-    '''
-    Import cython module
-    '''
-    if not HAS_CYTHON:
-        try:
-            raise ImportError('Cython not available')
-        except ImportError as exc:
-            return exc
-    try:
-        return pyximport.load_module(
-                modname,
-                path,
-                tempfile.gettempdir())
-    except Exception as exc:  # pylint: disable=broad-except
-        return LoadError(
-                'Failed to load cython module {} at path {}'.format(modname, path),
-                exception=exc,
-                traceback=stdlib_traceback.format_exc())
-
-
-def imp(modname, path, parent):
-    '''
-    Import "static path" modules
-    '''
-    try:
-        top_mod = __import__(path, globals(), locals(), [])
-    except Exception as exc:  # pylint: disable=broad-except
-        return LoadError(
-                'Failed to load module {} at path {}'.format(modname, path),
-                exception=exc,
-                traceback=stdlib_traceback.format_exc())
-    comps = path.split('.')
-    if len(comps) < 2:
-        mod = top_mod
-    else:
-        mod = top_mod
-        for subname in comps[1:]:
-            mod = getattr(mod, subname)
-    sys.modules[modname] = mod
-    # Clean up path from sys.modules
-    del sys.modules[path]
-
-    return mod
 
 
 def load_virtual(parent, virtual, mod, bname):

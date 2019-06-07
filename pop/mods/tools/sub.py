@@ -9,9 +9,9 @@ import pop.hub
 
 
 def add(hub,
-        subname,
-        sub=None,
         pypath=None,
+        subname=None,
+        sub=None,
         static=None,
         contracts_pypath=None,
         contracts_static=None,
@@ -31,7 +31,7 @@ def add(hub,
     '''
     Add a new subsystem to the hub
     '''
-    subname = subname
+    subname = subname if subname else pypath.split('.')[-1]
     if sub:
         root = sub
     else:
@@ -73,7 +73,7 @@ def remove(hub, subname):
 
 def load_all(hub, subname):
     '''
-    Load al modules under a given pop
+    Load all modules under a given pop
     '''
     if hasattr(hub, subname):
         sub = getattr(hub, subname)
@@ -114,7 +114,7 @@ def load_subdirs(hub, sub):
             if os.path.isdir(full):
                 # Load er up!
                 hub.tools.sub.add(
-                        fn,
+                        subname=fn,
                         sub=sub,
                         static=[full],
                         virtual=sub._virtual,

@@ -16,9 +16,7 @@ def test_load_error():
     PopError is raised.
     '''
     hub = pop.hub.Hub()
-    hub.tools.sub.add(
-            'mods',
-            pypath='tests.mods',)
+    hub.tools.sub.add('tests.mods')
     with pytest.raises(pop.exc.PopError) as exc:
         hub.mods.bad.func()
     assert 'Failed to load bad' in str(exc)
@@ -27,9 +25,9 @@ def test_load_error():
 def test_load_error_stop_on_failures():
     hub = pop.hub.Hub()
     hub.tools.sub.add(
-            'mods',
-            pypath='tests.mods',
-            stop_on_failures=True)
+        'tests.mods',
+        stop_on_failures=True
+    )
     with pytest.raises(pop.exc.PopError) as exc:
         hub.mods.bad.func()['verror']
     assert 'returned virtual error' in str(exc)
@@ -43,9 +41,9 @@ def _test_calling_load_error_raises_pop_error():
     '''
     hub = pop.hub.Hub()
     hub.tools.sub.add(
-            'mods',
-            pypath='tests.mods',
-            stop_on_failures=True)
+        'tests.mods',
+        stop_on_failures=True
+    )
     with pytest.raises(pop.exc.PopError) as exc:
         hub.mods.bad_import.func()
     assert 'Failed to load python module' in str(exc)
@@ -57,8 +55,8 @@ def test_load_error_traceback_stop_on_failures():
     '''
     hub = pop.hub.Hub()
     hub.tools.sub.add(
-            'mods',
             pypath='tests.mods.bad_import',
+            subname='mods',
             stop_on_failures=True)
     with pytest.raises(pop.exc.PopError) as exc:
         hub.mods.bad_import.func()
@@ -72,8 +70,8 @@ def test_verror_does_not_overload_loaded_mod():
     '''
     hub = pop.hub.Hub()
     hub.tools.sub.add(
-            'mods',
-            pypath='tests.mods.same_vname',
+        pypath='tests.mods.same_vname',
+        subname='mods',
     )
     assert hub.mods.vname.func() == 'wha? Yep!'
 
@@ -85,8 +83,9 @@ def _test_load_error_by_virtualname():
     '''
     hub = pop.hub.Hub()
     hub.tools.sub.add(
-            'mods',
-            pypath='tests.mods',)
+        pypath='tests.mods',
+        subname='mods',
+    )
     with pytest.raises(pop.exc.PopError) as exc:
         hub.mods.virtual_bad.func()
     assert 'returned virtual error' in str(exc)

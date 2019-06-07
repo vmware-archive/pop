@@ -281,10 +281,10 @@ def prep_loaded_mod(this_sub, mod, mod_name, contracts):
     '''
     # pylint: disable=protected-access
     lmod = LoadedMod(mod_name)
+    ref = f'{this_sub._subname}.{mod_name}'  # getattr(hub, ref) should resolve to this module
     for attr in getattr(mod, '__load__', dir(mod)):
         name = getattr(mod, '__func_alias__', {}).get(attr, attr)
         func = getattr(mod, attr)
-        ref = f'{this_sub._subname}.{mod_name}.{name}'  # getattr(hub, ref) should resolve to this Contracted
         if not this_sub._omit_vars:
             if not inspect.isfunction(func) and not inspect.isclass(func) and \
                     type(func).__name__ != 'cython_function_or_method':
@@ -297,7 +297,7 @@ def prep_loaded_mod(this_sub, mod, mod_name, contracts):
             continue
         if inspect.isfunction(func) or inspect.isbuiltin(func) or \
                 type(func).__name__ == 'cython_function_or_method':
-            obj = pop.contract.Contracted(this_sub._hub, contracts, func, ref)
+            obj = pop.contract.Contracted(this_sub._hub, contracts, func, ref, name)
             if not this_sub._omit_func:
                 if this_sub._pypath and not func.__module__.startswith(mod.__name__):
                     # We're only interested in functions defined in this module, not
@@ -309,7 +309,7 @@ def prep_loaded_mod(this_sub, mod, mod_name, contracts):
                     # Allow the function to be called directly from within the module while
                     # not breaking out of contracts. The original function name, not the aliased one
                     # or we'd risk overwriting python keywords, etc...
-                    direct_obj = pop.contract.ContractedRedirect(func=func, ref=ref)
+                    direct_obj = pop.contract.Redirect(func, ref, name)
                     setattr(sys.modules[mod.__name__], attr, direct_obj)
         else:
             klass = func

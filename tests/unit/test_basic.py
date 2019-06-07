@@ -81,7 +81,7 @@ def test_iter_vars():
     hub.tools.sub.add('mods', pypath='tests.mods')
     funcs = []
     for var in hub.tools.sub:
-        funcs.append(var.__name__)
+        funcs.append(var.name)
     assert funcs == sorted(hub.tools.sub._funcs.keys())
 
 
@@ -91,7 +91,7 @@ def test_iter_vars_nested():
     funcs = []
     for _ in hub.tools.sub:
         for var in hub.tools.sub:
-            funcs.append(var.__name__)
+            funcs.append(var.name)
         break
     assert funcs == sorted(hub.tools.sub._funcs.keys())
 
@@ -265,6 +265,7 @@ def test_mod_init():
         init=False
     )
     assert hub.context == {}
+
 
 def test_pack_init():
     hub = pop.hub.Hub()

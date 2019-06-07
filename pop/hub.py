@@ -67,8 +67,7 @@ class Hub:
         '''
         call_frame = inspect.stack()[2]
         contracted = call_frame[0].f_locals['self']
-        mod_ref = contracted.ref.split('.')[:-1]
-        return getattr(self, '.'.join(mod_ref))
+        return getattr(self, contracted.ref)
 
     def _remove_subsystem(self, subname):
         '''

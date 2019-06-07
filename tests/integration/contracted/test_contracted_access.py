@@ -4,10 +4,8 @@ from pop.hub import Hub
 def hub():
     hub = Hub()
     hub.tools.sub.add(
-        'mods',
         pypath='tests.integration.contracted.mods',
-        contracts_pypath='tests.integration.contracted.contracts',
-        default_contracts='contracted_access',
+        subname='mods',
     )
     return hub
 

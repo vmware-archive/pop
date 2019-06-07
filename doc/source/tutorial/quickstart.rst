@@ -2,55 +2,66 @@
 Quickstart
 ==========
 
-Using pop to create a plugin oriented project is easy. Pop comes with a simple script to build
-the basic parts of a pop project. The `pop-seed` script builds the directory structure and
-adds a setup.py that autodetects all new plugins and a script for your new project.
+Using pop to create a plugin oriented project is easy. This tutorial will help you
+learn how `pop` works and how to make a project. Once you understand how to build
+some basic tools in `pop` you can use the `pop-seed` tool to make setting up new
+projects easy.
 
-Just pick a directory to start in and run `pop-seed`:
+Start by making a new directory for your project:
 
 .. code-block:: bash
 
-    pop-seed poppy
+    mkdir poppy
 
-This command will make a new project called poppy, the setup.py, requirements.txt, a
-script to run the project and the directories to hold your first plugin subsystem.
-
-With these assets at hand you can run the application however you please, via system
-installation, pyvenv, docker etc.
-
-In the scripts directory you will find a script called `poppy`. If you open it up you
-will see the simple creation of a pop project. The creation of the hub, and the setup of
-the first plugin subsystem. As well as the call to run the first code.
-
-The first code to run is in the file `poppy/mods/poppy/init.py`. There you will find
-the `new` function. The `new` function is used to initialize a plugin subsystem when needed.
-
-Next open up the poppy subsystem's `init.py` file:
-
-`poppy/mods/poppy/init.py`:
-
-
-.. code-block:: python
-
-    def new(hub):
-        print('poppy works')
-
-
-The `pop-seed` application has created something that is very central to the Plugin Oriented Programming
-design, the `hub`.
+Now create a simple python script called *run.py* to create the `hub` and start the
+plugin system.
 
 The `hub` is the root of the namespace that `pop` opperates on. Don't worry, it is not
 that complicated! Think of the hub like a big `self` variable that is shared accross
 your entire application. The hub allows you to save data that is relative to your plugins
 while still allowing that data to be shared safely accross the appication.
 
+.. code-block:: python
+
+    import pop.hub
+
+    # Create the hub
+    hub = pop.hub.Hub()
+    # Load up your first plugin subsystem called "plugins"
+    hub.tools.sub.add('plugins', pypath='poppy.plugins')
+
+This script has created your `hub` and loaded up your first subsystem, or `sub`. The
+`pypath` option tells `pop` where to load up the python package that contains the plugins.
+So lets create the python package and make it start to work! Make a new directory
+called poppy as the base python package and then another for your plugins.
+
+.. code-block:: bash
+
+    mkdir -p poppy/plugins
+
+Now that you are in the new poppy directory create the new plugin subsystem's initializer.
+Create a file called *poppy/plugins/init.py* and give it an `__init__` function. Like a
+class you can initialize a new plugin subsystem, or a new module.
+
+.. code-block:: python
+
+    def __init__(hub):
+        print('Hello World!!')
+
+Now that you have a plugin with an initializer you can run it! Go back to the same directory
+as the *run.py* file and execute it.
+
+.. code-block:: bash
+
+    python3 run.py
+
 With a project up and running you can now add more plugins, more code and more subsystems!
 
 Adding Configuration Data
 =========================
 
-Once you have the basic structure of your application build out for you by `pop-seed`,
-you can easily add configuration data to your project.
+Now that you have the basic structure of your application you can easily add configuration
+data to your project.
 
 Loading configuration data into a project looks easy at first but quickly becomes difficult.
 To solve this issue `pop` comes with a system to make configuration loading easy.
@@ -66,11 +77,8 @@ The `conf` system in `pop` solves this issue by making a single location where y
 define your configuration data. You can also merge the configuration data from multiple `pop`
 projects, just like you can add other `pop` projects' plugin subsystems to your project's `hub`!
 
-Using the `conf` system, is easy! When you ran `pop-seed` the first time it created a file called
-`poppy/config.py`.
-
-Open up that file and add some configuration options:
-
+Using the `conf` system, is easy! Create a file called `poppy/config.py` and populate it with
+your configuration data.
 
 .. code-block:: python
 
@@ -86,15 +94,12 @@ Open up that file and add some configuration options:
                 'help': 'The port to bind to',
                 },
             }
-    CONFIG = {}
-    GLOBAL = {}
-    SUBS = {}
 
-Now lets change the `hub.poppy.init.new` function to load up the project's config!
+Now lets change the `__init__` function in *poppy/plugins/init.py* to load up the project's config!
 
 .. code-block:: python
 
-    def new(hub):
+    def __init__(hub):
         hub.tools.conf.integrate(['poppy'], loader='yaml', roots=True)
 
 Now the configuration data has been loaded, if you run poppy with `--help` you will see
@@ -133,10 +138,18 @@ plugin subsystem:
 
 .. code-block:: python
 
-    def new(hub):
+    def __init__(hub):
         hub.tools.conf.integrate(['poppy'], loader='yaml', roots=True)
-        hub.tools.sub.add('rpc', pypath='poppy.mods.rpc')
+        hub.tools.sub.add('rpc', pypath='poppy.rpc')
 
 Now that we are able to load up a new subsystem we need to define it in our code! Start by making
-a new directory inside of `poppy/mods` called `rpc`. When we added the new `sub` we named it `rpc`
-and we specified the path to find the `rpc` `sub` to be in the `poppy.mods.rpc`.
+a new directory inside of `poppy/` called `rpc`. When we added the new `sub` we named it `rpc`
+and we specified the path to find the `rpc` `sub` to be in the `poppy.rpc`.
+
+Now create the *poppy/rpc/init.py* file and make an rpc server. This rpc server will expose
+all of the functions in the `rpc` plugin subsystem over a simple http server.
+
+.. code-block:: python
+
+    def __init__(hub):
+        # Make a simplehttp rpc server

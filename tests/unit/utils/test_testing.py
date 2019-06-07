@@ -260,7 +260,7 @@ class TestContractHub:
     def test_contract_hub_inspect(self):
         # demo ways that we can inspect the contract system
         assert len(self.contract_hub.mods.testing.echo.contracts) == 1
-        assert self.contract_hub.mods.testing.echo.contracts[0].__package__ == 'pop.mods.contracts'
+        assert 'call_signature_func' in dir(self.contract_hub.mods.testing.echo.contracts[0])
 
     def test_contract_hub_modify(self):
         contract_hub = testing.ContractHub(self.hub)

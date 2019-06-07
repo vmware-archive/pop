@@ -61,7 +61,7 @@ def test_iter_hub():
     hub.tools.sub.add('mods', pypath='tests.mods')
     subs = []
     for sub in hub:
-        subs.append(sub._modname)
+        subs.append(sub._subname)
     assert subs == sorted(hub._subs.keys())
 
 
@@ -71,7 +71,7 @@ def test_iter_hub_nested():
     subs = []
     for _ in hub:
         for sub in hub:
-            subs.append(sub._modname)
+            subs.append(sub._subname)
         break
     assert subs == sorted(hub._subs.keys())
 

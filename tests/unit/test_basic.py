@@ -147,6 +147,16 @@ def test_contract():
         hub.mods.test.ping(4)
 
 
+def test_inline_contract():
+    hub = pop.hub.Hub()
+    hub.tools.sub.add(
+            'cmods',
+            pypath='tests.cmods',
+            )
+    assert hub.cmods.ctest.cping()
+    assert hub.CPING
+
+
 def test_no_contract():
     hub = pop.hub.Hub()
     hub.tools.sub.add('mods', pypath='tests.mods')

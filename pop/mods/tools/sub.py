@@ -110,6 +110,8 @@ def load_subdirs(hub, sub):
         for fn in os.listdir(dir_):
             if fn.startswith('_'):
                 continue
+            if fn == 'contracts':
+                continue
             full = os.path.join(dir_, fn)
             if os.path.isdir(full):
                 # Load er up!

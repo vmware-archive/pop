@@ -31,3 +31,14 @@ def dir_list(subname, p_name, pypath=None, static=None, pyroot=None, staticroot=
             ret.append(full)
     ret.extend(static)
     return ret
+
+def inline_dirs(dirs, subdir):
+    '''
+    Look for the named subdir in the list of dirs
+    '''
+    ret = []
+    for dir_ in dirs:
+        check = os.path.join(dir_, subdir)
+        if os.path.isdir(check):
+            ret.append(check)
+    return ret

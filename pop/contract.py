@@ -46,7 +46,7 @@ class ContractedContext(namedtuple('ContractedContext', ('func', 'args', 'kwargs
         return self.cache['__bound_signature__'].arguments
 
 
-def load_contract(contracts, default_contracts, mod):
+def load_contract(contracts, default_contracts, mod, name):
     '''
     return a Contract object loaded up
     '''
@@ -54,6 +54,12 @@ def load_contract(contracts, default_contracts, mod):
     if not contracts:
         return raws
     loaded_contracts = []
+    if getattr(contracts, name):
+        loaded_contracts.append(name)
+        raws.append(getattr(contracts, name))
+    if getattr(contracts, 'init'):
+        loaded_contracts.append('init')
+        raws.append(getattr(contracts, 'init'))
     if default_contracts:
         for contract in default_contracts:
             if contract in loaded_contracts:

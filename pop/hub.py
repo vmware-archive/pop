@@ -164,6 +164,12 @@ class Sub:
             self._pyroot,
             self._staticroot,
             )
+        self._contract_dirs.extend(
+            pop.dirs.inline_dirs(
+                self._dirs,
+                'contracts'
+                )
+            )
         if self._contract_dirs:
             self._contracts = Sub(
                 self._hub,
@@ -342,7 +348,8 @@ class Sub:
         contracts = pop.contract.load_contract(
                 self._contracts,
                 self._default_contracts,
-                mod)
+                mod,
+                vret['name'])
         name = vret['name']
         if name.endswith(EXT_SUFFIXES):
             for ext in EXT_SUFFIXES:

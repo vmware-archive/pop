@@ -80,7 +80,7 @@ SCRIPT = '''import pop.hub
 
 def start():
     hub = pop.hub.Hub()
-    hub.tools.sub.add('%%NAME%%', pypath='%%NAME%%.mods.%%NAME%%', contracts_pypath='%%NAME%%.contracts.%%NAME%%', init=True)
+    hub.tools.sub.add('%%NAME%%', pypath='%%NAME%%.%%NAME%%')
 '''
 
 INIT = '''def __init__(hub):
@@ -107,10 +107,11 @@ def new(hub):
     '''
     hub.PATH = os.getcwd()
     name = hub.opts['seed_name']
-    hub.tools.seed.mkdir(name, 'mods', name)
-    hub.tools.seed.mkdir(name, 'contracts', name)
+    hub.tools.seed.mkdir(name, name)
+    hub.tools.seed.mkdir(name, name, 'contracts')
     hub.tools.seed.mksetup(name)
     hub.tools.seed.mkscript(name)
+    hub.tools.seed.mkrun(name)
     hub.tools.seed.mkinit(name)
     hub.tools.seed.mkversion(name)
     hub.tools.seed.mkconf(name)
@@ -162,11 +163,23 @@ def mkscript(hub, name):
         fp.write(script_str)
 
 
+def mkrun(hub, name):
+    '''
+    Create the convenience run.py script allowing the project to
+    be executed from the local directory
+    '''
+    path = os.path.join(hub.PATH, 'run.py')
+    run_str = SCRIPT.replace('%%NAME%%', name)
+    run_str += '\n\nstart()'
+    with open(path, 'w+') as fp:
+        fp.write(run_str)
+
+
 def mkinit(hub, name):
     '''
     Create the intial init.py
     '''
-    path = os.path.join(hub.PATH, name, 'mods', name, 'init.py')
+    path = os.path.join(hub.PATH, name, name, 'init.py')
     init_str = INIT.replace('%%NAME%%', name)
     with open(path, 'w+') as fp:
         fp.write(init_str)

@@ -151,5 +151,34 @@ all of the functions in the `rpc` plugin subsystem over a simple http server.
 
 .. code-block:: python
 
+    import aiohttp
+
     def __init__(hub):
-        # Make a simplehttp rpc server
+        app = asyncio.web.Application()
+        app.add_routes([asyncio.web.get('/', hub.rpc.init.router)])
+        aiohttp.web.run_app(app)
+
+    async def router(hub, request):
+        data = request.json()
+        if 'ref' in data:
+            return web.json_response(getattr(hub.rpc, data['ref'])(**data.get('kwargs')))
+
+Congradulations! You now have a working rpc server that takes json requests and routes to
+modules in the `rpc` sub. Now we just need to make a module in the `rpc` sub to route the
+requests to, lets call this file *poppy/rpc/math.py*:
+
+.. code-block:: python
+
+    async def fib(hub, num=10):
+        num = int(num)
+        if num < 2:
+            return num
+        prev = 0
+        curr = 1
+        i = 1
+        while i < num:
+            prev, curr = curr, prev + curr
+            i += 1
+        return curr
+
+Now your rpc server can compute the Fibonacci sequence.

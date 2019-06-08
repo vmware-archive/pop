@@ -318,7 +318,6 @@ class Sub:
                 mname,
                 iface,
                 self._scan[iface][bname]['path'],
-                self
         )
         if self._process_load_error(mod):
             self._load_errors[os.path.basename(bname)] = mod

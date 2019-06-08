@@ -1,21 +1,15 @@
-# # -*- coding: utf-8 -*-
-# '''
-# Load the files detected from the scanner
-# '''
-# # Import Python libs
+# -*- coding: utf-8 -*-
+'''
+Load the files detected from the scanner
+'''
+# Import Python libs
 import os
 import sys
 import inspect
 import importlib
+import importlib.util
 import importlib.machinery
 import traceback as stdlib_traceback
-
-# Import 3rd-party libs
-try:
-    import pyximport
-    HAS_CYTHON = True
-except ImportError:
-    HAS_CYTHON = False
 
 # Import pop libs
 import pop.exc
@@ -61,15 +55,65 @@ class LoadError:
         return '<{} edict={!r}>'.format(self.__class__.__name__, self.edict)
 
 
-def load_mod(modname, form, path, parent):
+def load_mod(modname, form, path):
     '''
     Load a single module
     '''
     this = sys.modules[__name__]
-    return getattr(this, form)(modname, path, parent)
+    return getattr(this, form)(modname, path)
 
 
-def python(modname, path, parent):
+def _generate_module(name):
+    '''
+    Generate a module at runtime and insert it in sys.modules
+    '''
+    if name in sys.modules:
+        return sys.modules[name]
+
+    code = "'''POP sub auto generated parent module for {0}'''".format(name.split('.')[-1])
+    module = stdlib_imp.new_module(name)
+    exec(code, module.__dict__)  # pylint: disable=exec-used
+    sys.modules[name] = module
+    return module
+
+
+def _populate_sys_modules(mod):
+    '''
+    This is a hack to populate sys.modules with the modules that pop loads
+    while making sure that parent modules have the attribute for the child
+    modules.
+    '''
+    mod_parts = mod.split('.')
+    imp_mod = mod_parts.pop(0)
+    gen_mod = _generate_module(imp_mod)
+    while True:
+        if not mod_parts:
+            break
+        part = mod_parts.pop(0)
+        imp_mod += '.' + part
+        gen_child_mod = _generate_module(imp_mod)
+        setattr(gen_mod, part, gen_child_mod)
+        gen_mod = gen_child_mod
+
+
+def ext(modname, path):
+    '''
+    Attempt to load the named python modules
+    '''
+    modname = '.'.join(modname.split('.')[:-1])
+    _populate_sys_modules(modname)
+    try:
+        efl = importlib.machinery.ExtensionFileLoader(modname, path)
+        mod = efl.create_module(importlib.util.find_spec(modname))
+        return efl.exec_module(mod)
+    except Exception as exc:  # pylint: disable=broad-except
+        return LoadError(
+                'Failed to load python module {} at path {}'.format(modname, path),
+                exception=exc,
+                traceback=stdlib_traceback.format_exc())
+
+
+def python(modname, path):
     '''
     Attempt to load the named python modules
     '''
@@ -83,7 +127,7 @@ def python(modname, path, parent):
                 traceback=stdlib_traceback.format_exc())
 
 
-def load_virtual(parent, virtual, mod, bname):
+def load_virtual(hub, virtual, mod, bname):
     '''
     Run the virtual function to name the module and check for all loader
     errors
@@ -113,7 +157,7 @@ def load_virtual(parent, virtual, mod, bname):
         return {'name': name}
 
     try:
-        vret = mod.__virtual__(parent)
+        vret = mod.__virtual__(hub)
     except Exception as exc:  # pylint: disable=broad-except
         err = LoadError(
                 'Virtual threw exception in mod {}'.format(bname),

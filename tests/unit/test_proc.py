@@ -2,9 +2,7 @@
 Test the proc subsystem
 '''
 # Import python libs
-import asyncio
 import tempfile
-import os
 # Import pop libs
 import pop.hub
 

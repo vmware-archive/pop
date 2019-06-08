@@ -3,10 +3,7 @@ from pop.hub import Hub
 
 def hub():
     hub = Hub()
-    hub.tools.sub.add(
-        pypath='tests.integration.contracted.mods',
-        subname='mods',
-    )
+    hub.tools.sub.add('tests.integration.contracted.mods')
     return hub
 
 

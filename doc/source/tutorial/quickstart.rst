@@ -28,7 +28,7 @@ while still allowing that data to be shared safely accross the appication.
     # Create the hub
     hub = pop.hub.Hub()
     # Load up your first plugin subsystem called "plugins"
-    hub.tools.sub.add('plugins', pypath='poppy.plugins')
+    hub.tools.sub.add('poppy.plugins')
 
 This script has created your `hub` and loaded up your first subsystem, or `sub`. The
 `pypath` option tells `pop` where to load up the python package that contains the plugins.

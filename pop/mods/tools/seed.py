@@ -80,7 +80,7 @@ SCRIPT = '''import pop.hub
 
 def start():
     hub = pop.hub.Hub()
-    hub.tools.sub.add('%%NAME%%', pypath='%%NAME%%.%%NAME%%')
+    hub.tools.sub.add('%%NAME%%.%%NAME%%')
 '''
 
 INIT = '''def __init__(hub):

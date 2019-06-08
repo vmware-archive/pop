@@ -15,11 +15,11 @@ sent back out to the calling function.
 Usage
 =====
 
-Start by adding the proc subsystem to your hub (make sure to `init=True`!):
+Start by adding the proc subsystem to your hub:
 
 .. code-block:: python
 
-    hub.tools.sub.add('proc', pypath='pop.mods.proc', init=True)
+    hub.tools.sub.add('pop.mods.proc')
 
 Now the proc subsystem is available. Create a new process pool:
 
@@ -40,7 +40,7 @@ can get a nice battery of functions to call:
 
 .. code-block:: python
 
-    await hub.proc.run.add_sub('Workers', 'actor', pypath='act.mods.actor', init=True)
+    await hub.proc.run.add_sub('Workers', 'act.mods.actor')
 
 The pool can now be sent functions to be run and awaited for. The functions
 can be either async functions or just plain python functions. But the real power

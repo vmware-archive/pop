@@ -99,16 +99,23 @@ def verify_contract(hub, raws, mod):  # pylint: disable=unused-argument
                     raise pop.exc.ContractFuncException('{} is not a function'.format(fun_name))
 
 
-class ContractedRedirect:  # pylint: disable=too-few-public-methods
-    def __init__(self, func, ref):
+class Wrapper:  # pylint: disable=too-few-public-methods
+    def __init__(self, func, ref, name):
         self.func = func
-        self.func_name = func.__name__
-        self.__name__ = func.__name__
-        self.signature = inspect.signature(self.func)
         self.ref = ref
+        self.name = name
+        self.signature = inspect.signature(self.func)
 
     def __call__(self, *args, **kwargs):
-        # find hub, then strip it - it will be added later
+        self.func(*args, **kwargs)
+
+    def __repr__(self):
+        return '<{} func={}.{}>'.format(self.__class__.__name__, self.func.__module__, self.name)
+
+
+class Redirect(Wrapper):
+    def __call__(self, *args, **kwargs):
+        # grab hub
         if args:
             hub = args[0]
             args = args[1:]
@@ -116,20 +123,17 @@ class ContractedRedirect:  # pylint: disable=too-few-public-methods
             for hub_name in self.signature.parameters:
                 break
             hub = kwargs.pop(hub_name)
-        # redirect to Contracted associated with the passed hub
-        return getattr(hub, self.ref)(*args, **kwargs)
-
-    def __repr__(self):
-        return '<{} func={}.{}>'.format(self.__class__.__name__, self.func.__module__, self.func.__name__)
+        # redirect the call to that hub
+        return getattr(hub, f'{self.ref}.{self.name}')(*args, **kwargs)
 
 
-class Contracted(ContractedRedirect):  # pylint: disable=too-few-public-methods
+class Contracted(Wrapper):  # pylint: disable=too-few-public-methods
     '''
     This class wraps functions that have a contract associated with them
     and executes the contract routines
     '''
-    def __init__(self, hub, contracts, func, ref):
-        super().__init__(func, ref)
+    def __init__(self, hub, contracts, func, ref, name):
+        super().__init__(func, ref, name)
         self.hub = hub
         self.contracts = contracts if contracts else []
         self._load_contracts()
@@ -137,7 +141,7 @@ class Contracted(ContractedRedirect):  # pylint: disable=too-few-public-methods
     def _get_contracts_by_type(self, contract_type='pre'):
         matches = []
 
-        fn_contract_name = '{}_{}'.format(contract_type, self.func_name)
+        fn_contract_name = '{}_{}'.format(contract_type, self.name)
         for contract in self.contracts:
             if hasattr(contract, fn_contract_name):
                 matches.append(getattr(contract, fn_contract_name))

@@ -11,7 +11,7 @@ from pop.hub import Hub
 class TestLazyPop:
     def test_lazy(self):
         hub = Hub()
-        hub.tools.sub.add('mods', pypath='tests.mods')
+        hub.tools.sub.add('tests.mods')
 
         # pylint: disable=pointless-statement
         l_hub = testing.MockHub(hub)
@@ -26,14 +26,14 @@ class TestLazyPop:
     def test_in_dict(self):
         # for autocompletion, all attributes should exist, even if it hasn't been called.
         hub = Hub()
-        hub.tools.sub.add('mods', pypath='tests.mods')
+        hub.tools.sub.add('tests.mods')
 
         l_hub = testing._LazyPop(hub)
         assert 'mods' in l_hub.__dict__
 
     def test_duplicate_object(self):
         hub = Hub()
-        hub.tools.sub.add('mods', pypath='tests.mods')
+        hub.tools.sub.add('tests.mods')
 
         hub.test_val = sentinel.test_val
         hub.mods.test_val = sentinel.test_val
@@ -47,7 +47,7 @@ class TestLazyPop:
 
     def test_duplicate_hub(self):
         hub = Hub()
-        hub.tools.sub.add('mods', pypath='tests.mods')
+        hub.tools.sub.add('tests.mods')
 
         hub.hub = hub
         hub.mods.hub = hub
@@ -61,8 +61,8 @@ class TestLazyPop:
 
     def test_recursive_subs(self):
         hub = Hub()
-        hub.tools.sub.add('mods', pypath='tests.mods')
-        hub.tools.sub.add('nest', sub=hub.mods, pypath='tests.mods.nest')
+        hub.tools.sub.add('tests.mods')
+        hub.tools.sub.add('tests.mods.nest', sub=hub.mods)
         l_hub = testing._LazyPop(hub)
 
         assert hub.mods.nest.basic.ret_true()
@@ -72,7 +72,7 @@ class TestLazyPop:
 
     def test_var_exists_enforcement(self):
         hub = Hub()
-        hub.tools.sub.add('mods', pypath='tests.mods')
+        hub.tools.sub.add('tests.mods')
 
         hub.FOO = 'foo'
         hub.mods.FOO = 'foo'
@@ -152,7 +152,7 @@ class TestStripHub:
 
 class TestMockHub:
     hub = Hub()
-    hub.tools.sub.add('mods', pypath='tests.mods')
+    hub.tools.sub.add('tests.mods')
     mock_hub = testing.MockHub(hub)
 
     def test_mock_hub_dereference_errors(self):
@@ -188,7 +188,7 @@ class TestMockHub:
 
 class TestNoContractHub:
     hub = Hub()
-    hub.tools.sub.add('mods', pypath='tests.mods')
+    hub.tools.sub.add('tests.mods')
     nocontract_hub = testing.NoContractHub(hub)
 
     def test_call(self):
@@ -198,7 +198,7 @@ class TestNoContractHub:
 
 class TestMockContracted:
     hub = Hub()
-    hub.tools.sub.add('mods', pypath='tests.mods', contracts_pypath='tests.contracts')
+    hub.tools.sub.add('tests.mods', contracts_pypath='tests.contracts')
 
     def test_hub_contract(self):
         assert self.hub.mods.testing.echo('foo') == 'contract foo'
@@ -239,7 +239,7 @@ class TestMockContracted:
 
 class TestContractHub:
     hub = Hub()
-    hub.tools.sub.add('mods', pypath='tests.mods', contracts_pypath='tests.contracts')
+    hub.tools.sub.add('tests.mods', contracts_pypath='tests.contracts')
     contract_hub = testing.ContractHub(hub)
 
     def test_hub_contract(self):
@@ -260,7 +260,7 @@ class TestContractHub:
     def test_contract_hub_inspect(self):
         # demo ways that we can inspect the contract system
         assert len(self.contract_hub.mods.testing.echo.contracts) == 1
-        assert self.contract_hub.mods.testing.echo.contracts[0].__package__ == 'pop.mods.contracts'
+        assert 'call_signature_func' in dir(self.contract_hub.mods.testing.echo.contracts[0])
 
     def test_contract_hub_modify(self):
         contract_hub = testing.ContractHub(self.hub)

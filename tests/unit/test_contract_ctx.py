@@ -8,8 +8,8 @@ import pytest
 def test_contract_context():
     hub = pop.hub.Hub()
     hub.tools.sub.add(
-            'mods',
             pypath='tests.mods.contract_ctx',
+            subname='mods',
             contracts_pypath='tests.contracts'
             )
     assert hub.mods.ctx.test() == 'contract executed'
@@ -20,8 +20,8 @@ def test_contract_context():
 def test_contract_context_update():
     hub = pop.hub.Hub()
     hub.tools.sub.add(
-            'mods',
             pypath='tests.mods.contract_ctx',
+            subname='mods',
             contracts_pypath='tests.contracts'
             )
     assert hub.mods.ctx_update.test(True) == 'contract executed'
@@ -32,8 +32,8 @@ def test_contract_context_update():
 def test_contract_ctx_argument_retrieval():
     hub = pop.hub.Hub()
     hub.tools.sub.add(
-            'mods',
             pypath='tests.mods.contract_ctx',
+            subname='mods',
             contracts_pypath='tests.contracts'
             )
     assert hub.mods.ctx_args.test('yes', yes=True) is True

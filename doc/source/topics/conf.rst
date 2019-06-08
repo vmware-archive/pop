@@ -23,11 +23,11 @@ All in all, `conf` should make your life much easier!
 Getting Started
 ===============
 
-To use `conf` start by adding the `conf` subsystem to your hub (`conf` does not have an init):
+To use `conf` start by adding the `conf` subsystem to your hub:
 
 .. code-block:: python
 
-    hub.tools.sub.add('conf', pypath='pop.mods.conf')
+    hub.tools.sub.add('pop.mods.conf')
 
 Next create a python dict with your configuration data, we will start with something simple:
 

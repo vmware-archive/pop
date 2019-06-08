@@ -67,8 +67,7 @@ class Hub:
         '''
         call_frame = inspect.stack()[2]
         contracted = call_frame[0].f_locals['self']
-        mod_ref = contracted.ref.split('.')[:-1]
-        return getattr(self, '.'.join(mod_ref))
+        return getattr(self, contracted.ref)
 
     def _remove_subsystem(self, subname):
         '''
@@ -100,8 +99,7 @@ class Sub:
     def __init__(
             self,
             hub,
-            modname,
-            subname=None,
+            subname,
             pypath=None,
             static=None,
             contracts_pypath=None,
@@ -124,8 +122,7 @@ class Sub:
         self._hub = hub
         self._subs = {}
         self._mem = {}
-        self._modname = modname
-        self._subname = subname if subname else modname
+        self._subname = subname
         self._pypath = ex_path(pypath)
         self._static = ex_path(static)
         self._contracts_pypath = ex_path(contracts_pypath)
@@ -173,7 +170,7 @@ class Sub:
         if self._contract_dirs:
             self._contracts = Sub(
                 self._hub,
-                f'{self._modname}.contracts',
+                f'{self._subname}.contracts',
                 static=self._contract_dirs,
                 is_contract=True,
             )
@@ -189,7 +186,6 @@ class Sub:
     def __getstate__(self):
         return dict(
             _hub=self._hub,
-            _modname=self._modname,
             _subname=self._subname,
             _pypath=self._pypath,
             _static=self._static,
@@ -239,9 +235,9 @@ class Sub:
         except pop.exc.PopLookupError:
             return False
 
-    @property
-    def __name__(self):
-        return '{}.{}'.format(self._mod_basename, self._modname)
+    # @property
+    # def __name__(self):
+    #     return '{}.{}'.format(self._mod_basename, self._subname)
 
     def __iter__(self):
         def iter(loaded):
@@ -317,7 +313,7 @@ class Sub:
         if bname not in self._scan[iface]:
             raise pop.exc.PopLoadError(
                 'Bad call to load item, no bname {} in iface {}'.format(bname, iface))
-        mname = '{}.{}'.format(self.__name__, os.path.basename(bname))
+        mname = '{}.{}'.format(self._pypath, os.path.basename(bname))
         mod = pop.loader.load_mod(
                 mname,
                 iface,

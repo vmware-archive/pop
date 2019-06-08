@@ -27,6 +27,7 @@ enough to start the application. The spine typically runs the following things:
 * Load up additional subsystems
 * Start up an asyncio loop
 * Start the main coroutines or functions
+* Start the patterns in the subs' *init.py* files
 
 Beacon Pattern
 ==============
@@ -120,3 +121,51 @@ patter could look like this plugin called *os.py*:
 The collection pattern we used here allowed the modules to populate a dict on the hub. But
 we could have just as easily returned the data we wanted to put on the hub and had the
 function in the *init.py* aggregate the data.
+
+Flow Pattern
+============
+
+The flow pattern is used for flow based interfaces. This follows an async pattern where
+data is queued up and passed into and/or out of the subsystem. This is an excellent
+pattern for applications that do data processing. Data can be loaded into the pattern,
+processed and sent forward to the next interface for processing. This pattern is used to
+link together multiple flow subsystems or to take data from a beacon pattern and process it.
+
+In the *init.py* file start a coroutine that waits on an async queue that is feed by another
+subsystem.
+
+.. code-block:: python
+
+    import asyncio
+
+    async def start(hub, mod):
+        while True:
+            data = await hub.beacons.QUE.get()
+            ret = await getattr(f'flows.{mod}.process'){data}
+            await hub.flows.QUE.put(ret)
+
+Using a flow pattern makes pipelining concurrent data fast and efficient. For a more elegant
+example take a look at the internals of the `umbra` project.
+
+Router Pattern
+==============
+
+The router pattern is used to take input data and route it to the correct function and route
+it back. This is typically used with network interfaces. A typicall *init.py* will look something
+like this:
+
+.. code-block:: python
+
+    import aiohttp
+
+    def start(hub):
+        app = asyncio.web.Application()
+        app.add_routes([asyncio.web.get('/', hub._.router)])
+        aiohttp.web.run_app(app)
+
+    async def router(hub, request):
+        data = request.json()
+        if 'ref' in data:
+            return web.json_response(getattr(hub.server, data['ref'])(**data.get('kwargs')))
+
+Now the plugin subsystem can be populated with modules that expose request functions

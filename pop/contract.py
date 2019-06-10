@@ -114,6 +114,10 @@ class Wrapper:  # pylint: disable=too-few-public-methods
 
 
 class Redirect(Wrapper):
+    '''
+    Replaces functions in loaded modules, so that direct calls (explicitly
+    pass a hub) use the correct hub.
+    '''
     def __call__(self, *args, **kwargs):
         # grab hub
         if args:

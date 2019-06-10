@@ -16,6 +16,15 @@ Start by making a new directory for your project:
 Now create a simple python script called *run.py* to create the `hub` and start the
 plugin system.
 
+.. note::
+
+    Normally a python project uses `setuptools` and a setup.py file. Because this tutorial
+    is about `pop` we skip this part and use the *run.py* script. This can make development
+    easier because you can run your application directly from your checkout.
+    `pop` ships with a program called `pop-seed` that makes these files and a stock seup.py
+    file for you for development conventince! But this tutorial is about learning, so save
+    the `pop-seed` script for when you better know `pop`!
+
 The `hub` is the root of the namespace that `pop` opperates on. Don't worry, it is not
 that complicated! Think of the hub like a big `self` variable that is shared accross
 your entire application. The hub allows you to save data that is relative to your plugins
@@ -28,25 +37,36 @@ while still allowing that data to be shared safely accross the appication.
     # Create the hub
     hub = pop.hub.Hub()
     # Load up your first plugin subsystem called "plugins"
-    hub.tools.sub.add('poppy.plugins')
+    hub.tools.sub.add('poppy.poppy')
 
 This script has created your `hub` and loaded up your first subsystem, or `sub`. The
 `pypath` option tells `pop` where to load up the python package that contains the plugins.
-So lets create the python package and make it start to work! Make a new directory
+
+.. note::
+
+    To learn more about the `hub` take a look at our doc on the hub and how to use it:
+    :ref: `hub_overview`
+
+Now lets create the python package and make it start to work! Make a new directory
 called poppy as the base python package and then another for your plugins.
 
 .. code-block:: bash
 
-    mkdir -p poppy/plugins
+    mkdir -p poppy/poppy
 
 Now that you are in the new poppy directory create the new plugin subsystem's initializer.
-Create a file called *poppy/plugins/init.py* and give it an `__init__` function. Like a
+Create a file called *poppy/poppy/init.py* and give it an `__init__` function. Like a
 class you can initialize a new plugin subsystem, or a new module.
 
 .. code-block:: python
 
     def __init__(hub):
         print('Hello World!!')
+
+.. note::
+
+    Your first `sub` has been created! To learn more about making subs check the doc here:
+    :ref: `tools_sub_add_overview`
 
 Now that you have a plugin with an initializer you can run it! Go back to the same directory
 as the *run.py* file and execute it.
@@ -56,6 +76,13 @@ as the *run.py* file and execute it.
     python3 run.py
 
 With a project up and running you can now add more plugins, more code and more subsystems!
+
+.. note::
+
+    When you make a new sub that sub follows a `pattern`. Patterns are an important part of
+    Plugin Oriented Programming. Get to know the basics first! But then spend a few minutes
+    learning about `patterns` here: :ref: `_sub_patterns`. Just so you know, the pattern you
+    just started is called the **spine** pattern.
 
 Adding Configuration Data
 =========================
@@ -77,6 +104,12 @@ The `conf` system in `pop` solves this issue by making a single location where y
 define your configuration data. You can also merge the configuration data from multiple `pop`
 projects, just like you can add other `pop` projects' plugin subsystems to your project's `hub`!
 
+.. note::
+
+    Thats right! I just said that you can merge entire applications together onto one hub and
+    bring in all the configuration data too! To learn more about his take a look at the doc
+    on merging applications: :ref: `_app_merging`
+
 Using the `conf` system, is easy! Create a file called `poppy/config.py` and populate it with
 your configuration data.
 
@@ -95,14 +128,14 @@ your configuration data.
                 },
             }
 
-Now lets change the `__init__` function in *poppy/plugins/init.py* to load up the project's config!
+Now lets change the `__init__` function in *poppy/poppy/init.py* to load up the project's config!
 
 .. code-block:: python
 
     def __init__(hub):
         hub.tools.conf.integrate(['poppy'], loader='yaml', roots=True)
 
-Now the configuration data has been loaded, if you run poppy with `--help` you will see
+Now the configuration data has been loaded, if you run *run.py* with `--help` you will see
 all of your configuration options available. The configuration options will now be made
 available on the `hub` under the `OPT` dict and under the name of the imported project.
 
@@ -114,8 +147,13 @@ namespaced. So the values of our configurations will be available on the `hub`:
     hub.OPT['poppy']['addr']
     hub.OPT['poppy']['port']
 
-Take a look at the documentation on the conf system to better understand what options are
-available and how to use some of the more powerfull systems.
+.. note::
+
+    The `conf` system is very powerful and expansive, take a look at the docs on the conf
+    system to get to know more of the available options and features. It is made to solve
+    many problems that occur when loading configuration data:
+        :ref: `conf_overview` and
+        :ref: `conf_integrate_overview`
 
 Adding More Plugin Subsystems
 =============================
@@ -127,6 +165,11 @@ A plugin subsystem is typically refered to as a `sub`. This is a namespace on th
 defines the new set of plugins. Using these namespaces on the `hub` allows you to set variables
 on the `hub` that are defined as to how they should be used based on where they exist. Data
 on the hub should only be written by relative plugins, but can be read globally.
+
+.. note::
+
+    Remember how I mentioned patterns before? If you are curious, the sub we are making now
+    follows the `router` pattern. :ref: `_sub_patterns`
 
 When you create a new `sub` it should follow a `pattern`. These patterns define how the `sub`
 interacts with your application. We will start by making a simple `pattern` called the
@@ -140,11 +183,11 @@ plugin subsystem:
 
     def __init__(hub):
         hub.tools.conf.integrate(['poppy'], loader='yaml', roots=True)
-        hub.tools.sub.add('rpc', pypath='poppy.rpc')
+        hub.tools.sub.add(pypath='poppy.rpc')
 
 Now that we are able to load up a new subsystem we need to define it in our code! Start by making
-a new directory inside of `poppy/` called `rpc`. When we added the new `sub` we named it `rpc`
-and we specified the path to find the `rpc` `sub` to be in the `poppy.rpc`.
+a new directory inside of `poppy/` called `rpc`. When we added the new `sub` we specified the path
+to find the `rpc` `sub` to be in the `poppy.rpc`.
 
 Now create the *poppy/rpc/init.py* file and make an rpc server. This rpc server will expose
 all of the functions in the `rpc` plugin subsystem over a simple http server.
@@ -164,7 +207,7 @@ all of the functions in the `rpc` plugin subsystem over a simple http server.
             return web.json_response(getattr(hub.rpc, data['ref'])(**data.get('kwargs')))
 
 Congradulations! You now have a working rpc server that takes json requests and routes to
-modules in the `rpc` sub. Now we just need to make a module in the `rpc` sub to route the
+plugins in the `rpc` sub. Now we just need to make a module in the `rpc` sub to route the
 requests to, lets call this file *poppy/rpc/math.py*:
 
 .. code-block:: python
@@ -181,4 +224,63 @@ requests to, lets call this file *poppy/rpc/math.py*:
             i += 1
         return curr
 
-Now your rpc server can compute the Fibonacci sequence.
+Now your rpc server can compute the Fibonacci sequence. So lets start up the server with the
+*run.py* script and then hit it with a curl command:
+
+.. code-block:: bash
+
+    python3 run.py
+
+# TODO: Look up the curl command to use and verify this code
+
+Now that you have a project up and running you can play around with extending what `pop` can
+do and get familiar with it.
+
+
+Docs Review
+===========
+
+In this doc we introduced a lot of concepts, this is a whole new programming paradigm!
+To become more familiar with Plugin Oriented Programming and `pop` we already introduced these
+docs:
+
+What is a hub and how to use it:
+    :ref: `_hub_overview`
+
+What a sub is and how to use it:
+    :ref: `_tools_sub_add_overview`
+
+What patters are and some examples of patterns that can help you start thinking in `pop`
+    :ref: `_sub_patterns`
+
+How the built in configuration loading system `conf` works:
+    :ref: `_conf_overview` and
+    :ref: `_conf_integrate_overview`
+
+How the concept of app merging works:
+    :ref: `_app_merging`
+
+The last concept that was not covered here but is an amazingly powerful is that of contracts:
+    :ref: `contracts_overview`
+
+Next Steps
+==========
+
+Now that you have the tools you need to make `pop` work you will be able to start understanding
+how to think in and really use the power behind Plugin Oriented Programming! Take a look at these
+docs to get a better overview of PLugin Oriented programming:
+
+Learning Plugin Oriented Programming
+====================================
+
+Learning and thinking in Plugin Oriented Programming starts here, it is a short doc trying to outline
+how to think about your applications so they can all be truly Plugin Oriented:
+    :ref: `_learning_POP`
+
+The Story Behond Plugin Oriented Programming
+============================================
+
+Plugin Oriented Programming deviates from many of the norms in software development while working
+to eveolve to the modern way of developing. Learn about Thomas Hatch and how he came up with
+the Plugin Oriented Programming paradigm:
+    :ref: `_story_of_pop`

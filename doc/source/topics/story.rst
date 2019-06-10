@@ -1,3 +1,5 @@
+.. _story_of_pop::
+
 ==============
 Origins of POP
 ==============
@@ -27,4 +29,9 @@ that I feel is finally ready to be shared with the world.
 
 I hope that this iteration will allow people to make the most of the POP paradigm and
 to be able to help fill out how to use POP to solve more software engineering problems
-that we face today, given the modern way in which software is developed.
+that we face today.
+
+Software today has evolved into an incredibly distributed affair, with global teams
+often from many companies with innumnerable goals and abjectives. The POP system is
+an attempt to find a better way to help these teams collaborate and interface while
+still enabling large scale developmnet.

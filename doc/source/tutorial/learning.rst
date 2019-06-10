@@ -1,3 +1,5 @@
+.. _learning_POP:
+
 ============
 Learning POP
 ============

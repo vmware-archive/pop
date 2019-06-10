@@ -1,3 +1,5 @@
+.. _conf_overview:
+
 =====================
 Configuration Reading
 =====================

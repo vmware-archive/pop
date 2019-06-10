@@ -1,3 +1,5 @@
+.. _sub_patterns:
+
 ==================
 Subsystem Patterns
 ==================

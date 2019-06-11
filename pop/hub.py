@@ -69,13 +69,23 @@ class Hub:
             '''
             desired_frame = sys._getframe(2)
             contracted = desired_frame.f_locals['self']
-            return getattr(self, contracted.ref)
+            parts = contracted.ref.split('.')
+            traversed = self
+            for part in parts[:-1]:
+                # '_' - the sub is guaranteed to be loaded
+                traversed = traversed._subs[part]
+            return getattr(traversed, parts[-1])
     else:
         @property
         def _(self):
             call_frame = inspect.stack(0)[2]
             contracted = call_frame[0].f_locals['self']
-            return getattr(self, contracted.ref)
+            parts = contracted.ref.split('.')
+            traversed = self
+            for part in parts[:-1]:
+                # '_' - the sub is guaranteed to be loaded
+                traversed = traversed._subs[part]
+            return getattr(traversed, parts[-1])
 
     def _remove_subsystem(self, subname):
         '''

@@ -161,7 +161,7 @@ class Contracted(Wrapper):  # pylint: disable=too-few-public-methods
         self._has_contracts = sum([len(l) for l in self.contract_functions.values()]) > 0
 
     def __call__(self, *args, **kwargs):
-        args = tuple([self.hub] + list(args))
+        args = (self.hub,) + args
 
         if not self._has_contracts:
             return self.func(*args, **kwargs)

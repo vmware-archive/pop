@@ -72,7 +72,7 @@ def load(hub, imports, override=None, cli=None, roots=False, home_root=None, loa
     ops_to_ref = {}
     subs = {}
     for imp in imports:
-        cmod = importlib.import_module(f'{imp}.config')
+        cmod = importlib.import_module(f'{imp}.conf')
         if hasattr(cmod, 'CONFIG'):
             confs[imp] = copy.deepcopy(cmod.CONFIG)
         if cli == imp:

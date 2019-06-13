@@ -171,3 +171,14 @@ like this:
             return web.json_response(getattr(hub.server, data['ref'])(**data.get('kwargs')))
 
 Now the plugin subsystem can be populated with modules that expose request functions
+
+Library Pattern
+===============
+
+The Library Pattern is one of the most intuitive. This is where a collection of plugins expose
+somewhat arbitrary functions. Many other patterns are backed by the library pattern. The library
+pattern itself does not require an *init.py* file, typically a library pattern is used to back
+up a Router pattern, where arbitrary functions are being exposed to an interface. The nice thing
+about the library pattern is that it allows functions to be exposed outside of the context
+of the interface they are associated with. This means that functions that exist behind a router
+could still be easily and natively exposed to any other aspect of the application.

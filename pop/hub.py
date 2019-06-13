@@ -59,33 +59,25 @@ class Hub:
                 yield subs[sub]
         return iter(self._subs)
 
-    if hasattr(sys, '_getframe'):  # implementation detail of CPython, speeds up things by 100x.
-        @property
-        def _(self):
-            '''
-            This function allows for hub to pop introspective calls.
-            This should only ever be called from within a hub module, otherwise
-            it should stack trace, or return heaven knows what...
-            '''
+    @property
+    def _(self):
+        '''
+        This function allows for hub to pop introspective calls.
+        This should only ever be called from within a hub module, otherwise
+        it should stack trace, or return heaven knows what...
+        '''
+        if hasattr(sys, '_getframe'):  # implementation detail of CPython, speeds up things by 100x.
             desired_frame = sys._getframe(2)
             contracted = desired_frame.f_locals['self']
-            parts = contracted.ref.split('.')
-            traversed = self
-            for part in parts[:-1]:
-                # '_' - the sub is guaranteed to be loaded
-                traversed = traversed._subs[part]
-            return getattr(traversed, parts[-1])
-    else:
-        @property
-        def _(self):
+        else:
             call_frame = inspect.stack(0)[2]
             contracted = call_frame[0].f_locals['self']
-            parts = contracted.ref.split('.')
-            traversed = self
-            for part in parts[:-1]:
-                # '_' - the sub is guaranteed to be loaded
-                traversed = traversed._subs[part]
-            return getattr(traversed, parts[-1])
+        parts = contracted.ref.split('.')
+        traversed = self
+        for part in parts[:-1]:
+            # '_' - the sub is guaranteed to be loaded
+            traversed = traversed._subs[part]
+        return getattr(traversed, parts[-1])
 
     def _remove_subsystem(self, subname):
         '''

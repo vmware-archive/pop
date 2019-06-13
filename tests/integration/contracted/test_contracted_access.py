@@ -1,4 +1,8 @@
+# import pop
 from pop.hub import Hub
+
+# Import pytest
+import pytest
 
 
 def hub():
@@ -44,7 +48,8 @@ def test_contracted_different_mod_direct():
     assert h2.mods.contracted_access.hub2_called
 
     assert h1.contract_called
-    assert h2.contract_called
+    with pytest.raises(AttributeError):
+        assert h2.contract_called
 
     # TODO: how should '_' work on mock hubs? does it work correctly?
 
@@ -64,6 +69,7 @@ def test_contracted_different_mod_direct_kwargs():
     assert h2.mods.contracted_access.hub2_called
 
     assert h1.contract_called
-    assert h2.contract_called
+    with pytest.raises(AttributeError):
+        assert h2.contract_called
 
     # contract_hub = testing.ContractHub(hub)

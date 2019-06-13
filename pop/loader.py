@@ -233,12 +233,6 @@ def prep_loaded_mod(this_sub, mod, mod_name, contracts):
                     continue
                 lmod._funcs[name] = obj
                 lmod._attrs[name] = obj
-                if this_sub._is_contract is False:
-                    # Allow the function to be called directly from within the module while
-                    # not breaking out of contracts. The original function name, not the aliased one
-                    # or we'd risk overwriting python keywords, etc...
-                    direct_obj = pop.contract.Redirect(func, ref, name)
-                    setattr(sys.modules[mod.__name__], attr, direct_obj)
         else:
             klass = func
             if not this_sub._omit_class and inspect.isclass(klass):

@@ -131,7 +131,7 @@ class Sub:
             omit_func=False,
             omit_class=False,
             omit_vars=False,
-            mod_basename='pop',
+            mod_basename='',
             stop_on_failures=False,
             init=True,
             is_contract=False,

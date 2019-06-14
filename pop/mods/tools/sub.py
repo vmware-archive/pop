@@ -17,6 +17,7 @@ def add(hub,
         contracts_static=None,
         default_contracts=None,
         virtual=True,
+        dyne_name=None,
         omit_start=('_'),
         omit_end=(),
         omit_func=False,
@@ -29,7 +30,13 @@ def add(hub,
     '''
     Add a new subsystem to the hub
     '''
-    subname = subname if subname else pypath.split('.')[-1]
+    # TODO: this needs to work if pypath is a list
+    if pypath:
+        subname = subname if subname else pypath.split('.')[-1]
+    elif static:
+        subname = subname if subname else os.path.basename(static)
+    if dyne_name:
+        subname = subname if subname else dyne_name
     if sub:
         root = sub
     else:
@@ -43,6 +50,7 @@ def add(hub,
             contracts_static,
             default_contracts,
             virtual,
+            dyne_name,
             omit_start,
             omit_end,
             omit_func,

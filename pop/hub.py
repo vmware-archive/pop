@@ -38,6 +38,8 @@ class Hub:
     '''
     def __init__(self):
         self._subs = {}
+        self._dynamic = {}
+        self._dscan = False
         self._subs['tools'] = Sub(
                 self,
                 'tools',
@@ -93,6 +95,13 @@ class Hub:
             return True
         return False
 
+    def _scan_dynamic(self):
+        '''
+        Refresh the dynamic roots data used for loading app merge module roots
+        '''
+        self._dynamic = pop.dirs.dynamic_dirs()
+        self._dscan = True
+
     def __getattr__(self, item):
         if item.startswith('_'):
             if item == item[0]*len(item):
@@ -120,6 +129,7 @@ class Sub:
             contracts_static=None,
             default_contracts=None,
             virtual=True,
+            dyne_name=None,
             omit_start=('_'),
             omit_end=(),
             omit_func=False,
@@ -142,6 +152,7 @@ class Sub:
         if isinstance(default_contracts, str):
             default_contracts = [default_contracts]
         self._default_contracts = default_contracts or ()
+        self._dyne_name = dyne_name
         self._virtual = virtual
         self._omit_start = omit_start
         self._omit_end = omit_end
@@ -161,6 +172,7 @@ class Sub:
             self._pypath,
             self._static,
             )
+        self._load_dyne()
         self._contract_dirs = pop.dirs.dir_list(
             self._subname,
             'contracts',
@@ -188,6 +200,15 @@ class Sub:
         self._vmap = {}
         self._load_errors = {}
         self._loaded_all = False
+
+    def _load_dyne(self):
+        '''
+        Load up the dynamic dirs for this sub
+        '''
+        if not self._hub._dscan:
+            self._hub._scan_dynamic()
+        for path in self._hub._dynamic.get(self._dyne_name, []):
+            self._dirs.append(path)
 
     def __getstate__(self):
         return dict(

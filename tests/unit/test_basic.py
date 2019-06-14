@@ -277,3 +277,10 @@ def test_double_underscore():
     hub = pop.hub.Hub()
     hub.tools.sub.add('tests.mods')
     hub.mods.test.double_underscore()
+
+
+def test_dyne():
+    hub = pop.hub.Hub()
+    hub.tools.sub.add(dyne_name='dyne1')
+    assert hub.dyne1.test.dyne_ping()
+    assert hub.dyne1.nest.nest_dyne_ping()

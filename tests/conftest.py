@@ -7,10 +7,12 @@ import glob
 import logging
 
 CODE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+TPATH_DIR = os.path.join(os.path.dirname(__file__), 'tpath')
 
 if CODE_DIR in sys.path:
     sys.path.remove(CODE_DIR)
 sys.path.insert(0, CODE_DIR)
+sys.path.insert(0, TPATH_DIR)
 
 # Import 3rd-party libs
 import pytest

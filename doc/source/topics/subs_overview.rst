@@ -42,10 +42,26 @@ used by the `sub` can be loaded via a number of options:
 
     contracts_static: A string or list of things that are directory paths containing plugins to load contracts
 
-.. TODO: Add dynamic_name once it is completed
+Dynamic Name
+============
 
-Omiting Components From the Sub
-===============================
+The Dynamic Name function is amazingly powerful. It allows you to specify a dynamic loader name
+that pop will detect in your Python path and auto load extra plugins from external Python
+packages that have defined them. This is an amazing way to dynamically make your plugin
+subsystem even more pluggable by allowing external applications to extend your system.
+
+The Dynamic Name system is used by adding the option `dyne_name`. It is the only required
+optiuon when enabling dynamic name, But it also requires that your application adds the
+`DYNE` flag to the conf.py file in the root of your project.
+
+    dyne_name: A string which defined the name of the subsystem, and how to map it using the
+    Dynamic Name system
+
+For more information on Dynamic Names please see the doc outlining how the Dynamic Names system
+works and how to use it: :ref:`dyne_name`
+
+Omitting Components From the Sub
+================================
 
 When modules are loaded, they by default omit objects that start with an underscore. This is set
 to allow for objects to be kept private to the module and not expose them. The character used

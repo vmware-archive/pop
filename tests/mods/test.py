@@ -42,3 +42,7 @@ def call_scan(hub):
     # we'll also pass hub
     scan([os.path.dirname(__file__)])
     return True
+
+
+def double_underscore(hub):
+    assert hub.__ is hub.mods

@@ -14,7 +14,7 @@ Classes are useful, but they are not the end all model for programming. Instead
 of thinking about classes as the ultimate container of code and data think about
 them as an interface to make types. This is the origin of classes and they are
 very good about it. The problem with Classes has to do with data access
-and overencapsulation. When data is tied to a class it becomes isolated, and
+and over-encapsulation. When data is tied to a class it becomes isolated, and
 so does the functionality. Instances are like little data prisons. Data should
 be available to the entire program.
 

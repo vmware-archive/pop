@@ -1,4 +1,4 @@
-.. _story_of_pop::
+.. _story_of_pop:
 
 ==============
 Origins of POP
@@ -32,6 +32,6 @@ to be able to help fill out how to use POP to solve more software engineering pr
 that we face today.
 
 Software today has evolved into an incredibly distributed affair, with global teams
-often from many companies with innumnerable goals and abjectives. The POP system is
+often from many companies with innumerable goals and objectives. The POP system is
 an attempt to find a better way to help these teams collaborate and interface while
-still enabling large scale developmnet.
+still enabling large scale development.

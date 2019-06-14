@@ -116,6 +116,6 @@ coroutine streams running.
 
 This is accomplished using the `Hub`. The hub in POP allows for clean, globally accessible memory
 to be accessed in a safe, namespaced way, while still honoring valuable OOP concepts of
-encapsulation, without overencapsulating data that is so often useful in the broader application.
+encapsulation, without over encapsulating data that is so often useful in the broader application.
 This namespaced approach to development makes data sharing between coroutines safe,
 easy and reliable.

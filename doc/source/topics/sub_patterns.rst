@@ -54,12 +54,12 @@ This would be a simple *init.py*:
             await hub.beacons.QUE.put(ret)
 
 This example shows iterating over the modules found in the beacons sub. The plugins are
-defined as needing to impliment an async generator function. We call the async generator
+defined as needing to implement an async generator function. We call the async generator
 function, which returns an async generator that gets appended to a list. That list is then
-passed to the as_yielded fucntion that yields as the next async generator yields. The
+passed to the as_yielded function that yields as the next async generator yields. The
 yielded data is then added to a QUE that can be ingested elsewhere.
 
-Following this patern a plugin that emits a beacon would subsequently look like this:
+Following this pattern a plugin that emits a beacon would subsequently look like this:
 
 .. code-block:: python
 
@@ -104,8 +104,8 @@ A simple example of a collection pattern *init.py* file could look like this:
                 coros.append(ret)
         await asyncio.gather(coros)
 
-This example allows for plugin modules to create both functrions and async functions and
-execute the async functions in paralell. A simple module for this example of the collection
+This example allows for plugin modules to create both functions and async functions and
+execute the async functions in parallel. A simple module for this example of the collection
 patter could look like this plugin called *os.py*:
 
 .. code-block:: python
@@ -146,14 +146,14 @@ subsystem.
             ret = await getattr(f'flows.{mod}.process'){data}
             await hub.flows.QUE.put(ret)
 
-Using a flow pattern makes pipelining concurrent data fast and efficient. For a more elegant
+Using a flow pattern makes pipe-lining concurrent data fast and efficient. For a more elegant
 example take a look at the internals of the `umbra` project.
 
 Router Pattern
 ==============
 
 The router pattern is used to take input data and route it to the correct function and route
-it back. This is typically used with network interfaces. A typicall *init.py* will look something
+it back. This is typically used with network interfaces. A typical *init.py* will look something
 like this:
 
 .. code-block:: python

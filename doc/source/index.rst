@@ -9,14 +9,19 @@ Welcome to pop's documentation!
 .. toctree::
    :maxdepth: 2
 
-   topics/quickstart
+   tutorial/quickstart
    topics/learning
-   topics/pop
-   topics/story
+   topics/hub_overview
+   topics/subs_overview
    topics/sub_patterns
-   topics/proc
    topics/conf
    topics/conf_integrate
+   topics/app_merging
+   topics/proc
+   topics/story
+   topics/pop
+   topics/glossary
+   topics/ideas_that_were_not_used
 
 
 Indices and tables

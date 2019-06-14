@@ -80,7 +80,7 @@ the input level, where the configuration data is presented from the user.
 Once the configuration information is loaded into the hub it has been namespaced
 and made available on the respective namespace used by the subs. But before that
 it needs to be read in from the cli. This is what the conf.integrate system
-is designed to solve. The information read from the config.py files can be modified
+is designed to solve. The information read from the conf.py files can be modified
 to resolve collisions without having an effect on the oppoeration of the underlying
 configured systems.
 

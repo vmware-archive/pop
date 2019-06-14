@@ -110,7 +110,7 @@ projects, just like you can add other `pop` projects' plugin subsystems to your 
     bring in all the configuration data too! To learn more about his take a look at the doc
     on merging applications: :ref: `_app_merging`
 
-Using the `conf` system, is easy! Create a file called `poppy/config.py` and populate it with
+Using the `conf` system, is easy! Create a file called `poppy/conf.py` and populate it with
 your configuration data.
 
 .. code-block:: python

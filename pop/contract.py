@@ -113,24 +113,6 @@ class Wrapper:  # pylint: disable=too-few-public-methods
         return '<{} func={}.{}>'.format(self.__class__.__name__, self.func.__module__, self.name)
 
 
-class Redirect(Wrapper):
-    '''
-    Replaces functions in loaded modules, so that direct calls (explicitly
-    pass a hub) use the correct hub.
-    '''
-    def __call__(self, *args, **kwargs):
-        # grab hub
-        if args:
-            hub = args[0]
-            args = args[1:]
-        else:
-            for hub_name in self.signature.parameters:
-                break
-            hub = kwargs.pop(hub_name)
-        # redirect the call to that hub
-        return getattr(hub, f'{self.ref}.{self.name}')(*args, **kwargs)
-
-
 class Contracted(Wrapper):  # pylint: disable=too-few-public-methods
     '''
     This class wraps functions that have a contract associated with them

@@ -59,25 +59,26 @@ class Hub:
                 yield subs[sub]
         return iter(self._subs)
 
-    @property
-    def _(self):
+    def _resolve_this(self, levels):
         '''
         This function allows for hub to pop introspective calls.
         This should only ever be called from within a hub module, otherwise
         it should stack trace, or return heaven knows what...
         '''
         if hasattr(sys, '_getframe'):  # implementation detail of CPython, speeds up things by 100x.
-            desired_frame = sys._getframe(2)
+            desired_frame = sys._getframe(3)
             contracted = desired_frame.f_locals['self']
         else:
-            call_frame = inspect.stack(0)[2]
+            call_frame = inspect.stack(0)[3]
             contracted = call_frame[0].f_locals['self']
-        parts = contracted.ref.split('.')
+        ref = contracted.ref.split('.')
+
+        # (0=module, 1=module's parent etc.)
+        level_offset = levels - 1
         traversed = self
-        for part in parts[:-1]:
-            # '_' - the sub is guaranteed to be loaded
-            traversed = traversed._subs[part]
-        return getattr(traversed, parts[-1])
+        for i in range(len(ref) - level_offset):
+            traversed = getattr(traversed, ref[i])
+        return traversed
 
     def _remove_subsystem(self, subname):
         '''
@@ -94,7 +95,10 @@ class Hub:
 
     def __getattr__(self, item):
         if item.startswith('_'):
-            return self.__getattribute__(item)
+            if item == item[0]*len(item):
+                return self._resolve_this(len(item))
+            else:
+                return self.__getattribute__(item)
         if '.' in item:
             return self.tools.ref.last(item)
         if item in self._subs:

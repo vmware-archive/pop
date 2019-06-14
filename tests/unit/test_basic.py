@@ -271,3 +271,9 @@ def test_non_module_functions_are_not_packed():
         hub.mods.test.call_scan() is True
     except TypeError:
         pytest.fail('The imported \'scan\' function in \'tests.mods.test\' was wrongly packed')
+
+
+def test_double_underscore():
+    hub = pop.hub.Hub()
+    hub.tools.sub.add('tests.mods')
+    hub.mods.test.double_underscore()

@@ -42,7 +42,7 @@ used by the `sub` can be loaded via a number of options:
 
     contracts_static: A string or list of things that are directory paths containing plugins to load contracts
 
-# TODO: Add pyroot once it is completed
+# TODO: Add dynamic_name once it is completed
 
 Omiting Components From the Sub
 ===============================

@@ -115,8 +115,6 @@ class Sub:
             contracts_pypath=None,
             contracts_static=None,
             default_contracts=None,
-            pyroot=None,
-            staticroot=None,
             virtual=True,
             omit_start=('_'),
             omit_end=(),
@@ -140,8 +138,6 @@ class Sub:
         if isinstance(default_contracts, str):
             default_contracts = [default_contracts]
         self._default_contracts = default_contracts or ()
-        self._pyroot = ex_path(pyroot)
-        self._staticroot = ex_path(staticroot)
         self._virtual = virtual
         self._omit_start = omit_start
         self._omit_end = omit_end
@@ -160,16 +156,12 @@ class Sub:
             'mods',
             self._pypath,
             self._static,
-            self._pyroot,
-            self._staticroot,
             )
         self._contract_dirs = pop.dirs.dir_list(
             self._subname,
             'contracts',
             self._contracts_pypath,
             self._contracts_static,
-            self._pyroot,
-            self._staticroot,
             )
         self._contract_dirs.extend(
             pop.dirs.inline_dirs(

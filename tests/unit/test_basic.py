@@ -26,16 +26,6 @@ def test_getattr():
     assert hub.mods.test.ping() == getattr(hub, 'mods.foo.bar')()
 
 
-def test_pyroots():
-    hub = pop.hub.Hub()
-    hub.tools.sub.add(pyroot=['tests.pyroot', 'tests.NOTHINGHERE'], subname='cheese', )
-    assert hub.cheese.test.ping() == 'cheese'
-    with pytest.raises(AttributeError) as exc:
-        # Make sure that only the cheese module is picked
-        # up in cheese
-        hub.cheese.bread.ping()
-
-
 def test_iter_sub():
     hub = pop.hub.Hub()
     hub.tools.sub.add('tests.mods')

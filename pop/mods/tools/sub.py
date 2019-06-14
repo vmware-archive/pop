@@ -16,8 +16,6 @@ def add(hub,
         contracts_pypath=None,
         contracts_static=None,
         default_contracts=None,
-        pyroot=None,
-        staticroot=None,
         virtual=True,
         omit_start=('_'),
         omit_end=(),
@@ -44,8 +42,6 @@ def add(hub,
             contracts_pypath,
             contracts_static,
             default_contracts,
-            pyroot,
-            staticroot,
             virtual,
             omit_start,
             omit_end,
@@ -148,9 +144,7 @@ def extend(
         pypath=None,
         static=None,
         contracts_pypath=None,
-        contracts_static=None,
-        pyroot=None,
-        staticroot=None):
+        contracts_static=None):
     '''
     Extend the directory lookup for a given sub. Any of the directory lookup
     arguments can be passed.
@@ -166,8 +160,4 @@ def extend(
         sub._contracts_pypath.extend(pop.hub.ex_path(contracts_pypath))
     if contracts_static:
         sub._contracts_static.extend(pop.hub.ex_path(contracts_static))
-    if pyroot:
-        sub._pyroot.extend(pop.hub.ex_path(pyroot))
-    if staticroot:
-        sub._staticroot.extend(pop.hub.ex_path(staticroot))
     sub._prepare()

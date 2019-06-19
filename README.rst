@@ -16,7 +16,10 @@ Getting Started
 ===============
 
 A more complete Getting Started Guide is available inside of the documentation
-for `pop`. The best place to start is in the doc's Getting Started Guide.
+for `pop`. The best place to start is in the doc's Getting Started Guide found
+here:
+
+https://pop.readthedocs.io
 
 First off, install `pop` from pypi:
 

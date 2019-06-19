@@ -268,7 +268,7 @@ Next Steps
 
 Now that you have the tools you need to make `pop` work you will be able to start understanding
 how to think in and really use the power behind Plugin Oriented Programming! Take a look at these
-docs to get a better overview of PLugin Oriented programming:
+docs to get a better overview of Plugin Oriented programming:
 
 Learning Plugin Oriented Programming
 ====================================
@@ -277,10 +277,10 @@ Learning and thinking in Plugin Oriented Programming starts here, it is a short 
 how to think about your applications so they can all be truly Plugin Oriented:
 :ref:`learning_POP`
 
-The Story Behond Plugin Oriented Programming
+The Story Behind Plugin Oriented Programming
 ============================================
 
 Plugin Oriented Programming deviates from many of the norms in software development while working
-to eveolve to the modern way of developing. Learn about Thomas Hatch and how he came up with
+to evolve to the modern way of developing. Learn about Thomas Hatch and how he came up with
 the Plugin Oriented Programming paradigm:
 :ref:`story_of_pop`

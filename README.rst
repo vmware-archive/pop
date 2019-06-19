@@ -12,22 +12,68 @@ so why not start a project using a plugin design?
 Pop can be used to extend an existing project to add plugins, or to build
 a project that is 100% pluggable.
 
-Usage
-=====
+Getting Started
+===============
 
-Using `pop` is amazingly easy, but deeply powerful. To start  an application
-with `pop` just install pop and run the `pop-seed` script:
+A more complete Getting Started Guide is available inside of the documentation
+for `pop`. The best place to start is in the doc's Getting Started Guide.
 
-::
+First off, install `pop` from pypi:
 
-  pip3 install pop
-  pop-seed poppy
+.. code-block:: bash
 
-Now a new python project has been created for you with a setup.py file,
-execution script and your first plugin subsystem called `poppy`.
+    pip3 install pop
 
-When you run your project it will set up `pop` for you and the application
-starts with the `new` function inside newly created file `poppy/mods/poppy/init.py`.
+Start by making a new directory for your project:
+
+.. code-block:: bash
+
+    mkdir poppy
+
+Now create a simple python script called *run.py* to create the `hub` and start the
+plugin system.
+
+The `hub` is the root of the namespace that `pop` opperates on. Don't worry, it is not
+that complicated! Think of the hub like a big `self` variable that is shared accross
+your entire application. The hub allows you to save data that is relative to your plugins
+while still allowing that data to be shared safely accross the appication.
+
+.. code-block:: python
+
+    import pop.hub
+
+    # Create the hub
+    hub = pop.hub.Hub()
+    # Load up your first plugin subsystem called "plugins"
+    hub.tools.sub.add('poppy.poppy')
+
+This script has created your `hub` and loaded up your first subsystem, or `sub`. The
+`pypath` option tells `pop` where to load up the python package that contains the plugins.
+
+Now lets create the python package and make it start to work! Make a new directory
+called poppy as the base python package and then another for your plugins.
+
+.. code-block:: bash
+
+    mkdir -p poppy/poppy
+
+Now that you are in the new poppy directory create the new plugin subsystem's initializer.
+Create a file called *poppy/poppy/init.py* and give it an `__init__` function. Like a
+class you can initialize a new plugin subsystem, or a new module.
+
+.. code-block:: python
+
+    def __init__(hub):
+        print('Hello World!!')
+
+Now that you have a plugin with an initializer you can run it! Go back to the same directory
+as the *run.py* file and execute it.
+
+.. code-block:: bash
+
+    python3 run.py
+
+With a project up and running you can now add more plugins, more code and more subsystems!
 
 Examples and Tutorial
 =====================

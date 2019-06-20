@@ -3,7 +3,7 @@
 *.py[co]
 pkg/arch/*.tar.xz
 *.sw[pon]
-doc/_build
+docs/_build
 /dist
 MANIFEST
 .pytest_cache/

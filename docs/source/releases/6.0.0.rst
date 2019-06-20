@@ -2,7 +2,7 @@
 Pop Release 6.0.0
 =================
 
-The Plugin Oriented Programing implimentation has reached version 6.0.0!
+The Plugin Oriented Programming implementation has reached version 6.0.0!
 
 This version introduces many changes to the system and established a long researched
 baseline of functionality.
@@ -22,9 +22,9 @@ Dynamic Names
 =============
 
 Version 6 introduces Dynamic Names to `pop` and implements a critical component
-of Plugin Oriemnted Programming.
+of Plugin Oriented Programming.
 
-Dynamic Names is part of the concept around App Merging. App Mergine was introduced
+Dynamic Names is part of the concept around App Merging. App Merging was introduced
 in `pop` 5, in that multiple applications can be merged onto the hub and configuration
 for said apps can also be merged onto the hub via the `conf.integrate` system.
 
@@ -32,7 +32,7 @@ But Dynamic Names allows for a plugin subsystem to be dynamically expanded by ad
 apps being installed. With Dynamic Names a plugin subsystem can be dynamically extended
 by simply installing an additional python package that defines additions to the
 used Dynamic Name. This makes extending a project via external repos and installs
-not only easy, but completly transparent.
+not only easy, but completely transparent.
 
 hub._ and hub.__
 ================

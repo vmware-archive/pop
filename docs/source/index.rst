@@ -8,6 +8,7 @@ Welcome to pop's documentation!
 
 .. toctree::
    :maxdepth: 2
+   :glob:
 
    tutorial/quickstart
    topics/learning
@@ -23,6 +24,7 @@ Welcome to pop's documentation!
    topics/pop
    topics/glossary
    topics/ideas_that_were_not_used
+   releases/*
 
 
 Indices and tables

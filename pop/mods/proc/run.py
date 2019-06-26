@@ -70,6 +70,21 @@ async def pub(hub, worker_name, func_ref, *args, **kwargs):
     return ret
 
 
+async def set_attr(hub, worker_name, ref, value):
+    '''
+    Set the given attribute to the given location on the hub of all
+    worker procs
+    '''
+    workers = hub.proc.Workers[worker_name]
+    ret = {}
+    for ind in workers:
+        payload = {'fun': 'setattr', 'ref': ref, 'value': value}
+        # TODO: Make these futures to the run at the same time
+        async for chunk in hub.proc.run.send(workers[ind], payload):
+            ret[ind] = chunk
+    return ret
+
+
 async def ind_func(hub, worker_name, _ind, func_ref, *args, **kwargs):
     '''
     Execute the function on the indexed process within the named worker pool

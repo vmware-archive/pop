@@ -33,6 +33,9 @@ def create(hub, ref, obj):
         create the given object on the hub
     :param obj: The object to store at the given reference point
     '''
+    if '.' not in ref:
+        setattr(hub, ref, obj)
+        return
     comps = ref.split('.')
     sub_ref = ref[:ref.rindex('.')]
     var = comps[-1]

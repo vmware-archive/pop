@@ -75,6 +75,8 @@ async def work(hub, reader, writer):
             ret = {'status': False, 'exc': str(exc)}
     elif payload['fun'] == 'gen':
         ret = await hub.proc.worker.gen(payload, reader, writer)
+    elif payload['fun'] == 'setattr':
+        ret = await hub.proc.worker.set_attr(payload)
     ret = msgpack.dumps(ret, use_bin_type=True)
     ret += hub.proc.D_FLAG
     ret += hub.proc.DELIM
@@ -131,6 +133,15 @@ async def run(hub, payload):
     if asyncio.iscoroutine(ret):
         return await ret
     return ret
+
+
+async def set_attr(hub, payload):
+    '''
+    Set the named attribute to the hub
+    '''
+    ref = payload.get('ref')
+    value = payload.get('value')
+    hub.tools.ref.create(ref, value)
 
 
 async def ret(hub, payload):

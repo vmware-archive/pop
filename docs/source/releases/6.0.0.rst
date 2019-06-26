@@ -1,0 +1,69 @@
+=================
+Pop Release 6.0.0
+=================
+
+The Plugin Oriented Programming implementation has reached version 6.0.0!
+
+This version introduces many changes to the system and established a long researched
+baseline of functionality.
+
+Why Version 6?
+==============
+
+Pop is the 5th major iteration on the concept of Plugin Oriented Programming. It
+started as the Salt Loader System, then a project called pack, then pack in Julia,
+followed by another implementation in Python and then, finally, `pop`.
+
+This release cleans up many of the concepts that were hold overs from earlier
+systems and starts to add some of the long aspirational features to the platform.
+It is therefore a worthy version "6".
+
+Dynamic Names
+=============
+
+Version 6 introduces Dynamic Names to `pop` and implements a critical component
+of Plugin Oriented Programming.
+
+Dynamic Names is part of the concept around App Merging. App Merging was introduced
+in `pop` 5, in that multiple applications can be merged onto the hub and configuration
+for said apps can also be merged onto the hub via the `conf.integrate` system.
+
+But Dynamic Names allows for a plugin subsystem to be dynamically expanded by additional
+apps being installed. With Dynamic Names a plugin subsystem can be dynamically extended
+by simply installing an additional python package that defines additions to the
+used Dynamic Name. This makes extending a project via external repos and installs
+not only easy, but completely transparent.
+
+hub._ and hub.__
+================
+
+One of the issues with the `hub` is that all references need to fully qualified. Pop 6
+introduces `hub._` as a dynamic reference to the current module and `hub.__` as a dynamic
+reference to the current plugin subsystem.
+
+Move init.new and __mod_init__ to __init__
+==========================================
+
+To be more pythonic we have introduced the `__init__` function as a replacement
+for the `init.new` function and for the `__mod_init__` function. This helps to
+consolidate what these functions were used for into a single location.
+
+Contracts dir Autodetected
+==========================
+
+In `pop` 5 it was suggested to make a `mods` and a `contracts` directory and
+statically direct the sub to both of them. In `pop` 6 this is still supported
+but now a `sub` can have a `contracts` directory inside and the contracts will
+be autoloaded.
+
+Add getattr to the hub
+======================
+
+Now getattr can look up nested refs on the hub: getattr(hub, 'tools.sub.add')
+
+Don't Need __init__.py files anymore
+====================================
+
+Python 3.3 deprecated the need to use *__init__.py* files. The old loading code
+was using these files to discern paths. Pop now uses the paths system introduced
+in Python 3.3.

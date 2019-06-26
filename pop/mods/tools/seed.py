@@ -198,6 +198,6 @@ def mkconf(hub, name):
     '''
     Create the version.py file
     '''
-    path = os.path.join(hub.PATH, name, 'config.py')
+    path = os.path.join(hub.PATH, name, 'conf.py')
     with open(path, 'w+') as fp:
         fp.write(CONF)

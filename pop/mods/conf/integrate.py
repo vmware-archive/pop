@@ -3,8 +3,8 @@ Integrate is used to pull config data from multiple sources and merge it into
 the hub. Once it is merged then when a sub is loaded the respective config data
 is loaded into the sub as `OPTS`
 '''
-# Take an *args list of modules to import and look for config.py
-# Import config.py if present
+# Take an *args list of modules to import and look for conf.py
+# Import conf.py if present
 # After gathering all dicts, modify them to merge CLI options
 #
 # Import python libs
@@ -46,7 +46,7 @@ def load(hub, imports, override=None, cli=None, roots=False, home_root=None, loa
     This function takes a list of python packages to load and look for
     respective configs. The configs are then loaded in a non-collision
     way modifying the cli options dynamically.
-    The args look for the named <package>.config python module and then
+    The args look for the named <package>.conf python module and then
     looks for dictonaries named after the following convention:
 
     override = {'<package>.key': 'key': 'new_key', 'options': ['--option1', '--option2']}
@@ -72,7 +72,7 @@ def load(hub, imports, override=None, cli=None, roots=False, home_root=None, loa
     ops_to_ref = {}
     subs = {}
     for imp in imports:
-        cmod = importlib.import_module(f'{imp}.config')
+        cmod = importlib.import_module(f'{imp}.conf')
         if hasattr(cmod, 'CONFIG'):
             confs[imp] = copy.deepcopy(cmod.CONFIG)
         if cli == imp:

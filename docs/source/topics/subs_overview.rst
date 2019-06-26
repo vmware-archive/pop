@@ -24,13 +24,13 @@ does not need to exist to have a sub, but it exposes extra functionality. The ma
 aware of is that if the `__init__` function is defined inside the *init.py* file then it will
 be executed when the subsystem is loaded. The first argument passed to the `__init__` function
 is, as usual, the hub, and the sub object that the *init.py* has been loaded onto is available.
-This makes it easy to initialize any data strucutres that might be needed on the `sub`.
+This makes it easy to initialize any data structures that might be needed on the `sub`.
 
 Directories and How to Find Them
 ================================
 
 Plugin loading is all based on the directories that contain the *.py* files that constitute
-plugins. Whan the `pypath` argument is passed in python imports that path, then it derives
+plugins. When the `pypath` argument is passed in python imports that path, then it derives
 what directory that path is and adds it to the directories to be scanned. The directories
 used by the `sub` can be loaded via a number of options:
 
@@ -42,14 +42,30 @@ used by the `sub` can be loaded via a number of options:
 
     contracts_static: A string or list of things that are directory paths containing plugins to load contracts
 
-# TODO: Add pyroot once it is completed
+Dynamic Name
+============
 
-Omiting Components From the Sub
-===============================
+The Dynamic Name function is amazingly powerful. It allows you to specify a dynamic loader name
+that pop will detect in your Python path and auto load extra plugins from external Python
+packages that have defined them. This is an amazing way to dynamically make your plugin
+subsystem even more pluggable by allowing external applications to extend your system.
+
+The Dynamic Name system is used by adding the option `dyne_name`. It is the only required
+optiuon when enabling dynamic name, But it also requires that your application adds the
+`DYNE` flag to the conf.py file in the root of your project.
+
+    dyne_name: A string which defined the name of the subsystem, and how to map it using the
+    Dynamic Name system
+
+For more information on Dynamic Names please see the doc outlining how the Dynamic Names system
+works and how to use it: :ref:`dyne_name`
+
+Omitting Components From the Sub
+================================
 
 When modules are loaded, they by default omit objects that start with an underscore. This is set
 to allow for objects to be kept private to the module and not expose them. The character used
-to determine if the object should be omited can be changed, or it can be set as an endwith char:
+to determine if the object should be omitted can be changed, or it can be set as an endwith char:
 
     omit_start: The char to look for at the start of all objects to determine if it should be omited, defaults to '_'
 
@@ -61,7 +77,7 @@ to determine if the object should be omited can be changed, or it can be set as 
 
     omit_vars: Set to True to omit all vars from a sub
 
-If you choose to change any of these values in your default settings for your `sub` it should be heviliy
+If you choose to change any of these values in your default settings for your `sub` it should be heavily
 documented, as it will really confuse users of your sub and it is strongly discouraged!!
 
 Stopping on Load Failures
@@ -88,13 +104,13 @@ the `init` value to False:
 
     init: Set to False to disable running the `__init__` functions for all modues
 
-Mutiple Python Module Objects
-=============================
+Multiple Python Module Objects
+==============================
 
 When plugins are loaded they are imported into the python module tracking system in a specific
 module path. If you want to be able to load the plugins multiple times and have them exist
 in multiple namespaces then you can via `mod_basename`. You only need to do this if you are
-loading persistend data onto the module level. If you are doing this then move your data
+loading persisted data onto the module level. If you are doing this then move your data
 onto the `hub`:
 
     mod_basename: Pass a string to specify the Python sys.modules namespace to load the module onto

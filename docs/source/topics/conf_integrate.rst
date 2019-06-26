@@ -15,15 +15,15 @@ configuration system follows a clear model.
 
 When making a `pop` project, everything is a plugin, but you may have noticed that the
 `pop_seed` script makes two python files outside of the plugin system. These files are
-`version.py` and `config.py`. The `version.py` file is hopefully self explanatory. But
-the `config.py` file needs a little explanation.
+`version.py` and `conf.py`. The `version.py` file is hopefully self explanatory. But
+the `conf.py` file needs a little explanation.
 
 The Config Dicts
 ================
 
-The integrate system uses this config.py file to simply define CLI options, local config
+The integrate system uses this *conf.py* file to simply define CLI options, local config
 options, and options that we assume other systems would share. These types of
-configuration data are defined in configuration dicts in `config.py`.
+configuration data are defined in configuration dicts in *conf.py*.
 
 Simply populate these dicts with configuration data and it can be easily
 and dynamically loaded by other `pop` projects.
@@ -61,7 +61,7 @@ added to the cli when importing this config as the primary cli interface.
 Usage
 =====
 
-Now, with the config.py file in place loading the configuration data up is easier then ever!
+Now, with the conf.py file in place loading the configuration data up is easier then ever!
 Just add this one line to your project:
 
 .. code-block:: python

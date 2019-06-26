@@ -30,9 +30,9 @@ def add(hub,
     '''
     Add a new subsystem to the hub
     '''
-    # TODO: this needs to work if pypath is a list
     if pypath:
-        subname = subname if subname else pypath.split('.')[-1]
+        pypath = pop.hub.ex_path(pypath)
+        subname = subname if subname else pypath[0].split('.')[-1]
     elif static:
         subname = subname if subname else os.path.basename(static)
     if dyne_name:

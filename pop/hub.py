@@ -340,7 +340,7 @@ class Sub:
         if bname not in self._scan[iface]:
             raise pop.exc.PopLoadError(
                 'Bad call to load item, no bname {} in iface {}'.format(bname, iface))
-        mname = '{}.{}'.format(self._pypath, os.path.basename(bname))
+        mname = '{}.{}'.format(self._pypath[0] if self._pypath else '', os.path.basename(bname))
         mod = pop.loader.load_mod(
                 mname,
                 iface,

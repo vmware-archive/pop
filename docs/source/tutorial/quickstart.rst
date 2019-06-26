@@ -200,8 +200,8 @@ all of the functions in the `rpc` plugin subsystem over a simple http server.
     import aiohttp
 
     def __init__(hub):
-        app = asyncio.web.Application()
-        app.add_routes([asyncio.web.get('/', hub.rpc.init.router)])
+        app = aiohttp.web.Application()
+        app.add_routes([aiohttp.web.get('/', hub.rpc.init.router)])
         aiohttp.web.run_app(app)
 
     async def router(hub, request):

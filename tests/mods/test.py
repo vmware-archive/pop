@@ -46,3 +46,5 @@ def call_scan(hub):
 
 def double_underscore(hub):
     assert hub.__ is hub.mods
+    assert hub.___ is hub
+    assert hub.______ is hub

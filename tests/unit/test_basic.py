@@ -282,5 +282,15 @@ def test_double_underscore():
 def test_dyne():
     hub = pop.hub.Hub()
     hub.tools.sub.add(dyne_name='dyne1')
+    assert hub.dyne1.INIT
+    hub.tools.sub.add(dyne_name='dyne2')
+    assert hub.dyne2.INIT
+    hub.tools.sub.add(dyne_name='dyne3')
+    assert hub.dyne3.INIT
+    print(hub.dyne3.INIT)
     assert hub.dyne1.test.dyne_ping()
     assert hub.dyne1.nest.nest_dyne_ping()
+    assert hub.dyne2.test.dyne_ping()
+    assert hub.dyne2.nest.nest_dyne_ping()
+    assert hub.dyne3.test.dyne_ping()
+    assert hub.dyne3.nest.nest_dyne_ping()

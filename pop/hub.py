@@ -5,6 +5,7 @@ import os
 import imp
 import inspect
 import logging
+import secrets
 import sys
 
 # Import pop libs
@@ -194,6 +195,7 @@ class Sub:
             )
         else:
             self._contracts = None
+        self._name_root = self._load_name_root()
         self._mem = {}
         self._scan = pop.scanner.scan(self._dirs)
         self._loaded = {}
@@ -209,6 +211,15 @@ class Sub:
             self._hub._scan_dynamic()
         for path in self._hub._dynamic.get(self._dyne_name, []):
             self._dirs.append(path)
+
+    def _load_name_root(self):
+        '''
+        Generate the root of the name to be used to apply to the loaded modules
+        '''
+        if self._pypath:
+            return self._pypath[0]
+        elif self._dirs:
+            return secrets.token_hex()
 
     def __getstate__(self):
         return dict(
@@ -340,7 +351,7 @@ class Sub:
         if bname not in self._scan[iface]:
             raise pop.exc.PopLoadError(
                 'Bad call to load item, no bname {} in iface {}'.format(bname, iface))
-        mname = '{}.{}'.format(self._pypath[0] if self._pypath else '', os.path.basename(bname))
+        mname = '{}.{}'.format(self._name_root, os.path.basename(bname))
         mod = pop.loader.load_mod(
                 mname,
                 iface,

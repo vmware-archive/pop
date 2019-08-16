@@ -4,11 +4,11 @@ Used to scan the given directories for loadable files
 '''
 # Import python libs
 import os
-import imp
+import importlib
 import collections
 
 PY_END = ('.py', '.pyc', '.pyo')
-PYEXT_END = tuple([suffix[0] for suffix in imp.get_suffixes() if suffix[-1] == imp.C_EXTENSION])
+PYEXT_END = tuple(importlib.machinery.EXTENSION_SUFFIXES)
 CYTHON_END = ('.pyx',)
 SKIP_DIRNAMES = ('__pycache__',)
 

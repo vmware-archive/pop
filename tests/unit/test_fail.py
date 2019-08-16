@@ -17,9 +17,9 @@ def test_load_error():
     '''
     hub = pop.hub.Hub()
     hub.tools.sub.add('tests.mods')
-    with pytest.raises(pop.exc.PopError) as exc:
+    with pytest.raises(pop.exc.PopError,
+                       match='Failed to load bad'):
         hub.mods.bad.func()
-        assert 'Failed to load bad' in str(exc)
 
 
 def test_load_error_stop_on_failures():
@@ -28,9 +28,9 @@ def test_load_error_stop_on_failures():
         'tests.mods',
         stop_on_failures=True
     )
-    with pytest.raises(pop.exc.PopError) as exc:
+    with pytest.raises(pop.exc.PopError,
+                       match='returned virtual error'):
         hub.mods.bad.func()['verror']
-        assert 'returned virtual error' in str(exc)
 
 
 def _test_calling_load_error_raises_pop_error():
@@ -44,9 +44,9 @@ def _test_calling_load_error_raises_pop_error():
         'tests.mods',
         stop_on_failures=True
     )
-    with pytest.raises(pop.exc.PopError) as exc:
+    with pytest.raises(pop.exc.PopError,
+                       match='Failed to load python module'):
         hub.mods.bad_import.func()
-        assert 'Failed to load python module' in str(exc)
 
 
 def test_load_error_traceback_stop_on_failures():
@@ -58,9 +58,9 @@ def test_load_error_traceback_stop_on_failures():
             pypath='tests.mods.bad_import',
             subname='mods',
             stop_on_failures=True)
-    with pytest.raises(pop.exc.PopError) as exc:
+    with pytest.raises(pop.exc.PopError,
+                       match='Failed to load python module'):
         hub.mods.bad_import.func()
-        assert 'Failed to load python module' in str(exc)
 
 
 def test_verror_does_not_overload_loaded_mod():
@@ -86,10 +86,10 @@ def _test_load_error_by_virtualname():
         pypath='tests.mods',
         subname='mods',
     )
-    with pytest.raises(pop.exc.PopError) as exc:
+    with pytest.raises(pop.exc.PopError,
+                       match='returned virtual error'):
         hub.mods.virtual_bad.func()
-    assert 'returned virtual error' in str(exc)
 
-    with pytest.raises(pop.exc.PopLookupError) as exc:
+    with pytest.raises(pop.exc.PopLookupError,
+                       match='Module "vbad" not found'):
         hub.mods.vbad.func()
-    assert 'Module "vbad" not found' in str(exc)

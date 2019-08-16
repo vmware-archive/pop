@@ -2,7 +2,7 @@
 
 # Import python libs
 import os
-import imp
+import importlib
 import inspect
 import logging
 import secrets
@@ -15,7 +15,7 @@ import pop.loader
 import pop.exc
 import pop.contract
 
-EXT_SUFFIXES = tuple([suffix[0] for suffix in imp.get_suffixes() if suffix[-1] == imp.C_EXTENSION])
+EXT_SUFFIXES = tuple(importlib.machinery.EXTENSION_SUFFIXES)
 log = logging.getLogger(__name__)
 
 

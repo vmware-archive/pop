@@ -98,7 +98,7 @@ class TestStripHub:
         g()
         with pytest.raises(TypeError) as e:
             g('bar')
-        assert 'f() takes 0 positional arguments' in str(e)
+            assert 'f() takes 0 positional arguments' in str(e)
 
     def test_param(self):
         def f(hub, foo):
@@ -109,7 +109,7 @@ class TestStripHub:
         g(foo='foo')
         with pytest.raises(TypeError) as e:
             g()
-        assert 'f() missing 1 required positional' in str(e)
+            assert 'f() missing 1 required positional' in str(e)
 
     def test_defaults(self):
         def f(hub, foo=None):
@@ -147,7 +147,7 @@ class TestStripHub:
         g(foo='other foo')
         with pytest.raises(TypeError) as e:
             g(baz='baz')
-        assert 'f() got an unexpected keyword argument' in str(e)
+            assert 'f() got an unexpected keyword argument' in str(e)
 
 
 class TestMockHub:
@@ -158,20 +158,20 @@ class TestMockHub:
     def test_mock_hub_dereference_errors(self):
         with pytest.raises(AttributeError) as e:
             self.mock_hub.nosub.nomodule.nofunc()
-        assert "has no attribute 'nosub'" in str(e)
+            assert "has no attribute 'nosub'" in str(e)
 
         with pytest.raises(AttributeError) as e:
             self.mock_hub.mods.nomodule.nofunc()
-        assert "has no attribute 'nomodule'" in str(e)
+            assert "has no attribute 'nomodule'" in str(e)
 
         with pytest.raises(AttributeError) as e:
             self.mock_hub.mods.testing.nofunc()
-        assert "has no attribute 'nofunc'" in str(e)
+            assert "has no attribute 'nofunc'" in str(e)
 
     def test_mock_hub_function_enforcement(self):
         with pytest.raises(TypeError) as e:
             self.mock_hub.mods.testing.echo()
-        assert "missing a required argument: 'param'" in str(e)
+            assert "missing a required argument: 'param'" in str(e)
 
     def test_mock_hub_return_value(self):
         self.mock_hub.mods.testing.echo.return_value = sentinel.myreturn

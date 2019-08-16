@@ -19,7 +19,7 @@ def test_load_error():
     hub.tools.sub.add('tests.mods')
     with pytest.raises(pop.exc.PopError) as exc:
         hub.mods.bad.func()
-    assert 'Failed to load bad' in str(exc)
+        assert 'Failed to load bad' in str(exc)
 
 
 def test_load_error_stop_on_failures():
@@ -30,7 +30,7 @@ def test_load_error_stop_on_failures():
     )
     with pytest.raises(pop.exc.PopError) as exc:
         hub.mods.bad.func()['verror']
-    assert 'returned virtual error' in str(exc)
+        assert 'returned virtual error' in str(exc)
 
 
 def _test_calling_load_error_raises_pop_error():
@@ -46,7 +46,7 @@ def _test_calling_load_error_raises_pop_error():
     )
     with pytest.raises(pop.exc.PopError) as exc:
         hub.mods.bad_import.func()
-    assert 'Failed to load python module' in str(exc)
+        assert 'Failed to load python module' in str(exc)
 
 
 def test_load_error_traceback_stop_on_failures():
@@ -60,7 +60,7 @@ def test_load_error_traceback_stop_on_failures():
             stop_on_failures=True)
     with pytest.raises(pop.exc.PopError) as exc:
         hub.mods.bad_import.func()
-    assert 'Failed to load python module' in str(exc)
+        assert 'Failed to load python module' in str(exc)
 
 
 def test_verror_does_not_overload_loaded_mod():

@@ -43,4 +43,4 @@ def test_contract_ctx_argument_retrieval():
 
     with pytest.raises(pop.exc.BindError) as e:
         hub.mods.ctx_args.test('', garbage=True)
-    assert "got an unexpected keyword argument 'garbage'" in str(e)
+        assert "got an unexpected keyword argument 'garbage'" in str(e)

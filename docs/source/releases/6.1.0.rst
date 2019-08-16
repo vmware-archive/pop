@@ -1,0 +1,32 @@
+=================
+Pop Release 6.1.0
+=================
+
+The Plugin Oriented Programming implementation has reached version 6.1.0!
+
+This version has a few updates and fixes, nothing major apart from fixing
+a major issue in the `dyne_name` system introduced in 6.0.0
+
+Dyne Name Fix
+=============
+
+When importing a module it needs to be given a reference name with the
+`sys.modules` dict as part of the import. There was in issue with how these
+names were being generated for the dyne_name system. It was repaired
+by making unknown path originating refs prefaced with a random
+string. This should likely be refined in the future to reference the
+actual file path.
+
+Remove Last imp Refs
+====================
+
+The imp library has been deprecated since python 3.3, but it was still
+being used, primarily out of old habits! All `imp` refs have now been
+removed.
+
+Refined pypath Inferred Names
+=============================
+
+When pypath is used to add a new sub to your hub the name of the sub
+can be dynamically derived from the pypath. There was a bug where if the
+pypath was a list this would fail, it has been fixed.

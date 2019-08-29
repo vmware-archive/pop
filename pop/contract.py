@@ -84,7 +84,16 @@ def verify_contract(hub, raws, mod):  # pylint: disable=unused-argument
     '''
     Verify module level contract - functions only
     '''
+    sig_errs = []
+    sig_miss = []
     for raw in raws:
+        for fun in raw._funcs:
+            if fun.startswith('sig_'):
+                tfun = fun[4:]
+                if tfun not in mod._funcs:
+                    sig_miss.append(tfun)
+                    continue
+                sig_errs.extend(pop.verify.sig(mod._funcs[tfun].func, raw._funcs[fun].func))
         if hasattr(raw, 'functions'):
             try:
                 functions = raw.functions(mod)
@@ -98,6 +107,18 @@ def verify_contract(hub, raws, mod):  # pylint: disable=unused-argument
                 func = getattr(mod, fun_name)
                 if not callable(func):
                     raise pop.exc.ContractFuncException('{} is not a function'.format(fun_name))
+    if sig_errs or sig_miss:
+        msg = ''
+        if sig_errs:
+            msg += 'Signature Errors:\n'
+            for err in sig_errs:
+                msg += f'{err}\n'
+        if sig_miss:
+            msg += 'Signature Functions Missing:\n'
+            for err in sig_miss:
+                msg += f'{err}\n'
+        msg = msg.strip()
+        raise pop.exc.ContractSigException(msg)
 
 
 class Wrapper:  # pylint: disable=too-few-public-methods
@@ -128,7 +149,6 @@ class Contracted(Wrapper):  # pylint: disable=too-few-public-methods
 
     def _get_contracts_by_type(self, contract_type='pre'):
         matches = []
-
         fn_contract_name = '{}_{}'.format(contract_type, self.name)
         for contract in self.contracts:
             if hasattr(contract, fn_contract_name):
@@ -142,12 +162,8 @@ class Contracted(Wrapper):  # pylint: disable=too-few-public-methods
         self.contract_functions = {'pre': self._get_contracts_by_type('pre'),
                                    'call': self._get_contracts_by_type('call')[:1],
                                    'post': self._get_contracts_by_type('post'),
-                                   'sig': self._get_contracts_by_type('sig')}
+                                   }
         self._has_contracts = sum([len(l) for l in self.contract_functions.values()]) > 0
-        self._has_sig = bool(self.contract_functions['sig'])
-        if self._has_sig:
-            self._sig_errors = pop.verify.sig(self.func, self.contract_functions['sig'][0].func)
-
 
     def __call__(self, *args, **kwargs):
         args = (self.hub,) + args

@@ -173,6 +173,7 @@ def test_contract_sigs():
     assert 'Parameter "d" does not have the correct name: c' in exstr
     assert 'Parameter "a" is past available positional params' in exstr
     assert 'Parameter "args" is not in the correct position for *args' in exstr
+    assert 'missing' in exstr
 
 
 def test_private_function_cross_access():

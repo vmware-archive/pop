@@ -9,9 +9,7 @@ def sig(func, ver):
     '''
     errors = []
     vsig = inspect.signature(ver)
-    print(vsig)
     fsig = inspect.signature(func)
-    print(fsig)
     vparams = list(vsig.parameters.values())
     fparams = list(fsig.parameters.values())
     vdat = {'args': [], 'v_pos': -1, 'kw': [], 'kwargs': False}

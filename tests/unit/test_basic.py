@@ -166,8 +166,13 @@ def test_contract_sigs():
     hub = pop.hub.Hub()
     hub.tools.sub.add('tests.csigs')
     # TODO: This test needs to cover more cases
-    with pytest.raises(pop.exc.ContractSigException):
+    with pytest.raises(pop.exc.ContractSigException) as exc:
         hub.csigs.sigs.first(4, 6, 8)
+    exstr = str(exc.value)
+    assert 'Kwargs are not permitted as a parameter' in exstr
+    assert 'Parameter "d" does not have the correct name: c' in exstr
+    assert 'Parameter "a" is past available positional params' in exstr
+    assert 'Parameter "args" is not in the correct position for *args' in exstr
 
 
 def test_private_function_cross_access():

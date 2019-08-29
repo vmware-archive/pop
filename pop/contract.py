@@ -106,6 +106,7 @@ class Wrapper:  # pylint: disable=too-few-public-methods
         self.ref = ref
         self.name = name
         self.signature = inspect.signature(self.func)
+        self._sig_errors = []
 
     def __call__(self, *args, **kwargs):
         self.func(*args, **kwargs)
@@ -146,8 +147,6 @@ class Contracted(Wrapper):  # pylint: disable=too-few-public-methods
         self._has_sig = bool(self.contract_functions['sig'])
         if self._has_sig:
             self._sig_errors = pop.verify.sig(self.func, self.contract_functions['sig'][0].func)
-            if self._sig_errors:
-                raise pop.exc.ContractSigException(self._sig_errors)
 
 
     def __call__(self, *args, **kwargs):

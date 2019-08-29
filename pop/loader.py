@@ -210,6 +210,7 @@ def prep_loaded_mod(this_sub, mod, mod_name, contracts):
     # pylint: disable=protected-access
     lmod = LoadedMod(mod_name)
     ref = f'{this_sub._subname}.{mod_name}'  # getattr(hub, ref) should resolve to this module
+    sig_errors = []
     for attr in getattr(mod, '__load__', dir(mod)):
         name = getattr(mod, '__func_alias__', {}).get(attr, attr)
         func = getattr(mod, attr)
@@ -226,6 +227,7 @@ def prep_loaded_mod(this_sub, mod, mod_name, contracts):
         if inspect.isfunction(func) or inspect.isbuiltin(func) or \
                 type(func).__name__ == 'cython_function_or_method':
             obj = pop.contract.Contracted(this_sub._hub, contracts, func, ref, name)
+            sig_errors.extend(obj._sig_errors)
             if not this_sub._omit_func:
                 if this_sub._pypath and not func.__module__.startswith(mod.__name__):
                     # We're only interested in functions defined in this module, not
@@ -242,6 +244,8 @@ def prep_loaded_mod(this_sub, mod, mod_name, contracts):
                     continue
                 lmod._classes[name] = klass
                 lmod._attrs[name] = klass
+    if sig_errors:
+        raise pop.exc.ContractSigException(sig_errors)
     return lmod
 
 

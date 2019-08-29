@@ -10,6 +10,7 @@ from collections import namedtuple
 
 # Import pop libs
 import pop.exc
+import pop.verify
 
 
 class ContractedContext(namedtuple('ContractedContext', ('func', 'args', 'kwargs', 'signature', 'ret', 'cache'))):
@@ -139,8 +140,15 @@ class Contracted(Wrapper):  # pylint: disable=too-few-public-methods
     def _load_contracts(self):
         self.contract_functions = {'pre': self._get_contracts_by_type('pre'),
                                    'call': self._get_contracts_by_type('call')[:1],
-                                   'post': self._get_contracts_by_type('post')}
+                                   'post': self._get_contracts_by_type('post'),
+                                   'sig': self._get_contracts_by_type('sig')}
         self._has_contracts = sum([len(l) for l in self.contract_functions.values()]) > 0
+        self._has_sig = bool(self.contract_functions['sig'])
+        if self._has_sig:
+            self._sig_errors = pop.verify.sig(self.func, self.contract_functions['sig'][0].func)
+            if self._sig_errors:
+                raise pop.exc.ContractSigException(self._sig_errors)
+
 
     def __call__(self, *args, **kwargs):
         args = (self.hub,) + args

@@ -41,6 +41,12 @@ class ContractFuncException(PopBaseException):
     to exist is found on the module but it's not function
     '''
 
+class ContractSigException(PopBaseException):
+    '''
+    Exception raised when a function signature is not compatible with the
+    coresponding function signature found in the contract. 
+    '''
+
 
 class ProcessNotStarted(PopBaseException):
     '''

@@ -6,6 +6,7 @@ import pytest
 
 # Import pack
 import pop.hub
+import pop.exc
 
 
 def test_basic():
@@ -159,6 +160,14 @@ def test_contract_manipulate():
     assert 'override' in hub.mods.all.list()
     assert 'post called' in hub.mods.all.list()
     assert 'post' in hub.mods.all.dict()
+
+
+def test_contract_sigs():
+    hub = pop.hub.Hub()
+    hub.tools.sub.add('tests.csigs')
+    # TODO: This test needs to cover more cases
+    with pytest.raises(pop.exc.ContractSigException):
+        hub.csigs.sigs.first(4, 6, 8)
 
 
 def test_private_function_cross_access():

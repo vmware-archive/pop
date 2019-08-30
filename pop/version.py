@@ -1,3 +1,2 @@
 # -*- coding: utf-8 -*-
-# This is the 5th like system I have made, I can start at 5
-version = '6.1.0'
+version = '7.0.0'

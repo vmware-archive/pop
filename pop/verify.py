@@ -32,18 +32,13 @@ def contract(hub, raws, mod):  # pylint: disable=unused-argument
         raise pop.exc.ContractSigException(msg)
 
 
-
-def sig(func, ver):
+def sig_map(ver):
     '''
-    Takes 2 functions, the first function is verified to have a parameter signature
-    compatible with the second function
+    Generates the map dict for the signature verification
     '''
-    errors = []
     vsig = inspect.signature(ver)
-    fsig = inspect.signature(func)
     vparams = list(vsig.parameters.values())
-    fparams = list(fsig.parameters.values())
-    vdat = {'args': [], 'v_pos': -1, 'kw': [], 'kwargs': False}
+    vdat = {'args': [], 'v_pos': -1, 'kw': [], 'kwargs': False, 'ann': {}}
     for ind in range(len(vparams)):
         param = vparams[ind]
         val = param.kind.value
@@ -58,6 +53,20 @@ def sig(func, ver):
             vdat['kw'].append(name)
         elif val == 4:
             vdat['kwargs'] = ind
+        if param.annotation != inspect._empty:
+            vdat['ann'][name] = param.annotation
+    return vdat
+
+
+def sig(func, ver):
+    '''
+    Takes 2 functions, the first function is verified to have a parameter signature
+    compatible with the second function
+    '''
+    errors = []
+    fsig = inspect.signature(func)
+    fparams = list(fsig.parameters.values())
+    vdat = sig_map(ver)
     arg_len = len(vdat['args'])
     v_pos = False
     for ind in range(len(fparams)):
@@ -65,6 +74,10 @@ def sig(func, ver):
         val = param.kind.value
         name = param.name
         has_default = param.default != inspect._empty
+        ann = param.annotation
+        vann = vdat['ann'].get(name, inspect._empty)
+        if vann != ann:
+            errors.append(f'Parameter, "{name}" is type "{str(ann)}" not "{str(vann)}"')
         if val == 2:
             v_pos = True
         if val == 0 or val == 1:

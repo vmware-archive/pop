@@ -169,10 +169,13 @@ def test_contract_sigs():
     with pytest.raises(pop.exc.ContractSigException) as exc:
         hub.csigs.sigs.first(4, 6, 8)
     exstr = str(exc.value)
+    print(exstr)
     assert 'Kwargs are not permitted as a parameter' in exstr
-    assert 'Parameter "d" does not have the correct name: c' in exstr
+    assert 'Parameter "z" does not have the correct name: b' in exstr
     assert 'Parameter "a" is past available positional params' in exstr
     assert 'Parameter "args" is not in the correct position for *args' in exstr
+    assert 'Parameter, "a" is type "<class \'inspect._empty\'>" not "<class \'str\'>"' in exstr
+    assert 'Parameter, "c" is type "<class \'str\'>" not "typing.List"' in exstr
     assert 'missing' in exstr
 
 

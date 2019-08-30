@@ -1,4 +1,7 @@
-def sig_first(hub, a, b, c):
+# Import python libs
+from typing import List
+
+def sig_first(hub, a: str, b, c: List):
     pass
 
 
@@ -14,7 +17,7 @@ def sig_four(hub, a, *args, e=7):
     pass
 
 
-def sig_five(hub, a, c, *args):
+def sig_five(hub, a: str, *args):
     pass
 
 

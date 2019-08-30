@@ -94,19 +94,6 @@ def verify_contract(hub, raws, mod):  # pylint: disable=unused-argument
                     sig_miss.append(tfun)
                     continue
                 sig_errs.extend(pop.verify.sig(mod._funcs[tfun].func, raw._funcs[fun].func))
-        if hasattr(raw, 'functions'):
-            try:
-                functions = raw.functions(mod)
-            except TypeError:
-                functions = raw.functions()
-            for fun_name in functions:
-                if not hasattr(mod, fun_name):
-                    raise pop.exc.ContractModuleException(
-                        'Missing function \'{}\' in {!r}'.format(fun_name, mod)
-                    )
-                func = getattr(mod, fun_name)
-                if not callable(func):
-                    raise pop.exc.ContractFuncException('{} is not a function'.format(fun_name))
     if sig_errs or sig_miss:
         msg = ''
         if sig_errs:

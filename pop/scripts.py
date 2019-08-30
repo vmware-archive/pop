@@ -12,6 +12,6 @@ def pop_seed():
             }
 
     hub = pop.hub.Hub()
-    hub.tools.sub.add('pop.mods.conf')
+    hub.pop.sub.add('pop.mods.conf')
     hub.opts = hub.conf.reader.read(CONFIG)
-    hub.tools.seed.new()
+    hub.pop.seed.new()

@@ -7,5 +7,5 @@ def integrate(hub, imports, override=None, cli=None, roots=None, home_root=None,
     '''
     Load the conf sub and run the integrate sequence.
     '''
-    hub.tools.sub.add('pop.mods.conf')
+    hub.pop.sub.add('pop.mods.conf')
     hub.conf.integrate.load(imports, override, cli=cli, roots=roots, home_root=home_root, loader=loader)

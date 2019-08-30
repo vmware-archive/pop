@@ -7,7 +7,7 @@ import pytest
 
 def test_contract_context():
     hub = pop.hub.Hub()
-    hub.tools.sub.add(
+    hub.pop.sub.add(
             pypath='tests.mods.contract_ctx',
             subname='mods',
             contracts_pypath='tests.contracts'
@@ -19,7 +19,7 @@ def test_contract_context():
 
 def test_contract_context_update():
     hub = pop.hub.Hub()
-    hub.tools.sub.add(
+    hub.pop.sub.add(
             pypath='tests.mods.contract_ctx',
             subname='mods',
             contracts_pypath='tests.contracts'
@@ -31,7 +31,7 @@ def test_contract_context_update():
 
 def test_contract_ctx_argument_retrieval():
     hub = pop.hub.Hub()
-    hub.tools.sub.add(
+    hub.pop.sub.add(
             pypath='tests.mods.contract_ctx',
             subname='mods',
             contracts_pypath='tests.contracts'

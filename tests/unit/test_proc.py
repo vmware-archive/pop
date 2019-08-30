@@ -61,6 +61,6 @@ async def _test_create(hub):
 def test_create():
     hub = pop.hub.Hub()
     hub.opts = {}
-    hub.tools.sub.add('pop.mods.proc')
-    hub.tools.sub.add('tests.mods')
-    hub.tools.loop.start(_test_create(hub))
+    hub.pop.sub.add('pop.mods.proc')
+    hub.pop.sub.add('tests.mods')
+    hub.pop.loop.start(_test_create(hub))

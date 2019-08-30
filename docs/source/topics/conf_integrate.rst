@@ -66,7 +66,7 @@ Just add this one line to your project:
 
 .. code-block:: python
 
-    hub.tools.conf.integrate(<project_name>)
+    hub.pop.conf.integrate(<project_name>)
 
 The conf system will get loaded for you and hub.OPT will be populated with namespaced configuration
 data as defined in the configuration dicts.
@@ -80,7 +80,7 @@ passed to specify which project to pull the CLI_CONFIG from:
 
 .. code-block:: python
 
-    hub.tools.conf.integrate(['act', 'grains', 'rem'], cli='rem')
+    hub.pop.conf.integrate(['act', 'grains', 'rem'], cli='rem')
 
 Override Usage
 ==============
@@ -95,12 +95,12 @@ So if the project name passed into integrate is `poppy` and the configuration ke
 the collision will be on key `poppy.test`. To overcome the collision we need to create a new
 key and potentially new options for the command.
 
-To use the override just define the override dict and pass it into `tools.conf.integrate`:
+To use the override just define the override dict and pass it into `pop.conf.integrate`:
 
 .. code-block:: python
 
     override = {'poppy.test': {'key': 'test2', 'options': ['--test2', '-T']}}
-    hub.tools.conf.integrate('poppy', override)
+    hub.pop.conf.integrate('poppy', override)
 
 Now the collisions are explicitly re-routed and fixed!
 

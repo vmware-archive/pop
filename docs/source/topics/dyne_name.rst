@@ -22,7 +22,7 @@ just define the `dyne_name` as the only option when you set up your new sub:
 
 .. code-block:: python
 
-    hub.tools.sub.add(dyne_name='grains')
+    hub.pop.sub.add(dyne_name='grains')
 
 Then in your project's *conf.py* file used by the conf.integrate system just add another
 dict called `DYNE`:

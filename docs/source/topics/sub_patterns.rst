@@ -50,7 +50,7 @@ This would be a simple *init.py*:
                 continue
             func = getattr(mod, 'listen')
             gens.append(func())
-        async for ret in hub.tools.loop.as_yielded(gens):
+        async for ret in hub.pop.loop.as_yielded(gens):
             await hub.beacons.QUE.put(ret)
 
 This example shows iterating over the modules found in the beacons sub. The plugins are

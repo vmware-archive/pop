@@ -40,7 +40,7 @@ while still allowing that data to be shared safely accross the appication.
     # Create the hub
     hub = pop.hub.Hub()
     # Load up your first plugin subsystem called "plugins"
-    hub.tools.sub.add('poppy.poppy')
+    hub.pop.sub.add('poppy.poppy')
 
 This script has created your `hub` and loaded up your first subsystem, or `sub`. The
 `pypath` option tells `pop` where to load up the python package that contains the plugins.
@@ -136,7 +136,7 @@ Now lets change the `__init__` function in *poppy/poppy/init.py* to load up the 
 .. code-block:: python
 
     def __init__(hub):
-        hub.tools.conf.integrate(['poppy'], loader='yaml', roots=True)
+        hub.pop.conf.integrate(['poppy'], loader='yaml', roots=True)
 
 Now the configuration data has been loaded, if you run *run.py* with `--help` you will see
 all of your configuration options available. The configuration options will now be made
@@ -178,15 +178,15 @@ When you create a new `sub` it should follow a `pattern`. These patterns define 
 interacts with your application. We will start by making a simple `pattern` called the
 `library pattern`. This pattern means that modules have functions that are generally available.
 
-When the `hub` is created it comes with a `sub` called `tools`. The `tools` `sub` comes with
-the functions we need to add our own `hub`. Now you can execute `hub.tools.sub.add` to add a new
+When the `hub` is created it comes with a `sub` called `pop`. The `pop` `sub` comes with
+the functions we need to add our own `hub`. Now you can execute `hub.pop.sub.add` to add a new
 plugin subsystem:
 
 .. code-block:: python
 
     def __init__(hub):
-        hub.tools.conf.integrate(['poppy'], loader='yaml', roots=True)
-        hub.tools.sub.add(pypath='poppy.rpc')
+        hub.pop.conf.integrate(['poppy'], loader='yaml', roots=True)
+        hub.pop.sub.add(pypath='poppy.rpc')
 
 Now that we are able to load up a new subsystem we need to define it in our code! Start by making
 a new directory inside of `poppy/` called `rpc`. When we added the new `sub` we specified the path

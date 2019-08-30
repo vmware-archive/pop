@@ -11,7 +11,7 @@ adding plugins to your `subs` is equally easy. All of the namespaces, tricky plu
 loading and tracking are all taken care of in `pop`.
 
 When you add a `sub` you have many options. Most of the demo subs you see will be
-very simple, just a call to `hub.tools.sub.add` with only the pypath variable
+very simple, just a call to `hub.pop.sub.add` with only the pypath variable
 specified. This is all you need in most cases! But you can do much more powerful things
 when loading up a new `sub`!
 

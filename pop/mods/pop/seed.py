@@ -80,7 +80,7 @@ SCRIPT = '''import pop.hub
 
 def start():
     hub = pop.hub.Hub()
-    hub.tools.sub.add('%%NAME%%.%%NAME%%')
+    hub.pop.sub.add('%%NAME%%.%%NAME%%')
 '''
 
 INIT = '''def __init__(hub):
@@ -107,15 +107,15 @@ def new(hub):
     '''
     hub.PATH = os.getcwd()
     name = hub.opts['seed_name']
-    hub.tools.seed.mkdir(name, name)
-    hub.tools.seed.mkdir(name, name, 'contracts')
-    hub.tools.seed.mksetup(name)
-    hub.tools.seed.mkscript(name)
-    hub.tools.seed.mkrun(name)
-    hub.tools.seed.mkinit(name)
-    hub.tools.seed.mkversion(name)
-    hub.tools.seed.mkconf(name)
-    hub.tools.seed.mkreq(name)
+    hub.pop.seed.mkdir(name, name)
+    hub.pop.seed.mkdir(name, name, 'contracts')
+    hub.pop.seed.mksetup(name)
+    hub.pop.seed.mkscript(name)
+    hub.pop.seed.mkrun(name)
+    hub.pop.seed.mkinit(name)
+    hub.pop.seed.mkversion(name)
+    hub.pop.seed.mkconf(name)
+    hub.pop.seed.mkreq(name)
 
 
 def mkdir(hub, *args):

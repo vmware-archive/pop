@@ -107,7 +107,7 @@ def load_subdirs(hub, sub):
     '''
     Given a sub, load all subdirectories found under the sub into a lower namespace
     '''
-    dirs = hub.tools.sub.get_dirs(sub)
+    dirs = hub.pop.sub.get_dirs(sub)
     for dir_ in dirs:
         for fn in os.listdir(dir_):
             if fn.startswith('_'):
@@ -117,7 +117,7 @@ def load_subdirs(hub, sub):
             full = os.path.join(dir_, fn)
             if os.path.isdir(full):
                 # Load er up!
-                hub.tools.sub.add(
+                hub.pop.sub.add(
                         subname=fn,
                         sub=sub,
                         static=[full],

@@ -12,7 +12,7 @@ async def add_sub(hub, worker_name, *args, **kwargs):
     '''
     Tell all of the worker in the named pool to load the given sub,
 
-    This funtion takes all of the same arguments as hub.tools.sub.add
+    This function takes all of the same arguments as hub.pop.sub.add
     '''
     ret = {}
     workers = hub.proc.Workers[worker_name]

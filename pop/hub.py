@@ -41,10 +41,10 @@ class Hub:
         self._subs = {}
         self._dynamic = {}
         self._dscan = False
-        self._subs['tools'] = Sub(
+        self._subs['pop'] = Sub(
                 self,
-                'tools',
-                pypath='pop.mods.tools')
+                'pop',
+                pypath='pop.mods.pop')
         self._iter_subs = sorted(self._subs.keys())
         self._iter_ind = 0
 
@@ -110,7 +110,7 @@ class Hub:
             else:
                 return self.__getattribute__(item)
         if '.' in item:
-            return self.tools.ref.last(item)
+            return self.pop.ref.last(item)
         if item in self._subs:
             return self._subs[item]
         return self.__getattribute__(item)
@@ -252,7 +252,7 @@ class Sub:
         if item.startswith('_'):
             return self.__getattribute__(item)
         if '.' in item:
-            return self._hub.tools.ref.last(f'{self._subname}.{item}')
+            return self._hub.pop.ref.last(f'{self._subname}.{item}')
         if item in self._loaded:
             ret = self._loaded[item]
             # If this previously errored on load, try it again,

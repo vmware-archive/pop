@@ -30,7 +30,7 @@ def start(hub, sock_dir, ind, ref, ret_ref):
     hub.proc.RET_REF = ret_ref
     hub.proc.RET_SOCK_PATH = os.path.join(sock_dir, ret_ref)
     hub.proc.IND = ind
-    hub.tools.loop.start(hub.proc.worker.hold(), hub.proc.worker.server())
+    hub.pop.loop.start(hub.proc.worker.hold(), hub.proc.worker.server())
 
 
 async def hold(hub):
@@ -89,7 +89,7 @@ def add_sub(hub, payload):
     '''
     Add a new sub onto the hub for this worker
     '''
-    hub.tools.sub.add(*payload['args'], **payload['kwargs'])
+    hub.pop.sub.add(*payload['args'], **payload['kwargs'])
 
 
 async def gen(hub, payload, reader, writer):
@@ -100,7 +100,7 @@ async def gen(hub, payload, reader, writer):
     ref = payload.get('ref')
     args = payload.get('args', [])
     kwargs = payload.get('kwargs', {})
-    ret = hub.tools.ref.last(ref)(*args, **kwargs)
+    ret = hub.pop.ref.last(ref)(*args, **kwargs)
     if isinstance(ret, types.AsyncGeneratorType):
         async for chunk in ret:
             rchunk = msgpack.dumps(chunk, use_bin_type=True)
@@ -129,7 +129,7 @@ async def run(hub, payload):
     ref = payload.get('ref')
     args = payload.get('args', [])
     kwargs = payload.get('kwargs', {})
-    ret = hub.tools.ref.last(ref)(*args, **kwargs)
+    ret = hub.pop.ref.last(ref)(*args, **kwargs)
     if asyncio.iscoroutine(ret):
         return await ret
     return ret
@@ -141,7 +141,7 @@ async def set_attr(hub, payload):
     '''
     ref = payload.get('ref')
     value = payload.get('value')
-    hub.tools.ref.create(ref, value)
+    hub.pop.ref.create(ref, value)
 
 
 async def ret(hub, payload):

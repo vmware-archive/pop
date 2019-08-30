@@ -17,14 +17,14 @@ def __virtual__(hub):
 
 def create(hub):
     '''
-    Create the loop at hub.tools.Loop
+    Create the loop at hub.pop.Loop
     '''
-    if not hub.tools.Loop:
-        hub.tools.loop.FUT_QUE = asyncio.Queue()
+    if not hub.pop.Loop:
+        hub.pop.loop.FUT_QUE = asyncio.Queue()
         if sys.platform == 'win32':
-            hub.tools.Loop = asyncio.ProactorEventLoop()
+            hub.pop.Loop = asyncio.ProactorEventLoop()
         else:
-            hub.tools.Loop = asyncio.get_event_loop()
+            hub.pop.Loop = asyncio.get_event_loop()
 
 
 def call_soon(hub, ref, *args, **kwargs):
@@ -32,8 +32,8 @@ def call_soon(hub, ref, *args, **kwargs):
     Schedule a coroutine to be called when the loop has time. This needs
     to be called after the creation fo the loop
     '''
-    fun = hub.tools.ref.get_func(ref)
-    hub.tools.Loop.call_soon(functools.partial(fun, *args, **kwargs))
+    fun = hub.pop.ref.get_func(ref)
+    hub.pop.Loop.call_soon(functools.partial(fun, *args, **kwargs))
 
 
 def ensure_future(hub, ref, *args, **kwargs):
@@ -43,11 +43,11 @@ def ensure_future(hub, ref, *args, **kwargs):
     the hold system to await the future when it is done making it easy
     to create a future that will be cleanly awaited in the background.
     '''
-    fun = hub.tools.ref.last(ref)
+    fun = hub.pop.ref.last(ref)
     future = asyncio.ensure_future(fun(*args, **kwargs))
 
     def callback(fut):
-        hub.tools.loop.FUT_QUE.put_nowait(fut)
+        hub.pop.loop.FUT_QUE.put_nowait(fut)
     future.add_done_callback(callback)
 
 
@@ -55,13 +55,13 @@ def start(hub, *coros, hold=False):
     '''
     Start a loop that will run until complete
     '''
-    hub.tools.loop.create()
+    hub.pop.loop.create()
     if hold:
         coros = list(coros)
         coros.append(_holder(hub))
     # DO NOT CHANGE THIS CALL TO run_forever! If we do that then the tracebacks
     # do not get resolved.
-    return hub.tools.Loop.run_until_complete(
+    return hub.pop.Loop.run_until_complete(
             asyncio.gather(*coros)
             )
 
@@ -72,7 +72,7 @@ async def _holder(hub):
     complete
     '''
     while True:
-        future = await hub.tools.loop.FUT_QUE.get()
+        future = await hub.pop.loop.FUT_QUE.get()
         await future
 
 
@@ -82,8 +82,8 @@ async def await_futures(hub):
     This function is used to clean up futures when the loop is not opened
     up with hold=True so that ensured futures can be cleaned up on demand
     '''
-    while not hub.tools.loop.FUT_QUE.empty():
-        future = await hub.tools.loop.FUT_QUE.get()
+    while not hub.pop.loop.FUT_QUE.empty():
+        future = await hub.pop.loop.FUT_QUE.get()
         await future
 
 
@@ -92,10 +92,10 @@ async def kill(hub, wait=0):
     Close out the loop
     '''
     await asyncio.sleep(wait)
-    hub.tools.Loop.stop()
+    hub.pop.Loop.stop()
     while True:
-        if not hub.tools.Loop.is_running():
-            hub.tools.Loop.close()
+        if not hub.pop.Loop.is_running():
+            hub.pop.Loop.close()
         await asyncio.sleep(1)
 
 

@@ -19,6 +19,7 @@ Welcome to pop's documentation!
    topics/conf_integrate
    topics/app_merging
    topics/dyne_name
+   topics/contracts
    topics/proc
    topics/story
    topics/pop

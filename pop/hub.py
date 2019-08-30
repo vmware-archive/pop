@@ -394,7 +394,7 @@ class Sub:
                 mod,
                 name,
                 contracts)
-        pop.contract.verify_contract(self._hub, contracts, mod_dict)
+        pop.verify.contract(self._hub, contracts, mod_dict)
         self._loaded[name] = mod_dict
         self._vmap[mod.__file__] = name
         # Let's mark the module as loaded

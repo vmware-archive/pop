@@ -1,5 +1,36 @@
 # Import python libs
 import inspect
+# Import pop libs
+import pop.exc
+
+
+def contract(hub, raws, mod):  # pylint: disable=unused-argument
+    '''
+    Verify module level contract - functions only
+    '''
+    sig_errs = []
+    sig_miss = []
+    for raw in raws:
+        for fun in raw._funcs:
+            if fun.startswith('sig_'):
+                tfun = fun[4:]
+                if tfun not in mod._funcs:
+                    sig_miss.append(tfun)
+                    continue
+                sig_errs.extend(sig(mod._funcs[tfun].func, raw._funcs[fun].func))
+    if sig_errs or sig_miss:
+        msg = ''
+        if sig_errs:
+            msg += 'Signature Errors:\n'
+            for err in sig_errs:
+                msg += f'{err}\n'
+        if sig_miss:
+            msg += 'Signature Functions Missing:\n'
+            for err in sig_miss:
+                msg += f'{err}\n'
+        msg = msg.strip()
+        raise pop.exc.ContractSigException(msg)
+
 
 
 def sig(func, ver):

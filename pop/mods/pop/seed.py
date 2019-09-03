@@ -76,7 +76,8 @@ setup(name=NAME,
       )
 '''
 
-SCRIPT = '''import pop.hub
+SCRIPT = '''#!/usr/bin/env python3
+import pop.hub
 
 def start():
     hub = pop.hub.Hub()

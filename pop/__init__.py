@@ -35,7 +35,7 @@ def __define_global_system_encoding_variable__():
             #   https://github.com/saltstack/salt/issues/26063
             pass
 
-        # This is now garbage collectable
+        # This is now garbage collectible
         del locale
 
         if not encoding:
@@ -57,13 +57,13 @@ def __define_global_system_encoding_variable__():
         # Return the detected encoding
         return encoding
     finally:
-        # This is now garbage collectable
+        # This is now garbage collectible
         del sys
         del encoding
 
 
 PACK_SYSTEM_ENCODING = __define_global_system_encoding_variable__()
 
-# This is now garbage collectable
+# This is now garbage collectible
 del __define_global_system_encoding_variable__
 # <---- Detect System Encoding ---------------------------------------------------------------------------------------

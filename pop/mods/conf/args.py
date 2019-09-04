@@ -17,7 +17,7 @@ __contracts__ = [__virtualname__]
 class ActionWrapper:
     '''
     This class wraps argparse.Action instances in order to mark arguments passed
-    on CLI as explicitely passed
+    on CLI as explicitly passed
     '''
     def __init__(self, action):
         self._action = action
@@ -46,7 +46,7 @@ class ActionWrapper:
 class ActionClassWrapper:
     '''
     This class wraps argparse.Action classes in order to mark arguments passed
-    on CLI as explicitely passed
+    on CLI as explicitly passed
     '''
     def __init__(self, klass):
         self._klass = klass

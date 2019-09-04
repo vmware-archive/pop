@@ -125,7 +125,7 @@ def clean(hub):
 def ret_work(hub, callback):
     async def work(reader, writer):
         '''
-        Process the incomming work
+        Process the incoming work
         '''
         inbound = await reader.readuntil(hub.proc.DELIM)
         inbound = inbound[:-len(hub.proc.DELIM)]

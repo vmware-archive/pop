@@ -5,7 +5,7 @@ Pop Release 7.0.0
 The Plugin Oriented Programming implementation has reached version 7.0.0!
 
 The main highlight of this release is the addition of contract sigs. This
-new interface allows for contracts to enforce plugin implemntation on
+new interface allows for contracts to enforce plugin implementation on
 a granular level.
 
 The main deprecation of this release is that the `tools` sub has been
@@ -21,7 +21,7 @@ will fail to load if it does not implement the function signature that
 is defined in the contract.
 
 Contract Signatures also enforce python typing annotations. This
-allows for very granular typing to be mandataed for defined
+allows for very granular typing to be mandated for defined
 interfaces.
 
 Take a look at the new contracts document for more details
@@ -32,7 +32,7 @@ Removal of the functions Interface From Contracts
 The original implementation of contracts looked for a function called
 `functions` which would return a list of required functions for a
 contracted plugin to implement. With the introduction of sigs this feature
-is completly superceeded and is no longer needed.
+is completely superseded and is no longer needed.
 
 Change tools to pop
 ===================

@@ -41,7 +41,15 @@ def _ex_final(confs, final, override, key_to_ref, ops_to_ref, globe=False):
                     ops_to_ref = [ref]
 
 
-def load(hub, imports, override=None, cli=None, roots=False, home_root=None, loader='json'):
+def load(
+        hub,
+        imports,
+        override=None,
+        cli=None,
+        roots=False,
+        home_root=None,
+        loader='json',
+        logs=True):
     '''
     This function takes a list of python packages to load and look for
     respective configs. The configs are then loaded in a non-collision
@@ -82,6 +90,10 @@ def load(hub, imports, override=None, cli=None, roots=False, home_root=None, loa
                 subs = copy.deepcopy(cmod.SUBS)
         if hasattr(cmod, 'GLOBAL'):
             globe[imp] = copy.deepcopy(cmod.GLOBAL)
+    if logs:
+        lconf = hub.conf.logs.conf(cli)
+        lconf.update(confs[cli])
+        confs[cli] = lconf
     _ex_final(confs, final, override, key_to_ref, ops_to_ref)
     _ex_final(globe, final, override, key_to_ref, ops_to_ref, True)
     for opt in ops_to_ref:
@@ -112,3 +124,5 @@ def load(hub, imports, override=None, cli=None, roots=False, home_root=None, loa
                 f_opts[imp] = {}
             f_opts[imp][key] = opts[key]
     hub.OPT = f_opts
+    if logs:
+        hub.conf.logs.setup(hub.OPT[cli])

@@ -1,16 +1,22 @@
 '''
-This module is used to set up logging for pop projects and injects logging
+This sub is used to set up logging for pop projects and injects logging
 options into conf making it easy to add robust logging
 '''
 # Import python libs
 import logging
 
 
-LEVELS = {'debug': logging.DEBUG,
-          'info': logging.INFO,
-          'warning': logging.WARNING,
-          'error': logging.ERROR,
-          'critical': logging.CRITICAL}
+def __init__(hub):
+    '''
+    Set up variables used by the log subsystem
+    '''
+    hub.conf.log.LEVELS = {
+        'debug': logging.DEBUG,
+        'info': logging.INFO,
+        'warning': logging.WARNING,
+        'error': logging.ERROR,
+        'critical': logging.CRITICAL,
+        }
 
 
 def conf(hub, name):
@@ -45,24 +51,10 @@ def conf(hub, name):
             'default': '%H:%M:%S',
             'help': 'The date format to display in the logs',
             },
+        'log_plugin':
+            {
+            'default': 'basic',
+            'help': 'The logging plugin to use',
+            },
         }
     return ldict
-
-
-def setup(hub, conf):
-    '''
-    Given the configuration data set up the logger
-    '''
-    level = LEVELS.get(conf['log_level'], logging.INFO)
-    root = logging.getLogger('')
-    root.setLevel(level)
-    cf = logging.Formatter(fmt=conf['log_fmt_console'], datefmt=conf['log_datefmt'])
-    ch = logging.StreamHandler()
-    ch.setLevel(level)
-    ch.setFormatter(cf)
-    root.addHandler(ch)
-    ff = logging.Formatter(fmt=conf['log_fmt_console'], datefmt=conf['log_datefmt'])
-    fh = logging.FileHandler(conf['log_file'])
-    fh.setLevel(level)
-    fh.setFormatter(ff)
-    root.addHandler(fh)

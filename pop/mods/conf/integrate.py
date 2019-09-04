@@ -91,7 +91,7 @@ def load(
         if hasattr(cmod, 'GLOBAL'):
             globe[imp] = copy.deepcopy(cmod.GLOBAL)
     if logs:
-        lconf = hub.conf.logs.conf(cli)
+        lconf = hub.conf.log.init.conf(cli)
         lconf.update(confs[cli])
         confs[cli] = lconf
     _ex_final(confs, final, override, key_to_ref, ops_to_ref)
@@ -125,4 +125,5 @@ def load(
             f_opts[imp][key] = opts[key]
     hub.OPT = f_opts
     if logs:
-        hub.conf.logs.setup(hub.OPT[cli])
+        log_plugin = hub.OPT[cli].get('log_plugin')
+        getattr(hub, f'conf.log.{log_plugin}.setup')(hub.OPT[cli])

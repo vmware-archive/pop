@@ -36,10 +36,10 @@ Start by making a new directory for your project:
 Now create a simple python script called *run.py* to create the `hub` and start the
 plugin system.
 
-The `hub` is the root of the namespace that `pop` opperates on. Don't worry, it is not
-that complicated! Think of the hub like a big `self` variable that is shared accross
+The `hub` is the root of the namespace that `pop` operates on. Don't worry, it is not
+that complicated! Think of the hub like a big `self` variable that is shared across
 your entire application. The hub allows you to save data that is relative to your plugins
-while still allowing that data to be shared safely accross the appication.
+while still allowing that data to be shared safely across the application.
 
 .. code-block:: python
 

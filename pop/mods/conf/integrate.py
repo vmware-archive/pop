@@ -47,7 +47,7 @@ def load(hub, imports, override=None, cli=None, roots=False, home_root=None, loa
     respective configs. The configs are then loaded in a non-collision
     way modifying the cli options dynamically.
     The args look for the named <package>.conf python module and then
-    looks for dictonaries named after the following convention:
+    looks for dictionaries named after the following convention:
 
     override = {'<package>.key': 'key': 'new_key', 'options': ['--option1', '--option2']}
 

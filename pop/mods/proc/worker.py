@@ -11,14 +11,14 @@ import types
 import asyncio
 # Import third party libs
 import msgpack
-# TODO: The workers should detect if thier controlling process dies and terminate by themselves
+# TODO: The workers should detect if their controlling process dies and terminate by themselves
 # The controlling process will kill them when it exists, but if it exists hard then the workers
 # Should be able to also clean themselves up
 
 
 def start(hub, sock_dir, ind, ref, ret_ref):
     '''
-    This funtion is called by the startup script to create a worker process
+    This function is called by the startup script to create a worker process
 
     :NOTE: This is a new process started from the shell, it does not have any
     of the process namespace from the creating process.
@@ -43,7 +43,7 @@ async def hold(hub):
 
 async def server(hub):
     '''
-    Start the unix socket server to recive commands
+    Start the unix socket server to receive commands
     '''
     await asyncio.start_unix_server(
             hub.proc.worker.work,
@@ -52,7 +52,7 @@ async def server(hub):
 
 async def work(hub, reader, writer):
     '''
-    Process the incomming work
+    Process the incoming work
     '''
     inbound = await reader.readuntil(hub.proc.DELIM)
     inbound = inbound[:-len(hub.proc.DELIM)]

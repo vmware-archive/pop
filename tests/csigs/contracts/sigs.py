@@ -25,6 +25,10 @@ def sig_six(hub, a, *args, **kwargs):
     pass
 
 
+def sig_seven(hub, foo):
+    pass
+
+
 def sig_missing():
     '''
     This function is missing in the module to make sure it gets picked up

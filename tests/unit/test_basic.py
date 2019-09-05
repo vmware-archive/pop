@@ -176,6 +176,7 @@ def test_contract_sigs():
     assert 'Parameter "args" is not in the correct position for *args' in exstr
     assert 'Parameter, "a" is type "<class \'inspect._empty\'>" not "<class \'str\'>"' in exstr
     assert 'Parameter, "c" is type "<class \'str\'>" not "typing.List"' in exstr
+    assert 'Parameter "bar" is past available positional params' in exstr
     assert 'missing' in exstr
 
 

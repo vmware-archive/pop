@@ -10,6 +10,7 @@ def contract(hub, raws, mod):  # pylint: disable=unused-argument
     '''
     sig_errs = []
     sig_miss = []
+    mname = mod.__name__
     for raw in raws:
         for fun in raw._funcs:
             if fun.startswith('sig_'):
@@ -21,11 +22,11 @@ def contract(hub, raws, mod):  # pylint: disable=unused-argument
     if sig_errs or sig_miss:
         msg = ''
         if sig_errs:
-            msg += 'Signature Errors:\n'
+            msg += f'Signature Errors in {mname}:\n'
             for err in sig_errs:
                 msg += f'{err}\n'
         if sig_miss:
-            msg += 'Signature Functions Missing:\n'
+            msg += f'Signature Functions Missing in {mname}:\n'
             for err in sig_miss:
                 msg += f'{err}\n'
         msg = msg.strip()
@@ -92,6 +93,8 @@ def sig(func, ver):
                             errors.append(f'Parameter "{name}" not defined as kw only')
                         continue
                 elif vdat['kwargs'] is not False and not has_default:
+                    errors.append(f'Parameter "{name}" is past available positional params')
+                elif vdat['kwargs'] is False:
                     errors.append(f'Parameter "{name}" is past available positional params')
             else:
                 v_param = vdat['args'][ind]

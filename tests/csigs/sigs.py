@@ -15,3 +15,6 @@ def five(hub, a: str, d, *args):
 
 def six(hub, *args):
     pass
+
+def seven(hub, foo, bar):
+    pass

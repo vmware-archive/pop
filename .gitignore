@@ -1,52 +1,129 @@
-/build
-/src
-*.py[co]
-pkg/arch/*.tar.xz
-*.sw[pon]
-docs/_build
-/dist
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[codx]
+
+# C extensions
+*.so
+
+# Ignore generated C files (Cython)
+*.c
+
+# iPython notebooks and checkpoints
+*.ipynb
+.ipynb_checkpoints
+
+# patch files
+*.orig
+
+# Don't commit Ubu SPA
+raas/static/*
+
+# Don't commit a deploy-key
+deploy-key
+
+# Distribution / packaging
+.Python
+env/
+bin/
+build/
+develop-eggs/
+dist/
+eggs/
+lib/
+lib64/
+parts/
+raas/_version.py
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
 MANIFEST
-.pytest_cache/
-*~
-*#
-*.wpr
-*.wpu
-*.DS_Store
 
-# setuptools stuff
-*.egg-info
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
 
-# code coverage outputs genereated by coverage.py
-.coverage
-coverage.xml
+# Unit test / coverage reports
 htmlcov/
+.tox/
+.coverage
+.cache
+.pytest_cache
+nosetests.xml
+coverage.xml
 
-# IDE files
-/.settings
-/.project
-/.pydevproject
-/.idea
-/.ropeproject
+# Pytest
+pytest.ini
+
+# Translations
+*.mo
+
+# macOS
+.DS_Store
+
+# Mr Developer
+.mr.developer.cfg
+.project
+.pydevproject
+
+# Rope
 .ropeproject
-*_flymake.py
-/*.iml
-*.sublime-project
-*.sublime-workspace
-/.kdev4
-/*.kdev4
-/toran.kdev4
 
-# ignore ctags file
+# Django stuff:
+*.log
+*.pot
+
+# Sphinx documentation
+doc/_build/
+doc/user/ubu/_build/
+
+# Local VIM RC
+.lvimrc
+
+# Swap files
+.*.swp
+
+# nvim
+*.un~
+*~
+
+# setup compile left-overs
+*.py_orig
+
+# Nuitka build
+nuitka/
+nuitka_standalone/
+raas.pkg/
+raas.run
+raas.txz
+
+# Tags
+TAGS
 tags
 
-# ignore Vagrant file
-**/Vagrantfile
-**/.vagrant
+# kdevelop
+*.kdev4
 
-# Compiled translation files should not be VCS'ed
-# locale/zh_CN/LC_MESSAGES/topics/virt/nic.mo
-*.mo
-.doctrees
+# pycharm
+.idea*
 
-# ignore the local root
-/root/**
+# VSCode
+.vscode*
+
+# pyenv
+.python-version
+
+.ci/.rootdir
+
+# Coverage data files
+.coverage.*
+
+runpytest.sh
+
+# vscode
+.vscode
+.pytest_cache
+
+raas/mods/db/upgrades/sqla/env.py
+

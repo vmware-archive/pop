@@ -140,6 +140,7 @@ class Builder:
     def report(self):
         art = os.path.join(self.cwd, 'dist', self.name)
         print(f'Executable created in {art}')
+        print('To create a more portable and fully static binary install run staticx against your new build')
 
     def clean(self):
         shutil.rmtree(self.venv_dir)

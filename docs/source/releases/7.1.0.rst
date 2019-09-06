@@ -1,0 +1,42 @@
+=================
+Pop Release 7.1.0
+=================
+
+This release comes with a few fixes and minor additions.
+
+Fix to Sigs System
+==================
+
+This release fixes an oversight in the sigs system to allow for
+better enforcement of sigs. There was a situation with args that
+was being missed.
+
+Given the extensive possibilities when matching `*args` and
+`**kwargs` in options I suspect that there will be a couple more
+minor findings before sigs is perfected. But with that said I am
+not currently aware of any issues.
+
+Addition of Static Build System
+===============================
+
+Also we have added a system to `pop-seed` that will build a single
+binary from a pop project. The new `build.py` script will be added
+to projects by the pop-seed command.
+
+This new script will download and install the needed tools to build
+the single binary into a venv. This system uses PyInstaller and
+compensates for some of the things that PyInstaller has trouble handling
+for pop projects where we manipulate the import system so much.
+
+Addition of Logging into the conf System
+========================================
+
+Now when you call `hub.pop.conf.integrate` there is a new option, `logs`.
+If `logs` is set to True then logging options will be added to your
+configuration options and a logger will be set up and made available to
+use just by adding `import logging; log = logging.getLogger(__name__)` to
+your plugins!
+
+The logging system in pop is of course... Pluggable! So it is easy to add
+more powerful plugins for kore advanced logging int he future.
+

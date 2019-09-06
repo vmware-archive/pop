@@ -191,3 +191,15 @@ module.
 All of the contract wrappers and sigs will be enforced and called. If multiple wrappers
 are defined for a given function then they will be called in the order in which they
 are defined in the `__contracts__` variable.
+
+Subsystem Wide Contracts
+========================
+
+Sometimes it makes sense to enforce the same contract over an entire subsystem. This
+can be useful when the pattern you are using exposes many ways to accomplish the
+same task, like many back ends to a database, or many ways to read in different types
+of files.
+
+To make a subsystem wide contract just make an `init.py` file in your `contratcs`
+directory. That `init.py` contract will now be applied to all modules in the
+subsystem.

@@ -4,7 +4,7 @@ Seed a new project with a directory tree and first files
 # Import python libs
 import os
 
-BUILD = '''#!/usr/bin/python3
+BUILD = """#!/usr/bin/python3
 import sys
 import os
 import shutil
@@ -159,7 +159,7 @@ class Builder:
 if __name__ == '__main__':
     builder = Builder()
     builder.build()
-'''
+"""
 
 SETUP = '''#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
@@ -273,6 +273,7 @@ def new(hub):
     hub.pop.seed.mkversion(name)
     hub.pop.seed.mkconf(name)
     hub.pop.seed.mkreq(name)
+    hub.pop.seed.mkbuild()
 
 
 def mkdir(hub, *args):
@@ -360,7 +361,7 @@ def mkconf(hub, name):
         fp.write(CONF)
 
 
-def mk_build(hub):
+def mkbuild(hub):
     '''
     Create the build script to make the single executable
     '''

@@ -88,6 +88,15 @@ class TestLazyPop:
             with pytest.raises(AttributeError):
                 l_hub.BAZ
 
+    def test_recursive_get(self):
+        hub = Hub()
+        hub.pop.sub.add('tests.mods')
+        assert hub.mods
+        l_hub = testing._LazyPop(hub)
+
+        result = getattr(l_hub, 'mods.foo')
+        assert result is l_hub.mods.foo
+
 
 class TestStripHub:
     def test_basic(self):

@@ -75,6 +75,14 @@ class _LazyPop:
         return attrs
 
     def __getattribute__(self, item):
+        if not item.strip('_'):
+            raise NotImplementedError
+        if '.' in item:
+            result = self
+            for part in item.split('.').copy():
+                result = getattr(result, part)
+            return result
+
         attr = super().__getattribute__(item)
 
         if attr is _LazyPop.__Lazy:

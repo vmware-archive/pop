@@ -5,7 +5,7 @@ CONFIG = {
         'help': 'Help, I need sombody!'
         },
     'stuff_dir': {
-        'default': '/tmp/stuff',
+        'default': '/tmp/tests.conf1/stuff',
         'help': 'A directory dedicated to stuff',
         },
     }

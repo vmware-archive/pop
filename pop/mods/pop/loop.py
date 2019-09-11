@@ -6,6 +6,7 @@ The main interface for management of the aio loop
 import asyncio
 import os
 import sys
+import signal
 import functools
 
 __virtualname__ = 'loop'
@@ -49,13 +50,24 @@ def ensure_future(hub, ref, *args, **kwargs):
     def callback(fut):
         hub.pop.loop.FUT_QUE.put_nowait(fut)
     future.add_done_callback(callback)
+    return future
 
 
-def start(hub, *coros, hold=False):
+def start(hub, *coros, hold=False, sigint=None, sigterm=None):
     '''
     Start a loop that will run until complete
     '''
     hub.pop.loop.create()
+    if sigint:
+        s = signal.SIGINT
+        hub.pop.Loop.add_signal_handler(
+            s, lambda s=s: asyncio.create_task(sigint(s))
+            )
+    if sigterm:
+        s = signal.SIGTERM
+        hub.pop.Loop.add_signal_handler(
+            s, lambda s=s: asyncio.create_task(sigterm(s))
+            )
     if hold:
         coros = list(coros)
         coros.append(_holder(hub))

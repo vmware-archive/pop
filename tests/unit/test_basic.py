@@ -36,6 +36,16 @@ def test_iter_sub():
     assert mods == sorted(hub.mods._loaded.keys())
 
 
+def test_iter_loads():
+    hub = pop.hub.Hub()
+    hub.pop.sub.add('tests.mods.iter')
+    for mod in hub.iter:
+        if mod.__sub_name__ == 'init':
+            continue
+        mod.run()
+    print(hub.iter.DATA)
+
+
 def test_iter_sub_nested():
     hub = pop.hub.Hub()
     hub.pop.sub.add('tests.mods')

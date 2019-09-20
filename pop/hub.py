@@ -278,12 +278,14 @@ class Sub:
     #     return '{}.{}'.format(self._mod_basename, self._subname)
 
     def __iter__(self):
+        self._load_all()
         def iter(loaded):
             for l in sorted(loaded.keys()):
                 yield loaded[l]
         return iter(self._loaded)
 
     def __next__(self):
+        self._load_all()
         if self._iter_ind == len(self._iter_keys):
             self._iter_ind = 0
             raise StopIteration

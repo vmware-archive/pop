@@ -1,0 +1,20 @@
+=================
+Pop Release 7.1.0
+=================
+
+This release comes with a few fixes and minor additions.
+
+Auto Load Plugins on Iteration
+==============================
+
+Plugins are normally lazy loaded, but when iterating over a subsystem
+all plugins need to be loaded. Since one would expect to be able to
+iterate over a sub, it has been added to automatically load all
+of the plugins when starting to iterate.
+
+Add Callbacks For Signal Catches
+================================
+
+The loop inside of `pop` can now be started with functions to call when
+receiving signals on unix systems. This makes it easier to respond cleanly
+to interrupt and term signals.

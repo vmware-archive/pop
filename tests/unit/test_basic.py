@@ -43,7 +43,7 @@ def test_iter_loads():
         if mod.__sub_name__ == 'init':
             continue
         mod.run()
-    print(hub.iter.DATA)
+    assert hub.iter.DATA == {'bar': True, 'foo': True}
 
 
 def test_iter_sub_nested():

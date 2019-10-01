@@ -242,16 +242,8 @@ def prep_loaded_mod(this_sub, mod, mod_name, contracts):
             if not this_sub._omit_class and inspect.isclass(klass):
                 # We're only interested in classes defined in this module, not
                 # imported classes
-                if isinstance(this_sub._pypath, list):
-                    skip = False
-                    for this_pypath in this_sub._pypath:
-                        if not klass.__module__.startswith((this_pypath, mod.__name__)):
-                            skip = True
-                    if skip:
-                        continue
-                else:
-                    if not klass.__module__.startswith((this_sub._pypath, mod.__name__)):
-                        continue
+                if not klass.__module__.startswith(mod.__name__):
+                    continue
                 lmod._classes[name] = klass
                 lmod._attrs[name] = klass
     return lmod

@@ -15,12 +15,6 @@ __pycache__/
 # patch files
 *.orig
 
-# Don't commit Ubu SPA
-raas/static/*
-
-# Don't commit a deploy-key
-deploy-key
-
 # Distribution / packaging
 .Python
 env/
@@ -32,7 +26,6 @@ eggs/
 lib/
 lib64/
 parts/
-raas/_version.py
 sdist/
 var/
 *.egg-info/
@@ -94,9 +87,6 @@ doc/user/ubu/_build/
 # Nuitka build
 nuitka/
 nuitka_standalone/
-raas.pkg/
-raas.run
-raas.txz
 
 # Tags
 TAGS
@@ -124,6 +114,3 @@ runpytest.sh
 # vscode
 .vscode
 .pytest_cache
-
-raas/mods/db/upgrades/sqla/env.py
-

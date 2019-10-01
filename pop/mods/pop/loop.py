@@ -44,7 +44,7 @@ def ensure_future(hub, ref, *args, **kwargs):
     the hold system to await the future when it is done making it easy
     to create a future that will be cleanly awaited in the background.
     '''
-    fun = hub.pop.ref.last(ref)
+    fun = getattr(hub, ref)
     future = asyncio.ensure_future(fun(*args, **kwargs))
 
     def callback(fut):

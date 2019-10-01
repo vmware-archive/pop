@@ -4,7 +4,7 @@ from unittest.mock import sentinel, NonCallableMock, NonCallableMagicMock
 
 import pytest
 
-import pop.utils.testing as testing
+import pop.mods.pop.testing as testing
 from pop.hub import Hub
 
 

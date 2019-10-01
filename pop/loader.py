@@ -101,6 +101,8 @@ def ext(modname, path):
     Attempt to load the named python modules
     '''
     modname = '.'.join(modname.split('.')[:-1])
+    if modname in sys.modules:
+        return sys.modules[modname]
     _populate_sys_modules(modname)
     try:
         efl = importlib.machinery.ExtensionFileLoader(modname, path)
@@ -117,6 +119,8 @@ def python(modname, path):
     '''
     Attempt to load the named python modules
     '''
+    if modname in sys.modules:
+        return sys.modules[modname]
     try:
         sfl = importlib.machinery.SourceFileLoader(modname, path)
         return sfl.load_module()
@@ -236,10 +240,18 @@ def prep_loaded_mod(this_sub, mod, mod_name, contracts):
         else:
             klass = func
             if not this_sub._omit_class and inspect.isclass(klass):
-                if not klass.__module__.startswith((this_sub._pypath, mod.__name__)):
-                    # We're only interested in classes defined in this module, not
-                    # imported classes
-                    continue
+                # We're only interested in classes defined in this module, not
+                # imported classes
+                if isinstance(this_sub._pypath, list):
+                    skip = False
+                    for this_pypath in this_sub._pypath:
+                        if not klass.__module__.startswith((this_pypath, mod.__name__)):
+                            skip = True
+                    if skip:
+                        continue
+                else:
+                    if not klass.__module__.startswith((this_sub._pypath, mod.__name__)):
+                        continue
                 lmod._classes[name] = klass
                 lmod._attrs[name] = klass
     return lmod

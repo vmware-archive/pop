@@ -251,10 +251,10 @@ CONF = '''CLI_CONFIG = {}
 CONFIG = {}
 GLOBAL = {}
 SUBS = {}
+DYNE = {}
 '''
 
-VER = '''# All pop projects follow semantic versioning version 2.0.0: https://semver.org/
-version = '1.0.0'
+VER = '''version = '1.0.0'
 '''
 
 

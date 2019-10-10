@@ -200,7 +200,6 @@ def test_contract_sigs():
     with pytest.raises(pop.exc.ContractSigException) as exc:
         hub.csigs.sigs.first(4, 6, 8)
     exstr = str(exc.value)
-    print(exstr)
     assert 'Kwargs are not permitted as a parameter' in exstr
     assert 'Parameter "z" does not have the correct name: b' in exstr
     assert 'Parameter "a" is past available positional params' in exstr

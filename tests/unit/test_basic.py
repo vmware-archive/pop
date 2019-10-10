@@ -18,6 +18,27 @@ def test_basic():
     assert hub.mods.test.ping() == hub.mods.foo.bar()
 
 
+def test_subdirs():
+    hub = pop.hub.Hub()
+    hub.pop.sub.add('tests.sdirs')
+    hub.pop.sub.load_subdirs(hub.sdirs)
+    assert hub.sdirs.test.ping()
+    assert hub.sdirs.l11.test.ping()
+    assert hub.sdirs.l12.test.ping()
+    assert hub.sdirs.l13.test.ping()
+
+
+def test_subdirs_recurse():
+    hub = pop.hub.Hub()
+    hub.pop.sub.add('tests.sdirs')
+    hub.pop.sub.load_subdirs(hub.sdirs, recurse=True)
+    assert hub.sdirs.test.ping()
+    assert hub.sdirs.l11.test.ping()
+    assert hub.sdirs.l11.l2.test.ping()
+    assert hub.sdirs.l12.l2.test.ping()
+    assert hub.sdirs.l13.l2.test.ping()
+
+
 def test_getattr():
     hub = pop.hub.Hub()
     hub.pop.sub.add('tests.mods')

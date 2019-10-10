@@ -103,7 +103,7 @@ def iter_subs(hub, sub):
         yield sub._subs[name]
 
 
-def load_subdirs(hub, sub):
+def load_subdirs(hub, sub, recurse=False):
     '''
     Given a sub, load all subdirectories found under the sub into a lower namespace
     '''
@@ -129,6 +129,8 @@ def load_subdirs(hub, sub):
                         omit_vars=sub._omit_vars,
                         mod_basename=sub._mod_basename,
                         stop_on_failures=sub._stop_on_failures)
+                if recurse:
+                    hub.pop.sub.load_subdirs(getattr(sub, fn))
 
 
 def reload(hub, subname):

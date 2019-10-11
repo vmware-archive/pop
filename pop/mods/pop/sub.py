@@ -108,6 +108,7 @@ def load_subdirs(hub, sub, recurse=False):
     Given a sub, load all subdirectories found under the sub into a lower namespace
     '''
     dirs = hub.pop.sub.get_dirs(sub)
+    roots = {}
     for dir_ in dirs:
         for fn in os.listdir(dir_):
             if fn.startswith('_'):
@@ -115,22 +116,28 @@ def load_subdirs(hub, sub, recurse=False):
             if fn == 'contracts':
                 continue
             full = os.path.join(dir_, fn)
-            if os.path.isdir(full):
-                # Load er up!
-                hub.pop.sub.add(
-                        subname=fn,
-                        sub=sub,
-                        static=[full],
-                        virtual=sub._virtual,
-                        omit_start=sub._omit_start,
-                        omit_end=sub._omit_end,
-                        omit_func=sub._omit_func,
-                        omit_class=sub._omit_class,
-                        omit_vars=sub._omit_vars,
-                        mod_basename=sub._mod_basename,
-                        stop_on_failures=sub._stop_on_failures)
-                if recurse:
-                    hub.pop.sub.load_subdirs(getattr(sub, fn))
+            if not os.path.isdir(full):
+                continue
+            if fn not in roots:
+                roots[fn] = [full]
+            else:
+                roots[fn].append(full)
+    for name, sub_dirs in roots.items():
+        # Load er up!
+        hub.pop.sub.add(
+                subname=name,
+                sub=sub,
+                static=sub_dirs,
+                virtual=sub._virtual,
+                omit_start=sub._omit_start,
+                omit_end=sub._omit_end,
+                omit_func=sub._omit_func,
+                omit_class=sub._omit_class,
+                omit_vars=sub._omit_vars,
+                mod_basename=sub._mod_basename,
+                stop_on_failures=sub._stop_on_failures)
+        if recurse:
+            hub.pop.sub.load_subdirs(getattr(sub, name), recurse)
 
 
 def reload(hub, subname):

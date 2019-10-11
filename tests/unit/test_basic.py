@@ -351,3 +351,14 @@ def test_dyne():
     assert hub.dyne2.nest.nest_dyne_ping()
     assert hub.dyne3.test.dyne_ping()
     assert hub.dyne3.nest.nest_dyne_ping()
+
+
+def test_dyne_nest():
+    hub = pop.hub.Hub()
+    hub.pop.sub.add(dyne_name='dn1')
+    hub.pop.sub.load_subdirs(hub.dn1, recurse=True)
+    assert hub.dn1.nest.dn1.ping()
+    assert hub.dn1.nest.dn2.ping()
+    assert hub.dn1.nest.dn3.ping()
+    assert hub.dn1.nest.next.test.ping()
+    assert hub.dn1.nest.next.last.test.ping()

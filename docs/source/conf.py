@@ -24,9 +24,9 @@ copyright = '2019, Thomas S Hatch'
 author = 'Thomas S Hatch'
 
 # The short X.Y version
-version = '7.2.0'
+version = '7.3.0'
 # The full version, including alpha/beta/rc tags
-release = '7.2.0'
+release = version
 
 
 # -- General configuration ---------------------------------------------------

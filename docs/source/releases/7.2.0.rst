@@ -1,5 +1,5 @@
 =================
-Pop Release 7.1.0
+Pop Release 7.2.0
 =================
 
 This release comes with a few fixes and minor additions.

@@ -1,0 +1,28 @@
+=================
+Pop Release 7.3.0
+=================
+
+This release fixes some bugs and makes the dyne loader more robust
+
+Recursive Subdirs
+=================
+
+The hub.pop.sub.load_subdirs function got a new argument, `recurse`.
+This allows subdir loading to be recursive if set to True.
+
+This loading also allows for recursive subdirs to be loaded for
+disparate dyne_name loads. This means that if your subsystem is
+derived from multiple path sources the names get auto merged into
+the correct paths.
+
+Fix Issue With Class Loading
+============================
+
+We discovered that modules were getting reloaded too much and causing
+issues with loading classes onto the `hub`. This has been fixed
+
+Add DYNE to conf.py in pop-seed
+===============================
+
+`pop-seed` continues to be refined, not the `DYNE` dict is added by default
+top the conf.py file created by `pop-seed`

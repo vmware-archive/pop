@@ -7,7 +7,7 @@ Configuration Reading
 One of the classic issues with systems software development is adding
 configuration and options to CLI programs. The problem is that configuration
 data needs to come from multiple sources. Defaults need to be set, CLI options
-need to be accepted, config file(s) needs to exist. Config file settings need to
+need to be accepted, config file(s) need to exist. Config file settings need to
 override defaults, while CLI options need to override both, but the CLI needs
 to be able to define the location of the config file(s). Finally there ends up
 being multiple sources of truth. Config options are documented in one place
@@ -152,7 +152,7 @@ https://docs.python.org/3/library/argparse.html#nargs
 Using Positional args
 =====================
 
-Often is makes sense to use positional arguments for your CLI options. This
+It often makes sense to use positional arguments for your CLI options. This
 can be easily added to `conf`:
 
 .. code-block:: python

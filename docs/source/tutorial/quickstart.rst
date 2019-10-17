@@ -136,7 +136,7 @@ Now lets change the `__init__` function in *poppy/poppy/init.py* to load up the 
 .. code-block:: python
 
     def __init__(hub):
-        hub.pop.conf.integrate(['poppy'], loader='yaml', roots=True)
+        hub.pop.conf.integrate(['poppy'], loader='yaml', cli='poppy', roots=True)
 
 Now the configuration data has been loaded, if you run *run.py* with `--help` you will see
 all of your configuration options available. The configuration options will now be made

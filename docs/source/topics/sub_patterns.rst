@@ -16,7 +16,7 @@ sure that your pattern is well documented and contracted.
 Spine Pattern
 =============
 
-The spine pattern is very common, because it defines the startup spine of an application. This
+The spine pattern is very common because it defines the startup spine of an application. This
 is a pattern where your application loads up config data, starts worker processes and loads the
 bulk of the subsystems to be used.
 
@@ -55,7 +55,7 @@ This would be a simple *init.py*:
 
 This example shows iterating over the modules found in the beacons sub. The plugins are
 defined as needing to implement an async generator function. We call the async generator
-function, which returns an async generator that gets appended to a list. That list is then
+function which returns an async generator that gets appended to a list. That list is then
 passed to the as_yielded function that yields as the next async generator yields. The
 yielded data is then added to a QUE that can be ingested elsewhere.
 
@@ -80,7 +80,7 @@ Collection Pattern
 ==================
 
 The collection pattern is where an expansive number of modules can be added that define the
-on demand collection of data. A good example here is to collect system information. This
+on-demand collection of data. A good example here is to collect system information. This
 makes it simple to extend what data is being gathered and to support more platforms.
 
 A simple example of a collection pattern *init.py* file could look like this:
@@ -104,7 +104,7 @@ A simple example of a collection pattern *init.py* file could look like this:
                 coros.append(ret)
         await asyncio.gather(coros)
 
-This example allows for plugin modules to create both functions and async functions and
+This example allows for plugin modules to create both functions and async functions as well as
 execute the async functions in parallel. A simple module for this example of the collection
 patter could look like this plugin called *os.py*:
 
@@ -120,7 +120,7 @@ patter could look like this plugin called *os.py*:
     elif sys.platform.startswith('darwin'):
         hub.system.DATA['kernel'] = 'darwin'
 
-The collection pattern we used here allowed the modules to populate a dict on the hub. But
+The collection pattern we used here allowed the modules to populate a dict on the hub, but
 we could have just as easily returned the data we wanted to put on the hub and had the
 function in the *init.py* aggregate the data.
 
@@ -128,7 +128,7 @@ Flow Pattern
 ============
 
 The flow pattern is used for flow based interfaces. This follows an async pattern where
-data is queued up and passed into and/or out of the subsystem. This is an excellent
+data is queued and passed into and/or out of the subsystem. This is an excellent
 pattern for applications that do data processing. Data can be loaded into the pattern,
 processed and sent forward to the next interface for processing. This pattern is used to
 link together multiple flow subsystems or to take data from a beacon pattern and process it.

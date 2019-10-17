@@ -113,14 +113,14 @@ code should expose simple interfaces and follow good library development practic
 Rule 5 - App Merging
 ====================
 
-Software is easier to develop and manage when it is comprosed of many smaller
+Software is easier to develop and manage when it is composed of many smaller
 applications. But software is easier to distribute and use when it is a single large
 application. Take a Linux Distro for example, they are made of thousands of small
-software packages, but these packages would be unusable alnoe, they need to be
+software packages, but these packages would be unusable alone, they need to be
 glued together and distributed.
 
 Plugin Oriented Programming is all about tearing down the walls between apps and
-libs. It is designed to make apps mergable, but also standalone and useful.
+libs. It is designed to make apps mergeable, but also standalone and useful.
 
 This solves the problem of communicating large codebases! Now small codebases can
 be created and iterated on quickly, but still merged into a larger whole.

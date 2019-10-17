@@ -4,11 +4,11 @@
 Plugin Subsystems Overview
 ==========================
 
-Plugin subsystems, or `subs` are the main container type used inside of `pop`.
+Plugin subsystems, or `subs`, are the main container type used inside of `pop`.
 These `subs` contains the collections of plugins, patterns, contracts, and interfaces
 that drive your application. Fortunately adding `subs` to your `hub` is easy to do and
-adding plugins to your `subs` is equally easy. All of the namespaces, tricky plugin
-loading and tracking are all taken care of in `pop`.
+adding plugins to your `subs` is equally as easy. All of the namespaces, tricky plugin
+loading, and tracking are all taken care of in `pop`.
 
 When you add a `sub` you have many options. Most of the demo subs you see will be
 very simple, just a call to `hub.pop.sub.add` with only the pypath variable
@@ -51,10 +51,10 @@ packages that have defined them. This is an amazing way to dynamically make your
 subsystem even more pluggable by allowing external applications to extend your system.
 
 The Dynamic Name system is used by adding the option `dyne_name`. It is the only required
-option when enabling dynamic name, But it also requires that your application adds the
+option when enabling dynamic name, but it also requires that your application adds the
 `DYNE` flag to the conf.py file in the root of your project.
 
-    dyne_name: A string which defined the name of the subsystem, and how to map it using the
+    dyne_name: A string which defines the name of the subsystem, and how to map it using the
     Dynamic Name system
 
 For more information on Dynamic Names please see the doc outlining how the Dynamic Names system
@@ -63,7 +63,7 @@ works and how to use it: :ref:`dyne_name`
 Omitting Components From the Sub
 ================================
 
-When modules are loaded, they by default omit objects that start with an underscore. This is set
+By default, when modules are loaded, they omit objects that start with an underscore. This is set
 to allow for objects to be kept private to the module and not expose them. The character used
 to determine if the object should be omitted can be changed, or it can be set as an endwith char:
 
@@ -78,7 +78,7 @@ to determine if the object should be omitted can be changed, or it can be set as
     omit_vars: Set to True to omit all vars from a sub
 
 If you choose to change any of these values in your default settings for your `sub` it should be heavily
-documented, as it will really confuse users of your sub and it is strongly discouraged!!
+documented, as it will really confuse users of your sub. It is strongly discouraged!!
 
 Stopping on Load Failures
 =========================
@@ -94,7 +94,7 @@ Virtual Execution
 =================
 
 When modules are loaded they execute the `__virtual__` function. The `__virtual__` function
-can be disabled for a sub when it is loaded. This is typically used just for debugging.
+can be disabled for a sub when it is loaded. This is typically only used for debugging.
 
 Modify the Initializer
 ======================

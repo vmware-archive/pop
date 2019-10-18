@@ -3,11 +3,22 @@
 Provides tools to help unit test projects using pop.
 For now, provides mock Hub instances.
 '''
+# Import python libs
 import inspect
 import copy
 from functools import partial
-from asynctest.mock import create_autospec
 
+# Import third party libs
+try:
+    from asynctest.mock import create_autospec
+except ImportError:
+    # This should not throw an error, this is a turtles all the way down and
+    # chicken and egg problem. We want this testing component to be in the
+    # pop sub, but we don't want to require runtime applications to have
+    # asynctest.
+    pass
+
+# Import pop libs
 from pop.contract import Contracted
 from pop.loader import LoadedMod
 from pop.hub import Hub, Sub

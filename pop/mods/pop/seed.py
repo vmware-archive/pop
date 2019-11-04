@@ -254,7 +254,7 @@ SUBS = {}
 DYNE = {}
 '''
 
-VER = '''version = '1.0.0'
+VER = '''version = '1'
 '''
 
 
@@ -265,16 +265,24 @@ def new(hub):
     '''
     hub.PATH = os.getcwd()
     name = hub.opts['seed_name']
-    hub.pop.seed.mkdir(name, name)
-    hub.pop.seed.mkdir(name, name, 'contracts')
-    hub.pop.seed.mksetup(name)
-    hub.pop.seed.mkscript(name)
-    hub.pop.seed.mkrun(name)
-    hub.pop.seed.mkinit(name)
-    hub.pop.seed.mkversion(name)
-    hub.pop.seed.mkconf(name)
-    hub.pop.seed.mkreq(name)
-    hub.pop.seed.mkbuild()
+    if hub.opts['type'] == 'v':
+        hub.pop.seed.mkdir(name)
+        hub.pop.seed.mksetup(name)
+        hub.pop.seed.mkscript(name)
+        hub.pop.seed.mkversion(name)
+        hub.pop.seed.mkconf(name)
+        hub.pop.seed.mkreq(name)
+    else:
+        hub.pop.seed.mkdir(name, name)
+        hub.pop.seed.mkdir(name, name, 'contracts')
+        hub.pop.seed.mksetup(name)
+        hub.pop.seed.mkscript(name)
+        hub.pop.seed.mkversion(name)
+        hub.pop.seed.mkconf(name)
+        hub.pop.seed.mkreq(name)
+        hub.pop.seed.mkrun(name)
+        hub.pop.seed.mkinit(name)
+        hub.pop.seed.mkbuild()
 
 
 def mkdir(hub, *args):

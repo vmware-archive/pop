@@ -197,12 +197,12 @@ all of the functions in the `rpc` plugin subsystem over a simple http server.
 
 .. code-block:: python
 
-    import aiohttp
+    from aiohttp import web
 
     def __init__(hub):
-        app = aiohttp.web.Application()
-        app.add_routes([aiohttp.web.get('/', hub.rpc.init.router)])
-        aiohttp.web.run_app(app)
+        app = web.Application()
+        app.add_routes([web.get('/', hub.rpc.init.router)])
+        web.run_app(app)
 
     async def router(hub, request):
         data = request.json()

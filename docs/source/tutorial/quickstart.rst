@@ -118,7 +118,7 @@ your configuration data.
 
 .. code-block:: python
 
-    CLI_CONFIG = {
+    CONFIG = {
             'addr': {
                 'options': ['-a'],
                 'default': '127.0.0.1',

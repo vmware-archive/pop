@@ -35,6 +35,8 @@ while still allowing that data to be shared safely across the application.
 
 .. code-block:: python
 
+    # poppy/run.py
+
     import pop.hub
 
     # Create the hub
@@ -62,6 +64,8 @@ Create a file called *poppy/poppy/init.py* and give it an `__init__` function. L
 class you can initialize a new plugin subsystem, or a new module.
 
 .. code-block:: python
+
+    # poppy/poppy/init.py
 
     def __init__(hub):
         print('Hello World!!')
@@ -118,6 +122,8 @@ your configuration data.
 
 .. code-block:: python
 
+    # poppy/conf.py
+
     CLI_CONFIG = {
             'addr': {
                 'options': ['-a'],
@@ -134,6 +140,8 @@ your configuration data.
 Now lets change the `__init__` function in *poppy/poppy/init.py* to load up the project's config!
 
 .. code-block:: python
+
+    # poppy/poppy/init.py
 
     def __init__(hub):
         hub.pop.conf.integrate(['poppy'], loader='yaml', cli='poppy', roots=True)

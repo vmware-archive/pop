@@ -227,8 +227,6 @@ all of the functions in the `rpc` plugin subsystem over a simple http server.
         app = web.Application()
         routes = [
                 web.get('/', hub.rpc.init.router),
-                web.get('/hello', hub.rpc.init.hello),
-                web.get('/fib', hub.rpc.init.fib),
         ]
         app.add_routes(routes)
         web.run_app(app,
@@ -250,27 +248,6 @@ all of the functions in the `rpc` plugin subsystem over a simple http server.
                 hub.OPT['poppy']['port']
                 )
         return web.Response(text=default_text)
-
-
-    async def hello(hub, request):
-        return web.Response(text="hello world\n")
-
-
-    async def fib(hub, request):
-        try:
-            data = await request.json()
-        except:
-            data = {}
-        if 'fib' in data:
-            result = {}
-            result['fib'] = await hub.rpc.math.fib(data['fib'])
-            return web.json_response(result)
-        default_text = """example: curl -X GET http://{0}:{1}/fib -d '{{"fib": "11"}}'\n""".format(
-                hub.OPT['poppy']['addr'],
-                hub.OPT['poppy']['port']
-                )
-        return web.Response(text=default_text)
-
 
 
 Congratulations! You now have a working rpc server that takes json requests and routes to
@@ -306,12 +283,6 @@ Now your rpc server can compute the Fibonacci sequence. So lets start up the ser
     ======== Running on http://127.0.0.1:8888 ========
     (Press CTRL+C to quit)
 
-.. code-block:: bash
-
-    # Get a Fibonacci sequence
-
-    $  curl -X GET http://127.0.0.1:8888/fib -d '{"fib": "11"}'
-    {"fib": 89}
 
 .. code-block:: bash
 
@@ -335,12 +306,6 @@ Now your rpc server can compute the Fibonacci sequence. So lets start up the ser
     $ curl -X GET http://127.0.0.1:8888
     example: curl -X GET http://127.0.0.1:8888 -d '{"ref": "math.fib", "kwargs": {"num": "11"}}'
 
-.. code-block:: bash
-
-    # Request the hello url
-
-    $ curl -X GET http://127.0.0.1:8888/hello
-    hello world
 
 Now that you have a project up and running you can play around with extending what `pop` can
 do and get familiar with it.

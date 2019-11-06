@@ -52,11 +52,12 @@ setup(name=NAME,
       url='https://saltstack.com',
       version=VERSION,
       description=DESC,
+      python_requires='>=3.6',
       classifiers=[
           'Operating System :: OS Independent',
-          'Programming Language :: Python',
           'Programming Language :: Python :: 3.6',
           'Programming Language :: Python :: 3.7',
+          'Programming Language :: Python :: 3.8',
           'Development Status :: 5 - Production/Stable',
           ],
       entry_points={

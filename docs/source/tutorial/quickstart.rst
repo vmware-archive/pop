@@ -137,6 +137,8 @@ your configuration data.
                 },
             }
 
+    CONFIG = {}
+
 Now lets change the `__init__` function in *poppy/poppy/init.py* to load up the project's config!
 
 .. code-block:: python

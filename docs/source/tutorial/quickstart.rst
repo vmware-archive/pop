@@ -7,6 +7,11 @@ learn how `pop` works and how to make a project. Once you understand how to buil
 some basic tools in `pop` you can use the `pop-seed` tool to make setting up new
 projects easy.
 
+.. note::
+
+    A repo with the full working example can be found here:
+    `https://github.com/saltstack/poppy <https://github.com/saltstack/poppy>`_
+
 Getting Started
 ===============
 

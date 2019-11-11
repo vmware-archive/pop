@@ -16,10 +16,11 @@ def roots(hub, default_root, opts, home_root):
     root = os_root
     change = False
     anchor = ''
-    if not os.geteuid() == 0:
-        root = os.path.join(os.environ['HOME'], f'.{home_root}')
-        change = True
-        anchor = home_root
+    if hasattr(os, 'geteuid'):
+        if not os.geteuid() == 0:
+            root = os.path.join(os.environ['HOME'], f'.{home_root}')
+            change = True
+            anchor = home_root
     if opts.get('root_dir', root) != default_root:
         root = opts.get('root_dir', root)
         change = True

@@ -22,10 +22,7 @@ def create(hub):
     '''
     if not hub.pop.Loop:
         hub.pop.loop.FUT_QUE = asyncio.Queue()
-        if sys.platform == 'win32':
-            hub.pop.Loop = asyncio.ProactorEventLoop()
-        else:
-            hub.pop.Loop = asyncio.get_event_loop()
+        hub.pop.Loop = asyncio.get_event_loop()
 
 
 def call_soon(hub, ref, *args, **kwargs):

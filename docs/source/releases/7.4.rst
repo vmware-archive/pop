@@ -1,0 +1,34 @@
+===============
+Pop Release 7.4
+===============
+
+This release fixes some bugs and adds initial Windows support
+
+Windows Support
+===============
+
+POP now runs on Windows! The only things left to add is to make the
+conf system more robust on Windows. We add the ability
+for the conf system to get options from the registry in the same way that
+Linux can use environment variables. We also need to add automatic path
+management for Windows as it exists for root/user paths on Linux.
+
+Windows support for loops also changed, there were issues in using the
+Proactor loop and now we just use the default loop. This implies that
+Python 3.8 should be used for Windows as it uses the Proactor loop by
+default.
+
+Add pop-seed -t v
+=================
+
+With the introduction of Idem it has become expedient to allow pop-seed to
+create POP trees that do not include the tools needed for a standalone
+project but just the structure for a vertical app-merge project. This
+can now be accomplished with the `pop-seed -t v <project name>` command. 
+
+Update Quickstart
+=================
+
+The quickstart guide has been updated to reflect changes made in POP 7
+and made to be more fluid in exposing the RPC concept. It also got the
+addition of some curl commands to test poppy.

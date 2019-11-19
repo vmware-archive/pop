@@ -7,7 +7,7 @@ import pytest
 
 def hub():
     hub = Hub()
-    hub.tools.sub.add('tests.integration.contracted.mods')
+    hub.pop.sub.add('tests.integration.contracted.mods')
     return hub
 
 

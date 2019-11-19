@@ -41,13 +41,21 @@ def _ex_final(confs, final, override, key_to_ref, ops_to_ref, globe=False):
                     ops_to_ref = [ref]
 
 
-def load(hub, imports, override=None, cli=None, roots=False, home_root=None, loader='json'):
+def load(
+        hub,
+        imports,
+        override=None,
+        cli=None,
+        roots=False,
+        home_root=None,
+        loader='json',
+        logs=True):
     '''
     This function takes a list of python packages to load and look for
     respective configs. The configs are then loaded in a non-collision
     way modifying the cli options dynamically.
     The args look for the named <package>.conf python module and then
-    looks for dictonaries named after the following convention:
+    looks for dictionaries named after the following convention:
 
     override = {'<package>.key': 'key': 'new_key', 'options': ['--option1', '--option2']}
 
@@ -62,6 +70,7 @@ def load(hub, imports, override=None, cli=None, roots=False, home_root=None, loa
         if cli is None:
             cli = imports
         imports = [imports]
+    primary = imports[0] if cli is not None else cli
     if home_root is None:
         home_root = cli
     confs = {}
@@ -82,6 +91,10 @@ def load(hub, imports, override=None, cli=None, roots=False, home_root=None, loa
                 subs = copy.deepcopy(cmod.SUBS)
         if hasattr(cmod, 'GLOBAL'):
             globe[imp] = copy.deepcopy(cmod.GLOBAL)
+    if logs:
+        lconf = hub.conf.log.init.conf(primary)
+        lconf.update(confs[primary])
+        confs[primary] = lconf
     _ex_final(confs, final, override, key_to_ref, ops_to_ref)
     _ex_final(globe, final, override, key_to_ref, ops_to_ref, True)
     for opt in ops_to_ref:
@@ -99,7 +112,7 @@ def load(hub, imports, override=None, cli=None, roots=False, home_root=None, loa
         raise KeyError(collides)
     opts = hub.conf.reader.read(final, subs, loader=loader)
     if roots:
-        hub.conf.dirs.roots(final.get('root_dir', {}).get('default', '/'), opts, f'.{home_root}')
+        hub.conf.dirs.roots(final.get('root_dir', {}).get('default', '/'), opts, home_root)
         hub.conf.dirs.verify(opts)
     f_opts = {}  # I don't want this to be a defaultdict,
     # if someone tries to add a key willy nilly it should fail
@@ -112,3 +125,6 @@ def load(hub, imports, override=None, cli=None, roots=False, home_root=None, loa
                 f_opts[imp] = {}
             f_opts[imp][key] = opts[key]
     hub.OPT = f_opts
+    if logs:
+        log_plugin = hub.OPT[primary].get('log_plugin')
+        getattr(hub, f'conf.log.{log_plugin}.setup')(hub.OPT[primary])

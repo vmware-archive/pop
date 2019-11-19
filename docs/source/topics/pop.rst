@@ -64,20 +64,32 @@ contracts allow for pre and post hooks to be applied to functions in contracted 
 This allows for things like interface input validation. Built in pre and post hooks. As
 well as load time enforcement of the validity of the interface.
 
-Multi Homed Subsystems
-----------------------
+App Merging
+-----------
 
-Many problems in computer science are bi-directional. Much of what has been said refers to making
-an application from many smaller parts and then merging it together with plugin subsystems.
-But what if you want to make many projects that extend the support of a core application
-onto multiple systems or interfaces? This is where multi homing comes in. Multi homing
-means that you can create a single plugin subsystem, and then you can make a new project
-that has the same subsystem. Now the 2 projects' subsystems can be merged into one.
+App merging allows for full applications to be merged into each other. This means that
+a large application can be developed as many small applications that can be merged together.
 
-A good example of this could be a program to interface with multiple databases. Instead
-of building support for multiple databases into a single codebase, multiple codebases
-each supporting one database can then be merged together. That way the support for each
-database can be developed and tested in isolation.
+Since any single application is comprised of `subs` it becomes easy to merge multiple subs
+together from multiple apps into a new larger app.
+
+Horizontal App Merging
+~~~~~~~~~~~~~~~~~~~~~~
+
+Horizontal app merging means that you take the `subs` from multiple applications and merge
+them together into a new larger application. For instance lets say that you have a process
+that exposes an rpc interface, but you want to add system data gathering to your rpc system.
+Just use horizontal app merging to bring in the functionality from another application.
+In a nutshell, Horizontal App Merging allows for functionality from multiple apps to
+be mereged together by adding more `subs` onto your `hub`.
+
+Vertical App Merging
+~~~~~~~~~~~~~~~~~~~~
+
+Vertical App merging happens when you have a `sub` but you want to extend that `sub` to
+support more plugins that folow your `sub`'s pattern and contracts. This can be
+useful when you want to add additional database support, or support interacting with more
+Operating Systems. Or when you want to add support for interacting with more apis.
 
 Challenges to Face
 ==================

@@ -9,9 +9,14 @@ def pop_seed():
                 'positional': True,
                 'help': 'The name of the project that is being created',
                 },
+            'type': {
+                'default': 'p',
+                'options': ['-t'],
+                'help': 'The type of project to build, by default make a standalone project, but for a vetical app project pass a "v"',
+                },
             }
 
     hub = pop.hub.Hub()
-    hub.tools.sub.add('pop.mods.conf')
+    hub.pop.sub.add('pop.mods.conf')
     hub.opts = hub.conf.reader.read(CONFIG)
-    hub.tools.seed.new()
+    hub.pop.seed.new()

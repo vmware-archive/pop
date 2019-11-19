@@ -7,7 +7,7 @@ and they need to be rooted based on the user, root option etc.
 import os
 
 
-def roots(hub, default_root, opts, cdir):
+def roots(hub, default_root, opts, home_root):
     '''
     Detect the root dir data and apply it
     '''
@@ -15,9 +15,12 @@ def roots(hub, default_root, opts, cdir):
     os_root = '/'
     root = os_root
     change = False
-    if not os.geteuid() == 0:
-        root = os.path.join(os.environ['HOME'], cdir)
-        change = True
+    anchor = ''
+    if hasattr(os, 'geteuid'):
+        if not os.geteuid() == 0:
+            root = os.path.join(os.environ['HOME'], f'.{home_root}')
+            change = True
+            anchor = home_root
     if opts.get('root_dir', root) != default_root:
         root = opts.get('root_dir', root)
         change = True
@@ -28,8 +31,12 @@ def roots(hub, default_root, opts, cdir):
             if key == 'root_dir':
                 continue
             if key.endswith('_dir'):
+                if anchor:
+                    if anchor in opts[key]:
+                        a_len = len(anchor) + 1
+                        opts[key] = f'{os_root}{opts[key][opts[key].index(anchor)+a_len:]}'
                 opts[key] = opts[key].replace(
-                    os_root, root, 1)
+                        os_root, root, 1)
 
 
 def verify(hub, opts):

@@ -3,11 +3,22 @@
 Provides tools to help unit test projects using pop.
 For now, provides mock Hub instances.
 '''
+# Import python libs
 import inspect
 import copy
 from functools import partial
-from asynctest.mock import create_autospec
 
+# Import third party libs
+try:
+    from asynctest.mock import create_autospec
+except ImportError:
+    # This should not throw an error, this is a turtles all the way down and
+    # chicken and egg problem. We want this testing component to be in the
+    # pop sub, but we don't want to require runtime applications to have
+    # asynctest.
+    pass
+
+# Import pop libs
 from pop.contract import Contracted
 from pop.loader import LoadedMod
 from pop.hub import Hub, Sub
@@ -75,6 +86,14 @@ class _LazyPop:
         return attrs
 
     def __getattribute__(self, item):
+        if not item.strip('_'):
+            raise NotImplementedError
+        if '.' in item:
+            result = self
+            for part in item.split('.').copy():
+                result = getattr(result, part)
+            return result
+
         attr = super().__getattribute__(item)
 
         if attr is _LazyPop.__Lazy:

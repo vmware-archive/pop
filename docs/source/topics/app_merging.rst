@@ -21,10 +21,10 @@ as the merged app can get confused on how to address namespaces.
 
     The ability to make multiple hubs is deeply discouraged, but so is making
     singletons. The ability to have multiple hubs should always be supported
-    to mainain a clean seperation of the hub from the underlying programming
+    to maintain a clean separation of the hub from the underlying programming
     language implementation.
 
-Another violation of app merging is to not follow the hub namespace ruls, this
+Another violation of app merging is to not follow the hub namespace rules, this
 creates opportunities for namespace collisions.
 
 Why is App Merging a Big Deal?
@@ -37,11 +37,11 @@ When looking at any idealized concept, social, political, theological, engineeri
 etc. we paint a picture of an ideal world. We say that "Only if people would follow
 this ideal, all would be well".
 
-This is a grossly niaeve assertion to make on humanity, that we as humans seem to
+This is a grossly naive assertion to make on humanity, that we as humans seem to
 never stop making. Even when a philosophy is presented to compensate for human
-weekness we tend to corrupt that philosophy. So instead of looking at a concept
+weakness we tend to corrupt that philosophy. So instead of looking at a concept
 through the eyes of an idealized future we should look at concepts as ways to
-compensate for human weakness while looking to acomplish real goals.
+compensate for human weakness while looking to accomplish real goals.
 
 In application development we know that applications that are developed as collections
 of libraries present more reusable components. But in reality this ideal not often
@@ -54,12 +54,12 @@ much energy has been put into clean engineering that the project becomes pure ar
 the only purpose it has is itself.
 
 POP presents interfaces to users in an attempt to solve this problem. Allow developers
-to natively and quickly create applications that solve busines needs but natively
-present themseves as clean, re-usable, library driven applications that can be
+to natively and quickly create applications that solve busies needs but natively
+present themselves as clean, re-usable, library driven applications that can be
 easily re-used, in part or in whole.
 
 A hub, plugins and patterns enable this! If an application is comprised of plugins
-then interfaces that need extending or repurposing can be easily added to inside
+then interfaces that need extending or re-purposing can be easily added to inside
 a merged app. Patterns present isolated processes that deliver standalone value.
 This allows us to extend many of the merits of OOP, now we have, not only data
 and functions brought together, but we have entire application workflows
@@ -81,7 +81,7 @@ Once the configuration information is loaded into the hub it has been namespaced
 and made available on the respective namespace used by the subs. But before that
 it needs to be read in from the cli. This is what the conf.integrate system
 is designed to solve. The information read from the conf.py files can be modified
-to resolve collisions without having an effect on the oppoeration of the underlying
+to resolve collisions without having an effect on the operation of the underlying
 configured systems.
 
 How do I App Merge?

@@ -4,14 +4,14 @@ from unittest.mock import sentinel, NonCallableMock, NonCallableMagicMock
 
 import pytest
 
-import pop.utils.testing as testing
+import pop.mods.pop.testing as testing
 from pop.hub import Hub
 
 
 class TestLazyPop:
     def test_lazy(self):
         hub = Hub()
-        hub.tools.sub.add('tests.mods')
+        hub.pop.sub.add('tests.mods')
 
         # pylint: disable=pointless-statement
         l_hub = testing.MockHub(hub)
@@ -26,14 +26,14 @@ class TestLazyPop:
     def test_in_dict(self):
         # for autocompletion, all attributes should exist, even if it hasn't been called.
         hub = Hub()
-        hub.tools.sub.add('tests.mods')
+        hub.pop.sub.add('tests.mods')
 
         l_hub = testing._LazyPop(hub)
         assert 'mods' in l_hub.__dict__
 
     def test_duplicate_object(self):
         hub = Hub()
-        hub.tools.sub.add('tests.mods')
+        hub.pop.sub.add('tests.mods')
 
         hub.test_val = sentinel.test_val
         hub.mods.test_val = sentinel.test_val
@@ -47,7 +47,7 @@ class TestLazyPop:
 
     def test_duplicate_hub(self):
         hub = Hub()
-        hub.tools.sub.add('tests.mods')
+        hub.pop.sub.add('tests.mods')
 
         hub.hub = hub
         hub.mods.hub = hub
@@ -61,8 +61,8 @@ class TestLazyPop:
 
     def test_recursive_subs(self):
         hub = Hub()
-        hub.tools.sub.add('tests.mods')
-        hub.tools.sub.add('tests.mods.nest', sub=hub.mods)
+        hub.pop.sub.add('tests.mods')
+        hub.pop.sub.add('tests.mods.nest', sub=hub.mods)
         l_hub = testing._LazyPop(hub)
 
         assert hub.mods.nest.basic.ret_true()
@@ -72,7 +72,7 @@ class TestLazyPop:
 
     def test_var_exists_enforcement(self):
         hub = Hub()
-        hub.tools.sub.add('tests.mods')
+        hub.pop.sub.add('tests.mods')
 
         hub.FOO = 'foo'
         hub.mods.FOO = 'foo'
@@ -88,6 +88,15 @@ class TestLazyPop:
             with pytest.raises(AttributeError):
                 l_hub.BAZ
 
+    def test_recursive_get(self):
+        hub = Hub()
+        hub.pop.sub.add('tests.mods')
+        assert hub.mods
+        l_hub = testing._LazyPop(hub)
+
+        result = getattr(l_hub, 'mods.foo')
+        assert result is l_hub.mods.foo
+
 
 class TestStripHub:
     def test_basic(self):
@@ -96,9 +105,9 @@ class TestStripHub:
         g = testing.strip_hub(f)
 
         g()
-        with pytest.raises(TypeError) as e:
+        with pytest.raises(TypeError,
+                           match=r'f\(\) takes 0 positional arguments'):
             g('bar')
-        assert 'f() takes 0 positional arguments' in str(e)
 
     def test_param(self):
         def f(hub, foo):
@@ -107,9 +116,9 @@ class TestStripHub:
 
         g('foo')
         g(foo='foo')
-        with pytest.raises(TypeError) as e:
+        with pytest.raises(TypeError,
+                           match=r'f\(\) missing 1 required positional'):
             g()
-        assert 'f() missing 1 required positional' in str(e)
 
     def test_defaults(self):
         def f(hub, foo=None):
@@ -145,33 +154,33 @@ class TestStripHub:
 
         g('arg', foo='other foo')
         g(foo='other foo')
-        with pytest.raises(TypeError) as e:
+        with pytest.raises(TypeError,
+                           match=r'f\(\) got an unexpected keyword argument'):
             g(baz='baz')
-        assert 'f() got an unexpected keyword argument' in str(e)
 
 
 class TestMockHub:
     hub = Hub()
-    hub.tools.sub.add('tests.mods')
+    hub.pop.sub.add('tests.mods')
     mock_hub = testing.MockHub(hub)
 
     def test_mock_hub_dereference_errors(self):
-        with pytest.raises(AttributeError) as e:
+        with pytest.raises(AttributeError,
+                           match="has no attribute 'nosub'"):
             self.mock_hub.nosub.nomodule.nofunc()
-        assert "has no attribute 'nosub'" in str(e)
 
-        with pytest.raises(AttributeError) as e:
+        with pytest.raises(AttributeError,
+                           match="has no attribute 'nomodule'"):
             self.mock_hub.mods.nomodule.nofunc()
-        assert "has no attribute 'nomodule'" in str(e)
 
-        with pytest.raises(AttributeError) as e:
+        with pytest.raises(AttributeError,
+                           match="has no attribute 'nofunc'"):
             self.mock_hub.mods.testing.nofunc()
-        assert "has no attribute 'nofunc'" in str(e)
 
     def test_mock_hub_function_enforcement(self):
-        with pytest.raises(TypeError) as e:
+        with pytest.raises(TypeError,
+                           match="missing a required argument: 'param'"):
             self.mock_hub.mods.testing.echo()
-        assert "missing a required argument: 'param'" in str(e)
 
     def test_mock_hub_return_value(self):
         self.mock_hub.mods.testing.echo.return_value = sentinel.myreturn
@@ -188,7 +197,7 @@ class TestMockHub:
 
 class TestNoContractHub:
     hub = Hub()
-    hub.tools.sub.add('tests.mods')
+    hub.pop.sub.add('tests.mods')
     nocontract_hub = testing.NoContractHub(hub)
 
     def test_call(self):
@@ -198,7 +207,7 @@ class TestNoContractHub:
 
 class TestMockContracted:
     hub = Hub()
-    hub.tools.sub.add('tests.mods', contracts_pypath='tests.contracts')
+    hub.pop.sub.add('tests.mods', contracts_pypath='tests.contracts')
 
     def test_hub_contract(self):
         assert self.hub.mods.testing.echo('foo') == 'contract foo'
@@ -239,7 +248,7 @@ class TestMockContracted:
 
 class TestContractHub:
     hub = Hub()
-    hub.tools.sub.add('tests.mods', contracts_pypath='tests.contracts')
+    hub.pop.sub.add('tests.mods', contracts_pypath='tests.contracts')
     contract_hub = testing.ContractHub(hub)
 
     def test_hub_contract(self):

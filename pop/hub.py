@@ -2,9 +2,10 @@
 
 # Import python libs
 import os
-import imp
+import importlib
 import inspect
 import logging
+import secrets
 import sys
 
 # Import pop libs
@@ -14,7 +15,7 @@ import pop.loader
 import pop.exc
 import pop.contract
 
-EXT_SUFFIXES = tuple([suffix[0] for suffix in imp.get_suffixes() if suffix[-1] == imp.C_EXTENSION])
+EXT_SUFFIXES = tuple(importlib.machinery.EXTENSION_SUFFIXES)
 log = logging.getLogger(__name__)
 
 
@@ -40,10 +41,10 @@ class Hub:
         self._subs = {}
         self._dynamic = {}
         self._dscan = False
-        self._subs['tools'] = Sub(
+        self._subs['pop'] = Sub(
                 self,
-                'tools',
-                pypath='pop.mods.tools')
+                'pop',
+                pypath='pop.mods.pop')
         self._iter_subs = sorted(self._subs.keys())
         self._iter_ind = 0
 
@@ -109,7 +110,7 @@ class Hub:
             else:
                 return self.__getattribute__(item)
         if '.' in item:
-            return self.tools.ref.last(item)
+            return self.pop.ref.last(item)
         if item in self._subs:
             return self._subs[item]
         return self.__getattribute__(item)
@@ -194,6 +195,7 @@ class Sub:
             )
         else:
             self._contracts = None
+        self._name_root = self._load_name_root()
         self._mem = {}
         self._scan = pop.scanner.scan(self._dirs)
         self._loaded = {}
@@ -209,6 +211,15 @@ class Sub:
             self._hub._scan_dynamic()
         for path in self._hub._dynamic.get(self._dyne_name, []):
             self._dirs.append(path)
+
+    def _load_name_root(self):
+        '''
+        Generate the root of the name to be used to apply to the loaded modules
+        '''
+        if self._pypath:
+            return self._pypath[0]
+        elif self._dirs:
+            return secrets.token_hex()
 
     def __getstate__(self):
         return dict(
@@ -241,7 +252,7 @@ class Sub:
         if item.startswith('_'):
             return self.__getattribute__(item)
         if '.' in item:
-            return self._hub.tools.ref.last(f'{self._subname}.{item}')
+            return self._hub.pop.ref.last(f'{self._subname}.{item}')
         if item in self._loaded:
             ret = self._loaded[item]
             # If this previously errored on load, try it again,
@@ -267,12 +278,14 @@ class Sub:
     #     return '{}.{}'.format(self._mod_basename, self._subname)
 
     def __iter__(self):
+        self._load_all()
         def iter(loaded):
             for l in sorted(loaded.keys()):
                 yield loaded[l]
         return iter(self._loaded)
 
     def __next__(self):
+        self._load_all()
         if self._iter_ind == len(self._iter_keys):
             self._iter_ind = 0
             raise StopIteration
@@ -340,7 +353,7 @@ class Sub:
         if bname not in self._scan[iface]:
             raise pop.exc.PopLoadError(
                 'Bad call to load item, no bname {} in iface {}'.format(bname, iface))
-        mname = '{}.{}'.format(self._pypath[0] if self._pypath else 'unknown', os.path.basename(bname))
+        mname = '{}.{}'.format(self._name_root, os.path.basename(bname))
         mod = pop.loader.load_mod(
                 mname,
                 iface,
@@ -383,7 +396,8 @@ class Sub:
                 mod,
                 name,
                 contracts)
-        pop.contract.verify_contract(self._hub, contracts, mod_dict)
+        if name != 'init':
+            pop.verify.contract(self._hub, contracts, mod_dict)
         self._loaded[name] = mod_dict
         self._vmap[mod.__file__] = name
         # Let's mark the module as loaded

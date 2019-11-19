@@ -32,7 +32,7 @@ def _get_cmd(hub, ind, ref, ret_ref, sock_dir):
     code = 'import sys; '
     code += 'import pop.hub; '
     code += 'hub = pop.hub.Hub(); '
-    code += 'hub.tools.sub.add("pop.mods.proc"); '
+    code += 'hub.pop.sub.add("pop.mods.proc"); '
     code += f'hub.proc.worker.start("{sock_dir}", "{ind}", "{ref}", "{ret_ref}")'
     cmd = f'{sys.executable} -c \'{code}\''
     return cmd
@@ -57,7 +57,7 @@ async def pool(hub, num, name='Workers', callback=None, sock_dir=None):
 
     :param num: The number of processes to add to this pool
     :param ref: The location on the hub to create the Workers dict used to
-        store the worker pool, defaults to `hub.tools.proc.Workers`
+        store the worker pool, defaults to `hub.pop.proc.Workers`
     :param callback: The pop ref to call when the process communicates
         back
     '''
@@ -125,7 +125,7 @@ def clean(hub):
 def ret_work(hub, callback):
     async def work(reader, writer):
         '''
-        Process the incomming work
+        Process the incoming work
         '''
         inbound = await reader.readuntil(hub.proc.DELIM)
         inbound = inbound[:-len(hub.proc.DELIM)]

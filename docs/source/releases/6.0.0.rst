@@ -59,7 +59,7 @@ be autoloaded.
 Add getattr to the hub
 ======================
 
-Now getattr can look up nested refs on the hub: getattr(hub, 'tools.sub.add')
+Now getattr can look up nested refs on the hub: getattr(hub, 'pop.sub.add')
 
 Don't Need __init__.py files anymore
 ====================================

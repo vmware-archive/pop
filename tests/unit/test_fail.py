@@ -16,21 +16,21 @@ def test_load_error():
     PopError is raised.
     '''
     hub = pop.hub.Hub()
-    hub.tools.sub.add('tests.mods')
-    with pytest.raises(pop.exc.PopError) as exc:
+    hub.pop.sub.add('tests.mods')
+    with pytest.raises(pop.exc.PopError,
+                       match='Failed to load bad'):
         hub.mods.bad.func()
-    assert 'Failed to load bad' in str(exc)
 
 
 def test_load_error_stop_on_failures():
     hub = pop.hub.Hub()
-    hub.tools.sub.add(
+    hub.pop.sub.add(
         'tests.mods',
         stop_on_failures=True
     )
-    with pytest.raises(pop.exc.PopError) as exc:
+    with pytest.raises(pop.exc.PopError,
+                       match='returned virtual error'):
         hub.mods.bad.func()['verror']
-    assert 'returned virtual error' in str(exc)
 
 
 def _test_calling_load_error_raises_pop_error():
@@ -40,13 +40,13 @@ def _test_calling_load_error_raises_pop_error():
     PopError is raised.
     '''
     hub = pop.hub.Hub()
-    hub.tools.sub.add(
+    hub.pop.sub.add(
         'tests.mods',
         stop_on_failures=True
     )
-    with pytest.raises(pop.exc.PopError) as exc:
+    with pytest.raises(pop.exc.PopError,
+                       match='Failed to load python module'):
         hub.mods.bad_import.func()
-    assert 'Failed to load python module' in str(exc)
 
 
 def test_load_error_traceback_stop_on_failures():
@@ -54,13 +54,13 @@ def test_load_error_traceback_stop_on_failures():
     In this test case pop will simply stop processing when the error is found
     '''
     hub = pop.hub.Hub()
-    hub.tools.sub.add(
+    hub.pop.sub.add(
             pypath='tests.mods.bad_import',
             subname='mods',
             stop_on_failures=True)
-    with pytest.raises(pop.exc.PopError) as exc:
+    with pytest.raises(pop.exc.PopError,
+                       match='Failed to load python module'):
         hub.mods.bad_import.func()
-    assert 'Failed to load python module' in str(exc)
 
 
 def test_verror_does_not_overload_loaded_mod():
@@ -69,7 +69,7 @@ def test_verror_does_not_overload_loaded_mod():
     will explicitly not load. This makes sure load errors to not shadow good mod loads
     '''
     hub = pop.hub.Hub()
-    hub.tools.sub.add(
+    hub.pop.sub.add(
         pypath='tests.mods.same_vname',
         subname='mods',
     )
@@ -82,14 +82,14 @@ def _test_load_error_by_virtualname():
     found under it's defined __virtualname__
     '''
     hub = pop.hub.Hub()
-    hub.tools.sub.add(
+    hub.pop.sub.add(
         pypath='tests.mods',
         subname='mods',
     )
-    with pytest.raises(pop.exc.PopError) as exc:
+    with pytest.raises(pop.exc.PopError,
+                       match='returned virtual error'):
         hub.mods.virtual_bad.func()
-    assert 'returned virtual error' in str(exc)
 
-    with pytest.raises(pop.exc.PopLookupError) as exc:
+    with pytest.raises(pop.exc.PopLookupError,
+                       match='Module "vbad" not found'):
         hub.mods.vbad.func()
-    assert 'Module "vbad" not found' in str(exc)

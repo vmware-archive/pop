@@ -109,3 +109,21 @@ and developed like public code.
 Rule 4 - Make functions public, unless they are truly private, and maintain them
 as such. If your subs follow patterns, then they can be easily re-used, reusable
 code should expose simple interfaces and follow good library development practices.
+
+Rule 5 - App Merging
+====================
+
+Software is easier to develop and manage when it is composed of many smaller
+applications. But software is easier to distribute and use when it is a single large
+application. Take a Linux Distro for example, they are made of thousands of small
+software packages, but these packages would be unusable alone, they need to be
+glued together and distributed.
+
+Plugin Oriented Programming is all about tearing down the walls between apps and
+libs. It is designed to make apps mergeable, but also standalone and useful.
+
+This solves the problem of communicating large codebases! Now small codebases can
+be created and iterated on quickly, but still merged into a larger whole.
+
+Rule 5 - Split your code into many smaller projects and use app merging inside of
+POP to bring the small projects together into a larger merged project.

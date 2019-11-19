@@ -11,14 +11,14 @@ import types
 import asyncio
 # Import third party libs
 import msgpack
-# TODO: The workers should detect if thier controlling process dies and terminate by themselves
+# TODO: The workers should detect if their controlling process dies and terminate by themselves
 # The controlling process will kill them when it exists, but if it exists hard then the workers
 # Should be able to also clean themselves up
 
 
 def start(hub, sock_dir, ind, ref, ret_ref):
     '''
-    This funtion is called by the startup script to create a worker process
+    This function is called by the startup script to create a worker process
 
     :NOTE: This is a new process started from the shell, it does not have any
     of the process namespace from the creating process.
@@ -30,7 +30,7 @@ def start(hub, sock_dir, ind, ref, ret_ref):
     hub.proc.RET_REF = ret_ref
     hub.proc.RET_SOCK_PATH = os.path.join(sock_dir, ret_ref)
     hub.proc.IND = ind
-    hub.tools.loop.start(hub.proc.worker.hold(), hub.proc.worker.server())
+    hub.pop.loop.start(hub.proc.worker.hold(), hub.proc.worker.server())
 
 
 async def hold(hub):
@@ -43,7 +43,7 @@ async def hold(hub):
 
 async def server(hub):
     '''
-    Start the unix socket server to recive commands
+    Start the unix socket server to receive commands
     '''
     await asyncio.start_unix_server(
             hub.proc.worker.work,
@@ -52,7 +52,7 @@ async def server(hub):
 
 async def work(hub, reader, writer):
     '''
-    Process the incomming work
+    Process the incoming work
     '''
     inbound = await reader.readuntil(hub.proc.DELIM)
     inbound = inbound[:-len(hub.proc.DELIM)]
@@ -75,6 +75,8 @@ async def work(hub, reader, writer):
             ret = {'status': False, 'exc': str(exc)}
     elif payload['fun'] == 'gen':
         ret = await hub.proc.worker.gen(payload, reader, writer)
+    elif payload['fun'] == 'setattr':
+        ret = await hub.proc.worker.set_attr(payload)
     ret = msgpack.dumps(ret, use_bin_type=True)
     ret += hub.proc.D_FLAG
     ret += hub.proc.DELIM
@@ -87,7 +89,7 @@ def add_sub(hub, payload):
     '''
     Add a new sub onto the hub for this worker
     '''
-    hub.tools.sub.add(*payload['args'], **payload['kwargs'])
+    hub.pop.sub.add(*payload['args'], **payload['kwargs'])
 
 
 async def gen(hub, payload, reader, writer):
@@ -98,7 +100,7 @@ async def gen(hub, payload, reader, writer):
     ref = payload.get('ref')
     args = payload.get('args', [])
     kwargs = payload.get('kwargs', {})
-    ret = hub.tools.ref.last(ref)(*args, **kwargs)
+    ret = hub.pop.ref.last(ref)(*args, **kwargs)
     if isinstance(ret, types.AsyncGeneratorType):
         async for chunk in ret:
             rchunk = msgpack.dumps(chunk, use_bin_type=True)
@@ -127,10 +129,19 @@ async def run(hub, payload):
     ref = payload.get('ref')
     args = payload.get('args', [])
     kwargs = payload.get('kwargs', {})
-    ret = hub.tools.ref.last(ref)(*args, **kwargs)
+    ret = hub.pop.ref.last(ref)(*args, **kwargs)
     if asyncio.iscoroutine(ret):
         return await ret
     return ret
+
+
+async def set_attr(hub, payload):
+    '''
+    Set the named attribute to the hub
+    '''
+    ref = payload.get('ref')
+    value = payload.get('value')
+    hub.pop.ref.create(ref, value)
 
 
 async def ret(hub, payload):

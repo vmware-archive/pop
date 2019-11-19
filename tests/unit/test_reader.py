@@ -228,7 +228,7 @@ def _clean_argv():
 
 def test_default():
     hub = pop.hub.Hub()
-    hub.tools.sub.add('pop.mods.conf')
+    hub.pop.sub.add('pop.mods.conf')
     opts = hub.conf.reader.read(C1)
     assert opts['foo'] == 'bar'
     assert '_subparser_' not in opts
@@ -236,7 +236,7 @@ def test_default():
 
 def test_render():
     hub = pop.hub.Hub()
-    hub.tools.sub.add('pop.mods.conf')
+    hub.pop.sub.add('pop.mods.conf')
     sys.argv.append('--foo')
     sys.argv.append('{"bar": "baz"}')
     opts = hub.conf.reader.read(C10)
@@ -246,7 +246,7 @@ def test_render():
 
 def test_render_sans():
     hub = pop.hub.Hub()
-    hub.tools.sub.add('pop.mods.conf')
+    hub.pop.sub.add('pop.mods.conf')
     opts = hub.conf.reader.read(C10)
     assert opts['foo'] == {'bar': 'baz'}
     assert '_subparser_' not in opts
@@ -254,7 +254,7 @@ def test_render_sans():
 
 def test_os():
     hub = pop.hub.Hub()
-    hub.tools.sub.add('pop.mods.conf')
+    hub.pop.sub.add('pop.mods.conf')
     os.environ['FOO'] = 'osvar'
     os.environ['POPTESTOSVAR'] = 'good'
     opts = hub.conf.reader.read(C1)
@@ -264,7 +264,7 @@ def test_os():
 
 def test_pass():
     hub = pop.hub.Hub()
-    hub.tools.sub.add('pop.mods.conf')
+    hub.pop.sub.add('pop.mods.conf')
     sys.argv.append('--foo')
     sys.argv.append('baz')
     opts = hub.conf.reader.read(C1)
@@ -273,14 +273,14 @@ def test_pass():
 
 def test_action():
     hub = pop.hub.Hub()
-    hub.tools.sub.add('pop.mods.conf')
+    hub.pop.sub.add('pop.mods.conf')
     opts = hub.conf.reader.read(C1, args=['-f'])
     assert opts['false'] is False
 
 
 def test_file(tmpdir):
     hub = pop.hub.Hub()
-    hub.tools.sub.add('pop.mods.conf')
+    hub.pop.sub.add('pop.mods.conf')
     try:
         conf_file = tmpdir.join('config_file')
         conf_file.write(json.dumps(F1))
@@ -297,7 +297,7 @@ def test_file(tmpdir):
 
 def test_config_dir(tmpdir):
     hub = pop.hub.Hub()
-    hub.tools.sub.add('pop.mods.conf')
+    hub.pop.sub.add('pop.mods.conf')
     try:
         conf_dir = tmpdir.mkdir('cfgdir')
         conf_file = conf_dir.join('config_file')
@@ -315,7 +315,7 @@ def test_config_dir(tmpdir):
 
 def test_config_dir_multiple_files(tmpdir):
     hub = pop.hub.Hub()
-    hub.tools.sub.add('pop.mods.conf')
+    hub.pop.sub.add('pop.mods.conf')
     try:
         conf_dir = tmpdir.mkdir('cfgdir')
         conf_file = conf_dir.join('config_file-0')
@@ -335,7 +335,7 @@ def test_config_dir_multiple_files(tmpdir):
 
 def test_config_dir_with_nested_dirs(tmpdir):
     hub = pop.hub.Hub()
-    hub.tools.sub.add('pop.mods.conf')
+    hub.pop.sub.add('pop.mods.conf')
     try:
         conf_dir_1 = tmpdir.mkdir('cfgdir')
         conf_file_1 = conf_dir_1.join('config_file-0')
@@ -357,7 +357,7 @@ def test_config_dir_with_nested_dirs(tmpdir):
 def test_config_dir_nargs(tmpdir):
     try:
         hub = pop.hub.Hub()
-        hub.tools.sub.add('pop.mods.conf')
+        hub.pop.sub.add('pop.mods.conf')
         conf_dir_1 = tmpdir.mkdir('cfgdir-1')
         conf_file_1 = conf_dir_1.join('config_file-0')
         # new = 'not in def'
@@ -374,7 +374,7 @@ def test_config_dir_nargs(tmpdir):
 
         # Let's invert the order to confirm
         hub = pop.hub.Hub()
-        hub.tools.sub.add('pop.mods.conf')
+        hub.pop.sub.add('pop.mods.conf')
         conf_dir_3 = tmpdir.mkdir('cfgdir-3')
         conf_file_3 = conf_dir_3.join('config_file-0')
         # new = 'not in def'
@@ -398,7 +398,7 @@ def test_config_dir_nargs(tmpdir):
 def test_config_dir_nargs_append(tmpdir):
     try:
         hub = pop.hub.Hub()
-        hub.tools.sub.add('pop.mods.conf')
+        hub.pop.sub.add('pop.mods.conf')
         conf_dir_1 = tmpdir.mkdir('cfgdir-1')
         conf_file_1 = conf_dir_1.join('config_file-0')
         # new = 'not in def'
@@ -434,7 +434,7 @@ def test_config_dir_nargs_append(tmpdir):
 
 def test_config_dir_pattern(tmpdir):
     hub = pop.hub.Hub()
-    hub.tools.sub.add('pop.mods.conf')
+    hub.pop.sub.add('pop.mods.conf')
     try:
         conf_dir = tmpdir.mkdir('cfgdir')
         conf_file = conf_dir.join('config_file-0.conf')
@@ -454,7 +454,7 @@ def test_config_dir_pattern(tmpdir):
 
 def test_subs():
     hub = pop.hub.Hub()
-    hub.tools.sub.add('pop.mods.conf')
+    hub.pop.sub.add('pop.mods.conf')
     sys.argv.extend(['sub', '--foo', 'bar'])
     opts = hub.conf.reader.read(C4, SUB)
     assert opts['foo'] == 'bar'
@@ -470,7 +470,7 @@ def test_version(capsys):
         }
     }
     hub = pop.hub.Hub()
-    hub.tools.sub.add('pop.mods.conf')
+    hub.pop.sub.add('pop.mods.conf')
     with pytest.raises(SystemExit):
         hub.conf.reader.read(in_opts, args=['--version'])
     out, _ = capsys.readouterr()
@@ -501,7 +501,7 @@ def test_priority_order(capsys):
     # Alphabetical order, regular dict, no explicit order
     in_opts = copy.deepcopy(opts)
     hub = pop.hub.Hub()
-    hub.tools.sub.add('pop.mods.conf')
+    hub.pop.sub.add('pop.mods.conf')
     with pytest.raises(SystemExit):
         hub.conf.reader.read(in_opts, args=['-h'])
     out, _ = capsys.readouterr()
@@ -520,7 +520,7 @@ def test_priority_order(capsys):
     in_opts['true']['display_priority'] = 2
 
     hub = pop.hub.Hub()
-    hub.tools.sub.add('pop.mods.conf')
+    hub.pop.sub.add('pop.mods.conf')
     with pytest.raises(SystemExit):
         hub.conf.reader.read(in_opts, args=['-h'])
     out, _ = capsys.readouterr()
@@ -540,7 +540,7 @@ def test_priority_order(capsys):
     od_in_opts['version'] = copy.deepcopy(opts['version'])
 
     hub = pop.hub.Hub()
-    hub.tools.sub.add('pop.mods.conf')
+    hub.pop.sub.add('pop.mods.conf')
     with pytest.raises(SystemExit):
         hub.conf.reader.read(od_in_opts, args=['-h'])
     out, _ = capsys.readouterr()
@@ -559,7 +559,7 @@ def test_priority_order(capsys):
     ode_in_opts['true']['display_priority'] = 2
 
     hub = pop.hub.Hub()
-    hub.tools.sub.add('pop.mods.conf')
+    hub.pop.sub.add('pop.mods.conf')
     with pytest.raises(SystemExit):
         hub.conf.reader.read(ode_in_opts, args=['-h'])
     out, _ = capsys.readouterr()
@@ -575,7 +575,7 @@ def test_priority_order(capsys):
 
 def test_ex_group(capsys):
     hub = pop.hub.Hub()
-    hub.tools.sub.add('pop.mods.conf')
+    hub.pop.sub.add('pop.mods.conf')
     sys.argv.extend(['--gr1', 'bar', '--gr2', 'baz'])
     with pytest.raises(SystemExit):
         opts = hub.conf.reader.read(C1)
@@ -595,7 +595,7 @@ def test_argparser_config(capsys):
         },
     }
     hub = pop.hub.Hub()
-    hub.tools.sub.add('pop.mods.conf')
+    hub.pop.sub.add('pop.mods.conf')
     with pytest.raises(SystemExit):
         hub.conf.reader.read(opts, args=['-h'])
     out, _ = capsys.readouterr()
@@ -605,7 +605,7 @@ def test_argparser_config(capsys):
 
 def test_positional():
     hub = pop.hub.Hub()
-    hub.tools.sub.add('pop.mods.conf')
+    hub.pop.sub.add('pop.mods.conf')
     sys.argv.extend(['bar', '-C', '/tmp/bin'])
     opts = hub.conf.reader.read(C7)
     assert opts['foo'] == 'bar'
@@ -614,14 +614,14 @@ def test_positional():
 
 def test_positional_default():
     hub = pop.hub.Hub()
-    hub.tools.sub.add('pop.mods.conf')
+    hub.pop.sub.add('pop.mods.conf')
     sys.argv.extend(['-C', '/tmp/bin'])
     opts = hub.conf.reader.read(copy.deepcopy(C9))
     assert opts['foo'] == 'bar'
     assert opts['config_dir'] == '/tmp/bin'
 
     hub = pop.hub.Hub()
-    hub.tools.sub.add('pop.mods.conf')
+    hub.pop.sub.add('pop.mods.conf')
     sys.argv.extend(['bin', '-C', '/tmp/bin'])
     opts = hub.conf.reader.read(copy.deepcopy(C9))
     assert opts['foo'] == 'bin'
@@ -630,7 +630,7 @@ def test_positional_default():
 
 def test_subs_positional():
     hub = pop.hub.Hub()
-    hub.tools.sub.add('pop.mods.conf')
+    hub.pop.sub.add('pop.mods.conf')
     sys.argv.extend(['--foo', 'bar', 'sub', 'positional-baz', 'positional-bar'])
     opts = hub.conf.reader.read(copy.deepcopy(C8), SUB)
     assert opts['foo'] == 'bar'
@@ -642,7 +642,7 @@ def test_subs_positional():
 def test_subs_positional_missing(capsys):
     # And if we're missing positional arguments
     hub = pop.hub.Hub()
-    hub.tools.sub.add('pop.mods.conf')
+    hub.pop.sub.add('pop.mods.conf')
     sys.argv.extend(['--foo', 'bar', 'sub', 'positional-baz'])
     with pytest.raises(SystemExit):
         hub.conf.reader.read(copy.deepcopy(C8), SUB)
@@ -652,35 +652,47 @@ def test_subs_positional_missing(capsys):
 
 def test_integrate_simple():
     hub = pop.hub.Hub()
-    hub.tools.sub.add('pop.mods.conf')
+    hub.pop.sub.add('pop.mods.conf')
     hub.conf.integrate.load('tests.conf1')
-    assert hub.OPT == {'global': {'cache_dir': '/var/cache'}, 'tests.conf1': {'someone': 'Not just anybody!', 'stuff_dir': '/tmp/stuff', 'test': False}}
+    assert hub.OPT == {'global': {'cache_dir': '/var/cache'}, 'tests.conf1': {'log_datefmt': '%H:%M:%S', 'log_file': 'tests.conf1.log', 'log_fmt_console': '[%(levelname)-8s] %(message)s', 'log_fmt_logfile': '%(asctime)s,%(msecs)03d [%(name)-17s][%(levelname)-8s] %(message)s', 'log_level': 'info', 'log_plugin': 'basic', 'someone': 'Not just anybody!', 'stuff_dir': '/tmp/tests.conf1/stuff', 'test': False}}
 
 
 def test_integrate_merge():
     hub = pop.hub.Hub()
-    hub.tools.sub.add('pop.mods.conf')
-    hub.conf.integrate.load(['tests.conf1', 'tests.conf2'], cli='tests.conf1')
-    assert hub.OPT == {'global': {'cache_dir': '/var/cache'}, 'tests.conf2': {'monty': False}, 'tests.conf1': {'test': False, 'stuff_dir': '/tmp/stuff', 'someone': 'Not just anybody!'}}
+    hub.pop.sub.add('pop.mods.conf')
+    hub.conf.integrate.load(['tests.conf1', 'tests.conf2'], cli='tests.conf1', logs=False)
+    assert hub.OPT == {'global': {'cache_dir': '/var/cache'}, 'tests.conf2': {'monty': False}, 'tests.conf1': {'test': False, 'stuff_dir': '/tmp/tests.conf1/stuff', 'someone': 'Not just anybody!'}}
 
 
 def test_integrate_collide():
     hub = pop.hub.Hub()
-    hub.tools.sub.add('pop.mods.conf')
+    hub.pop.sub.add('pop.mods.conf')
     with pytest.raises(KeyError):
         hub.conf.integrate.load(['tests.conf1', 'tests.conf2', 'tests.conf3'])
 
 
 def test_integrate_override():
     hub = pop.hub.Hub()
-    hub.tools.sub.add('pop.mods.conf')
+    hub.pop.sub.add('pop.mods.conf')
     over = {'tests.conf1.test': {'key': 'test2', 'options': ['--test2']}}
-    hub.conf.integrate.load(['tests.conf1', 'tests.conf2', 'tests.conf3'], over)
-    assert hub.OPT == {'global': {'cache_dir': '/var/cache'}, 'tests.conf2': {'monty': False}, 'tests.conf1': {'stuff_dir': '/tmp/stuff', 'test2': False}, 'tests.conf3': {'test': False}}
+    hub.conf.integrate.load(['tests.conf1', 'tests.conf2', 'tests.conf3'], over, logs=False)
+    assert hub.OPT == {'global': {'cache_dir': '/var/cache'}, 'tests.conf2': {'monty': False}, 'tests.conf1': {'stuff_dir': '/tmp/tests.conf1/stuff', 'test2': False}, 'tests.conf3': {'test': False}}
 
 
 def test_integrate_dirs():
     hub = pop.hub.Hub()
-    hub.tools.sub.add('pop.mods.conf')
+    hub.pop.sub.add('pop.mods.conf')
     hub.conf.integrate.load('tests.conf1', roots=True)
+    print(hub.OPT['tests.conf1']['stuff_dir'])
     assert os.path.isdir(hub.OPT['tests.conf1']['stuff_dir'])
+    assert hub.OPT['tests.conf1']['stuff_dir'].endswith('.tests.conf1/stuff')
+
+
+def test_integrate_log():
+    hub = pop.hub.Hub()
+    hub.pop.sub.add('pop.mods.conf')
+    hub.conf.integrate.load('tests.conf1')
+    import logging
+    log = logging.getLogger(__name__)
+    assert bool(log.root.handlers)
+    assert not bool(log.handlers)

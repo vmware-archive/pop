@@ -10,6 +10,7 @@ from collections import namedtuple
 
 # Import pop libs
 import pop.exc
+import pop.verify
 
 
 class ContractedContext(namedtuple('ContractedContext', ('func', 'args', 'kwargs', 'signature', 'ret', 'cache'))):
@@ -79,32 +80,13 @@ def load_contract(contracts, default_contracts, mod, name):
     return raws
 
 
-def verify_contract(hub, raws, mod):  # pylint: disable=unused-argument
-    '''
-    Verify module level contract - functions only
-    '''
-    for raw in raws:
-        if hasattr(raw, 'functions'):
-            try:
-                functions = raw.functions(mod)
-            except TypeError:
-                functions = raw.functions()
-            for fun_name in functions:
-                if not hasattr(mod, fun_name):
-                    raise pop.exc.ContractModuleException(
-                        'Missing function \'{}\' in {!r}'.format(fun_name, mod)
-                    )
-                func = getattr(mod, fun_name)
-                if not callable(func):
-                    raise pop.exc.ContractFuncException('{} is not a function'.format(fun_name))
-
-
 class Wrapper:  # pylint: disable=too-few-public-methods
     def __init__(self, func, ref, name):
         self.func = func
         self.ref = ref
         self.name = name
         self.signature = inspect.signature(self.func)
+        self._sig_errors = []
 
     def __call__(self, *args, **kwargs):
         self.func(*args, **kwargs)
@@ -126,7 +108,6 @@ class Contracted(Wrapper):  # pylint: disable=too-few-public-methods
 
     def _get_contracts_by_type(self, contract_type='pre'):
         matches = []
-
         fn_contract_name = '{}_{}'.format(contract_type, self.name)
         for contract in self.contracts:
             if hasattr(contract, fn_contract_name):
@@ -139,7 +120,8 @@ class Contracted(Wrapper):  # pylint: disable=too-few-public-methods
     def _load_contracts(self):
         self.contract_functions = {'pre': self._get_contracts_by_type('pre'),
                                    'call': self._get_contracts_by_type('call')[:1],
-                                   'post': self._get_contracts_by_type('post')}
+                                   'post': self._get_contracts_by_type('post'),
+                                   }
         self._has_contracts = sum([len(l) for l in self.contract_functions.values()]) > 0
 
     def __call__(self, *args, **kwargs):

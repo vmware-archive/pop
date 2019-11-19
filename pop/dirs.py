@@ -16,8 +16,9 @@ def dir_list(subname, p_name, pypath=None, static=None):
     ret = []
     for path in pypath:
         mod = importlib.import_module(path)
-        for path in mod.__path__:
-            ret.append(path)
+        for m_path in mod.__path__:
+            # If we are inside of an executable the path will be different
+            ret.append(m_path)
     ret.extend(static)
     return ret
 

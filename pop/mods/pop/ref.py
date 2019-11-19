@@ -8,7 +8,7 @@ def last(hub, ref):
     Takes a string that references the desired ref and returns the last object
     called out in that ref
     '''
-    return hub.tools.ref.path(ref)[-1]
+    return hub.pop.ref.path(ref)[-1]
 
 
 def path(hub, ref):
@@ -33,8 +33,11 @@ def create(hub, ref, obj):
         create the given object on the hub
     :param obj: The object to store at the given reference point
     '''
+    if '.' not in ref:
+        setattr(hub, ref, obj)
+        return
     comps = ref.split('.')
     sub_ref = ref[:ref.rindex('.')]
     var = comps[-1]
-    top = hub.tools.ref.last(sub_ref)
+    top = hub.pop.ref.last(sub_ref)
     setattr(top, var, obj)

@@ -12,7 +12,7 @@ async def add_sub(hub, worker_name, *args, **kwargs):
     '''
     Tell all of the worker in the named pool to load the given sub,
 
-    This funtion takes all of the same arguments as hub.tools.sub.add
+    This function takes all of the same arguments as hub.pop.sub.add
     '''
     ret = {}
     workers = hub.proc.Workers[worker_name]
@@ -64,6 +64,21 @@ async def pub(hub, worker_name, func_ref, *args, **kwargs):
     ret = {}
     for ind in workers:
         payload = {'fun': 'run', 'ref': func_ref, 'args': args, 'kwargs': kwargs}
+        # TODO: Make these futures to the run at the same time
+        async for chunk in hub.proc.run.send(workers[ind], payload):
+            ret[ind] = chunk
+    return ret
+
+
+async def set_attr(hub, worker_name, ref, value):
+    '''
+    Set the given attribute to the given location on the hub of all
+    worker procs
+    '''
+    workers = hub.proc.Workers[worker_name]
+    ret = {}
+    for ind in workers:
+        payload = {'fun': 'setattr', 'ref': ref, 'value': value}
         # TODO: Make these futures to the run at the same time
         async for chunk in hub.proc.run.send(workers[ind], payload):
             ret[ind] = chunk

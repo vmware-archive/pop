@@ -16,7 +16,6 @@ def functions(hub):
 def pre_ping(hub, ctx):
     '''
     '''
-    print('Calling Pre!')
     if ctx.args:
         raise Exception('ping does not take args!')
     if ctx.kwargs:

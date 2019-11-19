@@ -19,7 +19,7 @@ Start by adding the proc subsystem to your hub:
 
 .. code-block:: python
 
-    hub.tools.sub.add('pop.mods.proc')
+    hub.pop.sub.add('pop.mods.proc')
 
 Now the proc subsystem is available. Create a new process pool:
 
@@ -35,7 +35,7 @@ Remember that these processes are not forks, they need to have the subsystems
 loaded!
 
 Just call `hub.proc.run.add_sub` with the name of the pool as the first argument
-followed by the arguments to `tools.sub.add`. Lets add the actor system so we
+followed by the arguments to `pop.sub.add`. Lets add the actor system so we
 can get a nice battery of functions to call:
 
 .. code-block:: python

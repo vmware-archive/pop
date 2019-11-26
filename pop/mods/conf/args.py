@@ -215,12 +215,15 @@ def setup(hub, opts):
             ex_groups[group].add_argument(*args, **kwargs)
             continue
         if 'sub' in comps:
-            sub = comps['sub']
-            sparse = hub.conf._mem['args']['subs'].get(sub)
-            if not sparse:
-                # Maybe raise exception here? Malformed config?
-                continue
-            sparse.add_argument(*args, **kwargs)
+            subs = comps['sub']
+            if not isinstance(subs, list):
+                subs = [subs]
+            for sub in subs:
+                sparse = hub.conf._mem['args']['subs'].get(sub)
+                if not sparse:
+                    # Maybe raise exception here? Malformed config?
+                    continue
+                sparse.add_argument(*args, **kwargs)
             continue
         hub.conf._mem['args']['parser'].add_argument(*args, **kwargs)
     return {'result': True, 'return': defaults}

@@ -215,6 +215,24 @@ C10 = {
 }
 
 
+C11 = {
+    'foo': {
+        'sub': ['sub', 'another'],
+        'help': 'Set some foo!',
+        },
+    }
+
+SUB2 = {
+    'sub': {
+        'desc': 'a subparser!',
+        'help': 'Some subparsing',
+    },
+    'another': {
+        'desc': 'another subparser!',
+        'help': 'Some subparsing',
+    },
+}
+
 @pytest.yield_fixture(autouse=True)
 def _clean_argv():
     '''
@@ -459,6 +477,24 @@ def test_subs():
     opts = hub.conf.reader.read(C4, SUB)
     assert opts['foo'] == 'bar'
     assert opts['_subparser_'] == next(iter(SUB.keys()))
+
+
+def test_multi_subs_1():
+    hub = pop.hub.Hub()
+    hub.pop.sub.add('pop.mods.conf')
+    sys.argv.extend(['sub', '--foo', 'bar'])
+    opts = hub.conf.reader.read(C11, SUB2)
+    assert opts['foo'] == 'bar'
+    assert opts['_subparser_'] == 'sub'
+
+
+def test_multi_subs_2():
+    hub = pop.hub.Hub()
+    hub.pop.sub.add('pop.mods.conf')
+    sys.argv.extend(['another', '--foo', 'baz'])
+    opts = hub.conf.reader.read(C11, SUB2)
+    assert opts['foo'] == 'baz'
+    assert opts['_subparser_'] == 'another'
 
 
 def test_version(capsys):

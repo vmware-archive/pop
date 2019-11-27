@@ -119,6 +119,7 @@ def load(
     for key in opts:
         if key == '_subparser_':
             f_opts['_subparser_'] = opts['_subparser_']
+            continue
         for ref in key_to_ref[key]:
             imp = ref[:ref.rindex('.')]
             if imp not in f_opts:

@@ -60,7 +60,10 @@ def dynamic_dirs():
         try:
             with open(conf) as f:
                 code = f.read()
-                exec(code, context)
+                if  'DYNE' in code:
+                    exec(code, context)
+                else:
+                    continue
         except Exception:
             continue
         if 'DYNE' in context:

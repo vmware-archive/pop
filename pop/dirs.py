@@ -54,18 +54,19 @@ def dynamic_dirs():
                 dirs.append(full)
     for dir_ in dirs:
         conf = os.path.join(dir_, 'conf.py')
+        context = {}
         if not os.path.isfile(conf):
             continue
         try:
-            modname =f'{os.path.basename(dir_)}.conf'
-            sfl = importlib.machinery.SourceFileLoader(modname, conf)
-            cmod = sfl.load_module()
+            with open(conf) as f:
+                code = f.read()
+                exec(code, context)
         except Exception:
             continue
-        if hasattr(cmod, 'DYNE'):
-            if not isinstance(cmod.DYNE, dict):
+        if 'DYNE' in context:
+            if not isinstance(context['DYNE'], dict):
                 continue
-            for name, paths in cmod.DYNE.items():
+            for name, paths in context['DYNE'].items():
                 if not isinstance(paths, list):
                     continue
                 if name not in ret:

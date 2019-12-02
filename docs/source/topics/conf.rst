@@ -4,6 +4,12 @@
 Configuration Reading
 =====================
 
+.. note::
+
+    This document was written before the conf.integrate system was introduced.
+    While the informantion in this document is relevant, it is recommended to
+    use the conf.integrate system that extends the raw functionality shown here.
+
 One of the classic issues with systems software development is adding
 configuration and options to CLI programs. The problem is that configuration
 data needs to come from multiple sources. Defaults need to be set, CLI options
@@ -187,7 +193,7 @@ for a cli argument to be rendered through something like yaml or json:
 
         'mapping': {
             'default': {'foo': 'bar', 'baz': 'quo'},
-            'render': yaml,
+            'render': 'yaml',
             'help': 'A map of the things',
             },
         }
@@ -256,3 +262,30 @@ another dict to define the subcommnds:
 
 So now you have a subcommand called `sub` and then under the subcommand the option `foo`
 resides.
+
+As of the 7.5 release config options can be applied to multiple subcommands:
+
+.. code-block:: python
+
+    CLI_CONFIG = {
+        'foo': {
+            'default': False},
+            'action': 'store_true',
+            'subs': ['create', 'remove', 'edit'],
+            },
+    }
+    
+    SUBS = {
+        'create': {
+            'help': 'Create some things',
+            'desc': Used to create the things,
+        },
+        'remove': {
+            'help': 'Remove some things',
+            'desc': Used to remove the things,
+        },
+        'edit': {
+            'help': 'Edit some things',
+            'desc': Used to edit the things,
+        },
+    }

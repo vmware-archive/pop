@@ -1,0 +1,44 @@
+===============
+Pop Release 7.5
+===============
+
+This release fixes a very minor memory issue and extends conf.
+
+Multiple subs In Conf
+=====================
+
+While working on a new project I wanted to be able to have the same
+options available across multiple subcommands in conf. 7.5 adds this
+ability:
+
+.. code-block:: python
+
+    CLI_CONFIG = {
+        'foo': {
+            'default': False},
+            'action': 'store_true',
+            'subs': ['create', 'remove', 'edit'],
+            },
+    }
+    
+    SUBS = {
+        'create': {
+            'help': 'Create some things',
+            'desc': Used to create the things,
+        },
+        'remove': {
+            'help': 'Remove some things',
+            'desc': Used to remove the things,
+        },
+        'edit': {
+            'help': 'Edit some things',
+            'desc': Used to edit the things,
+        },
+    }
+
+Minor Memory Issue
+==================
+
+While running memory and profiling tests we discovered that if the dyne system
+was called repeatedly that we leaked loading `conf.py` files. This has been fixed
+and the performance of the dyne system at scale has been greatly improved!

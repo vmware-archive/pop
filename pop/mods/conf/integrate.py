@@ -47,7 +47,6 @@ def load(
         override=None,
         cli=None,
         roots=False,
-        home_root=None,
         loader='json',
         logs=True):
     '''
@@ -71,8 +70,6 @@ def load(
             cli = imports
         imports = [imports]
     primary = imports[0] if cli is not None else cli
-    if home_root is None:
-        home_root = cli
     confs = {}
     globe = {}
     final = {}
@@ -111,9 +108,6 @@ def load(
     if collides:
         raise KeyError(collides)
     opts = hub.conf.reader.read(final, subs, loader=loader)
-    if roots:
-        hub.conf.dirs.roots(final.get('root_dir', {}).get('default', '/'), opts, home_root)
-        hub.conf.dirs.verify(opts)
     f_opts = {}  # I don't want this to be a defaultdict,
     # if someone tries to add a key willy nilly it should fail
     for key in opts:
@@ -125,6 +119,11 @@ def load(
             if imp not in f_opts:
                 f_opts[imp] = {}
             f_opts[imp][key] = opts[key]
+    if roots:
+        root_dir = f_opts.get(cli, {}).get('root_dir')
+        hub.conf.dirs.roots(final.get('root_dir', {}).get('default', '/'), f_opts, root_dir)
+        for imp in f_opts:
+            hub.conf.dirs.verify(f_opts[imp])
     hub.OPT = f_opts
     if logs:
         log_plugin = hub.OPT[primary].get('log_plugin')

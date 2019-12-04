@@ -7,7 +7,7 @@ and they need to be rooted based on the user, root option etc.
 import os
 
 
-def roots(hub, default_root, opts, home_root):
+def roots(hub, default_root, f_opts, root_dir):
     '''
     Detect the root dir data and apply it
     '''
@@ -15,28 +15,29 @@ def roots(hub, default_root, opts, home_root):
     os_root = '/'
     root = os_root
     change = False
-    anchor = ''
+    non_priv = False
     if hasattr(os, 'geteuid'):
         if not os.geteuid() == 0:
-            root = os.path.join(os.environ['HOME'], f'.{home_root}')
             change = True
-            anchor = home_root
-    if opts.get('root_dir', root) != default_root:
-        root = opts.get('root_dir', root)
+            non_priv = True
+    if root_dir and root_dir != default_root:
+        root = root_dir
         change = True
     if not root.endswith(os.sep):
         root = f'{root}{os.sep}'
     if change:
-        for key in opts:
-            if key == 'root_dir':
-                continue
-            if key.endswith('_dir'):
-                if anchor:
-                    if anchor in opts[key]:
-                        a_len = len(anchor) + 1
-                        opts[key] = f'{os_root}{opts[key][opts[key].index(anchor)+a_len:]}'
-                opts[key] = opts[key].replace(
-                        os_root, root, 1)
+        for imp in f_opts:
+            for key in f_opts[imp]:
+                if key == 'root_dir':
+                    continue
+                if key.endswith('_dir'):
+                    if non_priv:
+                        root = os.path.join(os.environ['HOME'], f'.{imp}{os.sep}')
+                    if imp in f_opts[imp][key]:
+                        a_len = len(imp) + 1
+                        f_opts[imp][key] = f'{os_root}{f_opts[imp][key][f_opts[imp][key].index(imp)+a_len:]}'
+                    f_opts[imp][key] = f_opts[imp][key].replace(
+                            os_root, root, 1)
 
 
 def verify(hub, opts):

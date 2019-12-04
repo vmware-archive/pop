@@ -9,7 +9,6 @@ def integrate(
         override=None,
         cli=None,
         roots=None,
-        home_root=None,
         loader='json',
         logs=True):
     '''
@@ -21,6 +20,5 @@ def integrate(
         override,
         cli=cli,
         roots=roots,
-        home_root=home_root,
         loader=loader,
         logs=logs)

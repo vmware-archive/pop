@@ -183,6 +183,11 @@ SETUP_DIRNAME = os.path.dirname(__file__)
 if not SETUP_DIRNAME:
     SETUP_DIRNAME = os.getcwd()
 
+with open('README.rst', encoding='utf-8') as f:
+    LONG_DESC = f.read()
+
+with open('requirements.txt') as f:
+    REQUIREMENTS = f.read().splitlines()
 
 class Clean(Command):
     user_options = []
@@ -215,7 +220,10 @@ setup(name=NAME,
       author_email='',
       url='',
       version=VERSION,
+      install_requires=REQUIREMENTS,
       description=DESC,
+      long_description=LONG_DESC,
+      long_description_content_type='text/x-rst',
       python_requires='>=3.6',
       classifiers=[
           'Operating System :: OS Independent',
@@ -274,6 +282,7 @@ def new(hub):
         hub.pop.seed.mkversion(name)
         hub.pop.seed.mkconf(name)
         hub.pop.seed.mkreq(name)
+        hub.pop.seed.mkreadme(name)
     else:
         hub.pop.seed.mkdir(name, name)
         hub.pop.seed.mkdir(name, name, 'contracts')
@@ -284,6 +293,7 @@ def new(hub):
         hub.pop.seed.mkreq(name)
         hub.pop.seed.mkrun(name)
         hub.pop.seed.mkinit(name)
+        hub.pop.seed.mkreadme(name)
         hub.pop.seed.mkbuild()
 
 
@@ -379,3 +389,14 @@ def mkbuild(hub):
     path = os.path.join(hub.PATH, 'build.py')
     with open(path, 'w+') as fp:
         fp.write(BUILD)
+
+
+def mkreadme(hub, name):
+    '''
+    Create and write out a setup.py file
+    '''
+    path = os.path.join(hub.PATH, 'README.rst')
+    eqchars = '=' * len(name)
+    readme_str = f'{eqchars}\n{name.upper()}\n{eqchars}\n'
+    with open(path, 'w+') as fp:
+        fp.write(readme_str)

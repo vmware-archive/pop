@@ -30,31 +30,37 @@ def conf(hub, name):
             {
             'default': f'{name}.log',
             'help': 'The location of the log file',
+            'group': 'Logging Options'
             },
         'log_level':
             {
             'default': 'info',
             'help': 'Set the log level, either quiet, info, warning, or error',
+            'group': 'Logging Options'
             },
         'log_fmt_logfile':
             {
             'default': '%(asctime)s,%(msecs)03d [%(name)-17s][%(levelname)-8s] %(message)s',
             'help': 'The format to be given to log file messages',
+            'group': 'Logging Options'
             },
         'log_fmt_console':
             {
             'default': '[%(levelname)-8s] %(message)s',
             'help': 'The log formatting used in the console',
+            'group': 'Logging Options'
             },
         'log_datefmt':
             {
             'default': '%H:%M:%S',
             'help': 'The date format to display in the logs',
+            'group': 'Logging Options'
             },
         'log_plugin':
             {
             'default': 'basic',
             'help': 'The logging plugin to use',
+            'group': 'Logging Options'
             },
         }
     return ldict

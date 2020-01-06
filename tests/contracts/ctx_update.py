@@ -15,7 +15,7 @@ def pre(hub, ctx):
     assert ctx.args == [hub, False]
 
 
-def call(hub, ctx):
+def call_test_call(hub, ctx):
     '''
     '''
     assert ctx.args == [hub, False]

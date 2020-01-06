@@ -136,7 +136,7 @@ class Contracted(Wrapper):  # pylint: disable=too-few-public-methods
         if self.contract_functions['call']:
             ret = self.contract_functions['call'][0](contract_context)
         else:
-            ret = self.func(*args, **kwargs)
+            ret = self.func(*contract_context.args, **contract_context.kwargs)
         for fn in self.contract_functions['post']:
             post_ret = fn(contract_context._replace(ret=ret))
             if post_ret is not None:

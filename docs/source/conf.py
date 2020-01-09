@@ -20,11 +20,11 @@
 # -- Project information -----------------------------------------------------
 
 project = 'pop'
-copyright = '2019, Thomas S Hatch'
+copyright = '2020, Thomas S Hatch'
 author = 'Thomas S Hatch'
 
 # The short X.Y version
-version = '7.5'
+version = '7.6'
 # The full version, including alpha/beta/rc tags
 release = version
 

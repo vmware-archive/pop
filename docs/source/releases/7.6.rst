@@ -1,0 +1,12 @@
+===============
+Pop Release 7.6
+===============
+
+This release fixes a minor bug in contracts.
+
+Contract Direct Calls
+=====================
+
+When executing a function with a pre contract but not a post
+contract, changes to the function args made in the pre
+contract did not carry to the called function.

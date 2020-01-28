@@ -135,6 +135,12 @@ def test_this():
     assert hub.mods.test.this() == {}
 
 
+def test_func_attrs():
+    hub = pop.hub.Hub()
+    hub.pop.sub.add('tests.mods')
+    assert hub.mods.test.attr.bar == True
+
+
 def test_ref_sys():
     hub = pop.hub.Hub()
     hub.pop.sub.add('tests.mods')

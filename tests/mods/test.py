@@ -37,6 +37,13 @@ def module_level_non_aliased_ping_call_fw_hub(hub):
     return ping_(hub)
 
 
+def attr():
+    return True
+
+
+attr.bar = True
+
+
 def call_scan(hub):
     # If scan has been packed(wrongly), the call below will throw a TypeError because
     # we'll also pass hub

@@ -138,6 +138,7 @@ def test_this():
 def test_func_attrs():
     hub = pop.hub.Hub()
     hub.pop.sub.add('tests.mods')
+    assert 'bar' in dir(hub.mods.test.attr)
     assert hub.mods.test.attr.bar == True
 
 

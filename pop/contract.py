@@ -132,9 +132,6 @@ class Contracted(Wrapper):  # pylint: disable=too-few-public-methods
                                    }
         self._has_contracts = sum([len(l) for l in self.contract_functions.values()]) > 0
 
-    def __getattr__(self, item):
-        return getattr(self.func, item)
-
     def __call__(self, *args, **kwargs):
         args = (self.hub,) + args
 

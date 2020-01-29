@@ -12,6 +12,7 @@ from collections import namedtuple
 import pop.exc
 import pop.verify
 
+FUNC_DEFAULTS = set(['__call__', '__class__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattr__', '__getattribute__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', '_get_contracts_by_type', '_has_contracts', '_load_contracts', '_sig_errors', 'contract_functions', 'contracts', 'func', 'hub', 'name', 'ref', 'signature'])
 
 class ContractedContext(namedtuple('ContractedContext', ('func', 'args', 'kwargs', 'signature', 'ret', 'cache'))):
     '''
@@ -85,8 +86,15 @@ class Wrapper:  # pylint: disable=too-few-public-methods
         self.func = func
         self.ref = ref
         self.name = name
+        self.__load_self()
         self.signature = inspect.signature(self.func)
         self._sig_errors = []
+
+    def __load_self(self):
+        if callable(self.func):
+            attrs = set(dir(self.func))
+            for attr in attrs.difference(FUNC_DEFAULTS):
+                setattr(self, attr, getattr(self.func, attr))
 
     def __call__(self, *args, **kwargs):
         self.func(*args, **kwargs)

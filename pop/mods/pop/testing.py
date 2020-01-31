@@ -6,17 +6,19 @@ For now, provides mock Hub instances.
 # Import python libs
 import inspect
 import copy
+from asyncio import iscoroutinefunction
 from functools import partial
 
 # Import third party libs
 try:
     from asynctest.mock import create_autospec
 except ImportError:
-    # This should not throw an error, this is a turtles all the way down and
-    # chicken and egg problem. We want this testing component to be in the
-    # pop sub, but we don't want to require runtime applications to have
-    # asynctest.
-    pass
+    from unittest.mock import create_autospec as mock_create_autospec
+
+    def create_autospec(spec, *args, **kwargs):
+        if iscoroutinefunction(spec):
+            raise Exception('MockHub requires asynctest in order to mock async functions')
+        return mock_create_autospec(spec, *args, **kwargs)
 
 # Import pop libs
 from pop.contract import Contracted

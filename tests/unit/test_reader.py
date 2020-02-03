@@ -690,13 +690,13 @@ def test_integrate_simple():
     hub = pop.hub.Hub()
     hub.pop.sub.add('pop.mods.conf')
     hub.conf.integrate.load('tests.conf1')
-    assert hub.OPT == {'global': {'cache_dir': '/var/cache'}, 'tests.conf1': {'log_datefmt': '%H:%M:%S', 'log_file': 'tests.conf1.log', 'log_fmt_console': '[%(levelname)-8s] %(message)s', 'log_fmt_logfile': '%(asctime)s,%(msecs)03d [%(name)-17s][%(levelname)-8s] %(message)s', 'log_level': 'info', 'log_plugin': 'basic', 'someone': 'Not just anybody!', 'stuff_dir': '/tmp/tests.conf1/stuff', 'test': False}}
+    assert hub.OPT == {'global': {'cache_dir': '/var/cache'}, 'tests.conf1': {'log_datefmt': '%H:%M:%S', 'log_file': 'tests.conf1.log', 'log_fmt_console': '[%(levelname)-8s] %(message)s', 'log_fmt_logfile': '%(asctime)s,%(msecs)03d [%(name)-17s][%(levelname)-8s] %(message)s', 'log_level': 'info', 'log_plugin': 'basic', 'someone': 'Not just anybody!', 'stuff_dir': '/tmp/tests.conf1/stuff', 'test': False, 'version': False}}
 
 
 def test_integrate_merge():
     hub = pop.hub.Hub()
     hub.pop.sub.add('pop.mods.conf')
-    hub.conf.integrate.load(['tests.conf1', 'tests.conf2'], cli='tests.conf1', logs=False)
+    hub.conf.integrate.load(['tests.conf1', 'tests.conf2'], cli='tests.conf1', logs=False, version=False)
     assert hub.OPT == {'global': {'cache_dir': '/var/cache'}, 'tests.conf2': {'monty': False}, 'tests.conf1': {'test': False, 'stuff_dir': '/tmp/tests.conf1/stuff', 'someone': 'Not just anybody!'}}
 
 
@@ -711,7 +711,7 @@ def test_integrate_override():
     hub = pop.hub.Hub()
     hub.pop.sub.add('pop.mods.conf')
     over = {'tests.conf1.test': {'key': 'test2', 'options': ['--test2']}}
-    hub.conf.integrate.load(['tests.conf1', 'tests.conf2', 'tests.conf3'], over, logs=False)
+    hub.conf.integrate.load(['tests.conf1', 'tests.conf2', 'tests.conf3'], over, logs=False, version=False)
     assert hub.OPT == {'global': {'cache_dir': '/var/cache'}, 'tests.conf2': {'monty': False}, 'tests.conf1': {'stuff_dir': '/tmp/tests.conf1/stuff', 'test2': False}, 'tests.conf3': {'test': False}}
 
 
@@ -719,7 +719,6 @@ def test_integrate_dirs():
     hub = pop.hub.Hub()
     hub.pop.sub.add('pop.mods.conf')
     hub.conf.integrate.load('tests.conf1', roots=True)
-    print(hub.OPT['tests.conf1']['stuff_dir'])
     assert os.path.isdir(hub.OPT['tests.conf1']['stuff_dir'])
     assert hub.OPT['tests.conf1']['stuff_dir'].endswith('.tests.conf1/stuff')
 

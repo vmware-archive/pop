@@ -48,7 +48,9 @@ def load(
         cli=None,
         roots=False,
         loader='json',
-        logs=True):
+        logs=True,
+        version=True,
+        ):
     '''
     This function takes a list of python packages to load and look for
     respective configs. The configs are then loaded in a non-collision
@@ -69,7 +71,7 @@ def load(
         if cli is None:
             cli = imports
         imports = [imports]
-    primary = imports[0] if cli is not None else cli
+    primary = imports[0] if cli is None else cli
     confs = {}
     globe = {}
     final = {}
@@ -92,6 +94,10 @@ def load(
         lconf = hub.conf.log.init.conf(primary)
         lconf.update(confs[primary])
         confs[primary] = lconf
+    if version:
+        vconf = hub.conf.version.CONFIG
+        vconf.update(confs[primary])
+        confs[primary] = vconf
     _ex_final(confs, final, override, key_to_ref, ops_to_ref)
     _ex_final(globe, final, override, key_to_ref, ops_to_ref, True)
     for opt in ops_to_ref:
@@ -128,3 +134,5 @@ def load(
     if logs:
         log_plugin = hub.OPT[primary].get('log_plugin')
         getattr(hub, f'conf.log.{log_plugin}.setup')(hub.OPT[primary])
+    if hub.OPT[primary].get('version'):
+        hub.conf.version.run(primary)

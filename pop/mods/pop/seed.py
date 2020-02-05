@@ -90,24 +90,34 @@ import pop.hub
 
 def start():
     hub = pop.hub.Hub()
-    hub.pop.sub.add('%%NAME%%.%%NAME%%')
+    hub.pop.sub.add(dyne_name='%%NAME%%')
+    hub.%%NAME%%.init.run()
 '''
 
 INIT = '''def __init__(hub):
+    # Remmeber not to start your app in the __init__ function
+    # This function should just be used to set up the plugin subsystem
+    # Add another function to call from your run.py to start the app
+    pass
+
+
+def run(hub):
+    hub.pop.conf.integrate(['%%NAME%%'], cli='%%NAME%%', roots=True, loader='yaml')
     print('%%NAME%% works!')
 '''
 
-REQ = 'pop'
+REQ = 'pop\n'
 
 CONF = '''CLI_CONFIG = {}
 CONFIG = {}
 GLOBAL = {}
 SUBS = {}
-DYNE = {}
+DYNE = {
+        '%%NAME%%': ['%%NAME%%'],
+%%DYNE%%}
 '''
 
-VER = '''version = '1'
-'''
+VER = "version = '1'\n"
 
 
 def new(hub):
@@ -219,8 +229,13 @@ def mkconf(hub, name):
     Create the version.py file
     '''
     path = os.path.join(hub.PATH, name, 'conf.py')
+    dyne_str = ''
+    for dyne in hub.opts['dyne']:
+        dyne_str += f"        '{dyne}': ['{dyne}'],\n"
+    conf_str = CONF.replace('%%NAME%%', name)
+    conf_str = conf_str.replace('%%DYNE%%', dyne_str)
     with open(path, 'w+') as fp:
-        fp.write(CONF)
+        fp.write(conf_str)
 
 
 def mkreadme(hub, name):

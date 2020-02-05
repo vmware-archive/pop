@@ -14,6 +14,12 @@ def pop_seed():
                 'options': ['-t'],
                 'help': 'The type of project to build, by default make a standalone project, but for a vetical app project pass a "v"',
                 },
+            'dyne': {
+                'options': ['-d'],
+                'default': [],
+                'nargs': '*',
+                'help': 'A space delimited list of additional dynamic names for vertical app-merging',
+                },
             }
 
     hub = pop.hub.Hub()

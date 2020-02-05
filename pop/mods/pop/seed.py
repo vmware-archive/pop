@@ -75,15 +75,17 @@ setup(name=NAME,
           'Programming Language :: Python :: 3.8',
           'Development Status :: 5 - Production/Stable',
           ],
-      entry_points={
-        'console_scripts': [
-            '%%NAME%% = %%NAME%%.scripts:start',
-            ],
-          },
       packages=discover_packages(),
+      %%ENTRY%%
       cmdclass={'clean': Clean},
       )
 '''
+
+ENTRY = '''entry_points={
+        'console_scripts': [
+            '%%NAME%% = %%NAME%%.scripts:start',
+            ],
+          },'''
 
 SCRIPT = '''#!/usr/bin/env python3
 import pop.hub
@@ -127,10 +129,12 @@ def new(hub):
     '''
     hub.PATH = os.getcwd()
     name = hub.opts['seed_name']
+    for dyne in hub.opts['dyne']:
+        hub.pop.seed.mkdir(name, dyne)
+        hub.pop.seed.mkdir(name, dyne, 'contracts')
     if hub.opts['type'] == 'v':
         hub.pop.seed.mkdir(name)
-        hub.pop.seed.mksetup(name)
-        hub.pop.seed.mkscript(name)
+        hub.pop.seed.mksetup(name, entry=False)
         hub.pop.seed.mkversion(name)
         hub.pop.seed.mkconf(name)
         hub.pop.seed.mkreq(name)
@@ -173,12 +177,16 @@ def mkreq(hub, name):
         fp.write(REQ)
 
 
-def mksetup(hub, name):
+def mksetup(hub, name, entry=True):
     '''
     Create and write out a setup.py file
     '''
     path = os.path.join(hub.PATH, 'setup.py')
     setup_str = SETUP.replace('%%NAME%%', name)
+    if entry:
+        setup_str = setup_str.replace('%%ENTRY%%', ENTRY.replace('%%NAME%%', name))
+    else:
+        setup_str = setup_str.replace('%%ENTRY%%', '')
     with open(path, 'w+') as fp:
         fp.write(setup_str)
 

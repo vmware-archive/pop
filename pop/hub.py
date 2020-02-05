@@ -48,7 +48,7 @@ class Hub:
         self._iter_subs = sorted(self._subs.keys())
         self._iter_ind = 0
         # Set up the conf OPT structure so it is always available
-        hub.OPT = {}
+        self.OPT = {}
 
     def __getstate__(self):
         return dict(

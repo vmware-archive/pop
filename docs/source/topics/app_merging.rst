@@ -58,8 +58,8 @@ to natively and quickly create applications that solve busies needs but natively
 present themselves as clean, re-usable, library driven applications that can be
 easily re-used, in part or in whole.
 
-A hub, plugins and patterns enable this! If an application is comprised of plugins
-then interfaces that need extending or re-purposing can be easily added to inside
+The hub, plugins and patterns enable this! If an application is comprised of plugins
+then interfaces that need extending or re-purposing can be easily added inside
 a merged app. Patterns present isolated processes that deliver standalone value.
 This allows us to extend many of the merits of OOP, now we have, not only data
 and functions brought together, but we have entire application workflows
@@ -79,7 +79,7 @@ the input level, where the configuration data is presented from the user.
 
 Once the configuration information is loaded into the hub it has been namespaced
 and made available on the respective namespace used by the subs. But before that
-it needs to be read in from the cli. This is what the conf.integrate system
+it needs to be read in from the cli. This is what the `conf.integrate` system
 is designed to solve. The information read from the conf.py files can be modified
 to resolve collisions without having an effect on the operation of the underlying
 configured systems.

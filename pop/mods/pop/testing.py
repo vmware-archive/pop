@@ -192,20 +192,7 @@ class MockContracted:
         return self.contracted(*args, **kwargs)
 
     def __getattr__(self, attr):
-        if attr in self.contracted.__dict__:
-            # allow access to contracted variables
-            return getattr(self.contracted, attr)
-        else:
-            # but pass through to mock functions otherwise
-            return getattr(self.contracted.func, attr)
-
-    def __setattr__(self, name, value):
-        if name in self.contracted.__dict__:
-            # allow access to contracted variables
-            setattr(self.contracted, name, value)
-        else:
-            # but pass through to mock functions otherwise
-            setattr(self.contracted.func, name, value)
+        return getattr(self.contracted, attr)
 
 
 class ContractHub(_LazyPop):

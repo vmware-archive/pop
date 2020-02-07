@@ -213,29 +213,29 @@ class TestMockContracted:
         assert self.hub.mods.testing.echo('foo') == 'contract foo'
 
     def test_contract_hub_contract(self):
-        m_echo = testing.MockContracted(self.hub.mods.testing.echo)
+        m_echo = testing.mock_contracted(self.hub.mods.testing.echo)
         m_echo.func.return_value = 'bar'
         assert m_echo('foo') == 'contract bar'
 
     def test_contract_hub_getattr(self):
-        assert testing.MockContracted(self.hub.mods.testing.echo).return_value
+        assert testing.mock_contracted(self.hub.mods.testing.echo).return_value
 
     def test_contract_hub_module(self):
-        m_echo = testing.MockContracted(self.hub.mods.testing.echo)
+        m_echo = testing.mock_contracted(self.hub.mods.testing.echo)
         func_module = self.hub.mods.testing.echo.func.__module__
         assert m_echo.func.__module__ == func_module
 
     def test_signature(self):
-        m_sig = testing.MockContracted(self.hub.mods.testing.signature_func)
+        m_sig = testing.mock_contracted(self.hub.mods.testing.signature_func)
         assert str(m_sig.signature) == "(hub, param1, param2='default')"
 
     def test_get_arguments(self):
-        m_sig = testing.MockContracted(self.hub.mods.testing.signature_func)
+        m_sig = testing.mock_contracted(self.hub.mods.testing.signature_func)
         m_sig('passed in')
 
     def test_copy_func_attributes(self):
-        echo = testing.MockContracted(self.hub.mods.testing.echo)
-        attr_func = testing.MockContracted(self.hub.mods.testing.attr_func)
+        echo = testing.mock_contracted(self.hub.mods.testing.echo)
+        attr_func = testing.mock_contracted(self.hub.mods.testing.attr_func)
 
         with pytest.raises(AttributeError):
             assert echo.func.test
@@ -255,7 +255,7 @@ class TestContractHub:
         assert self.hub.mods.testing.echo('foo') == 'contract foo'
 
     def test_contract_hub_contract(self):
-        assert isinstance(self.contract_hub.mods.testing.echo, testing.MockContracted)
+        assert isinstance(self.contract_hub.mods.testing.echo, testing.Contracted)
 
     @pytest.mark.asyncio
     async def test_async_echo(self):

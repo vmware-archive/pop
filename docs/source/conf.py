@@ -24,7 +24,7 @@ copyright = '2020, Thomas S Hatch'
 author = 'Thomas S Hatch'
 
 # The short X.Y version
-version = '7.6'
+version = '8'
 # The full version, including alpha/beta/rc tags
 release = version
 

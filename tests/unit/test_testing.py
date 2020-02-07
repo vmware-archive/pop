@@ -214,7 +214,7 @@ class TestMockContracted:
 
     def test_contract_hub_contract(self):
         m_echo = testing.MockContracted(self.hub.mods.testing.echo)
-        m_echo.return_value = 'bar'
+        m_echo.func.return_value = 'bar'
         assert m_echo('foo') == 'contract bar'
 
     def test_contract_hub_getattr(self):
@@ -263,7 +263,7 @@ class TestContractHub:
         expected = 'async contract ' + val
         assert await self.hub.mods.testing.async_echo(val) == expected
 
-        self.contract_hub.mods.testing.async_echo.return_value = val
+        self.contract_hub.mods.testing.async_echo.func.return_value = val
         assert await self.contract_hub.mods.testing.async_echo(val + 'change') == expected
 
     def test_contract_hub_inspect(self):
@@ -275,7 +275,7 @@ class TestContractHub:
         contract_hub = testing.ContractHub(self.hub)
 
         # modifying the contract
-        contract_hub.mods.testing.echo.return_value = 'bar'
+        contract_hub.mods.testing.echo.func.return_value = 'bar'
         assert contract_hub.mods.testing.echo('foo') == 'contract bar'
         contract_hub.mods.testing.echo.contract_functions['call'] = []
         assert contract_hub.mods.testing.echo('foo') == 'bar'

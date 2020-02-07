@@ -8,7 +8,7 @@ to make that easier.
 `pop`: Used to reference the `pop` Python project. When specifying the `pop` implementation of
 Plugin Oriented Programming use an all lowercase `pop`
 
-'POP': The Plugin Oriented Programming concept. When specifying the Plugin Oriented Programing paradigm
+`POP`: The Plugin Oriented Programming concept. When specifying the Plugin Oriented Programing paradigm
 do so with all caps
 
 `hub`: The `hub` is the root of the hierarchical namespace. The hub represents both the concept of
@@ -21,3 +21,12 @@ inside of `pop`
 
 `pattern`: The Plugin Oriented Programming concept which defines how a Plugin Subsystem is
 implemented. :ref:`sub_patterns`
+
+`app-merging`: The ability to dynamically merge seperate POP codebases together.
+
+`Vertical App Merging`: Extending a single plugin subsystems by defining the sub in multiple codebases.
+
+`Horizontal App Merging`: Merging multiple subsystems together onto one hub.
+
+`Dyne Name`: The dynamic name is used to define what plugin sub that is being defined or
+extended. Dyne Names are used in Vertical App Merging.

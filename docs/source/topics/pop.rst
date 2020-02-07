@@ -119,7 +119,7 @@ development model.
 Concurrency Models
 ------------------
 
-Over the last few years now concepts about concurrency have emerged, primarily in the
+Over the last few years new concepts about concurrency have emerged, primarily in the
 sense of modern co-routines. Coroutines allow for concurrent processing without threading
 but they also impose unique challenges. The POP model presents a way for coroutines to
 cross communicate in clean and reliable ways, and allow for coroutines to be run without

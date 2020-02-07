@@ -6,8 +6,9 @@ Dynamic Names
 
 The Dynamic Names system in `pop` is used to implement part of the app merging system.
 When you think of app merging you should think of it as coming from 2 separate directions,
-once direction is the ability to merge many apps together into a larger app. But the other
-angle of app merging it to allow for external applications to extend your own subsystems.
+once direction is the ability to merge many apps together into a larger app, this is
+called *horizontal app merging*. But the other angle of app merging it to allow for external
+applications to extend your own subsystems, this is called *vertical app merging*.
 
 Think of it this way, you define a system that detects information about a server, but
 you don't want to have to build in support for all the specifics that could be discovered
@@ -24,7 +25,7 @@ just define the `dyne_name` as the only option when you set up your new sub:
 
     hub.pop.sub.add(dyne_name='grains')
 
-Then in your project's *conf.py* file used by the conf.integrate system just add another
+Then in your project's *conf.py* file used by the `conf.integrate` system just add another
 dict called `DYNE`:
 
 .. code-block:: python

@@ -173,26 +173,11 @@ class NoContractHub(_LazyPop):
         return partial(f.func, self._LazyPop__lut.lookup('hub'))
 
 
-class MockContracted:
-    '''
-    Creates a new contracted, but using a mock function.
-    The mock function is masked to look just like the real function.
-
-    Look up/set attributes first on the new contracted, then pass through to the mock.
-    '''
-
-    def __init__(self, c):
-        mock_func = create_autospec(c.func, spec_set=True)
-        mock_func.__module__ = c.func.__module__
-        mock_func.__dict__.update(copy.deepcopy(c.func.__dict__))
-        self.__dict__['contracted'] = Contracted(c.hub, c.contracts, mock_func, c.ref, c.name)
-        self.signature = c.signature
-
-    def __call__(self, *args, **kwargs):
-        return self.contracted(*args, **kwargs)
-
-    def __getattr__(self, attr):
-        return getattr(self.contracted, attr)
+def mock_contracted(c):
+    mock_func = create_autospec(c.func, spec_set=True)
+    mock_func.__module__ = c.func.__module__
+    mock_func.__dict__.update(copy.deepcopy(c.func.__dict__))
+    return Contracted(c.hub, c.contracts, mock_func, c.ref, c.name)
 
 
 class ContractHub(_LazyPop):
@@ -232,4 +217,4 @@ class ContractHub(_LazyPop):
         assert contract_hub.sub.mod.fn.contracts.index(contract1) < contract_hub.sub.mod.fn.contracts.index(contract2)
     '''
     def _mock_function(self, f):
-        return MockContracted(f)
+        return mock_contracted(f)

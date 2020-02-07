@@ -2,7 +2,8 @@
 Pop Docs Outline
 ================
 
-POP docs need to cover how to write and think in POP in a way that is consumabe, has many visuals and covers the basic concepts in an ingestoble, follow allong way.
+POP docs need to cover how to write and think in POP in a way that is consumabe,
+has many visuals and covers the basic concepts in an easy, follow along way.
 
 Quickstart
 ==========
@@ -17,10 +18,52 @@ Quickstart Vertical
 
 Cover how to make vertical app-merge projects using pop-seed and dyne name
 
-Intro to Concepts and Terms
-===========================
+What is POP?
+============
 
-Intro to some of the basic terms and a link to a term glossary for more advanced terms
+Declare the problem statement-
+Exlplain what POP is, and how it seeks to solve this problem.
+
+Origin
+======
+
+Where did POP come from, and how does that lend the concept credibility?
+
+What does Pluggable mean?
+=========================
+
+Pluggable code means that your applications become legos, endlessly attatchable
+
+Intro the hub, app merging, plugins and why conf needs to be integrated
+
+Why Patterns are so critical
+
+The Hub
+=======
+
+The root of the application and namespaces. Cover why namespaces are critical
+in POP and why they need to be shared
+
+App Merging
+===========
+
+App Merging, the core feature and concept of POP
+
+Plugins, what this means
+========================
+
+Cover what Pluggins are and what it means to make pluggable software
+
+The Conf System
+===============
+
+Why the conf system is needed, how it works and how it allows app merging to happen
+
+Thinking in POP
+===============
+
+POP makes you think about code differently, learn how to think in plugin systems as
+I/O interfaces that expose consistent, pluggable systems.
 
 Structure concepts
 ==================
@@ -28,11 +71,6 @@ Structure concepts
 Get familiar with the layout of pop projects, the hub and subs, how they lay out
 and communicate
 
-Thinking in POP
-===============
-
-POP makes you think about code differently, learn how to think in plugin systems as
-I/O interfaces that expose consistent, pluggable systems.
 
 What Goes Where
 ===============
@@ -65,3 +103,4 @@ Pop is all about making patters inside of subs, if patterns are not being made t
 the code is not pop
 
 Define what a pattern is and how to think about making patterns
+

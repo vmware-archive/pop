@@ -37,11 +37,12 @@ def module_level_non_aliased_ping_call_fw_hub(hub):
     return ping_(hub)
 
 
-def attr():
+def attr(hub):
     return True
 
 
 attr.bar = True
+attr.func = True
 
 
 def call_scan(hub):

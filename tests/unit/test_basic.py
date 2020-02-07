@@ -138,8 +138,9 @@ def test_this():
 def test_func_attrs():
     hub = pop.hub.Hub()
     hub.pop.sub.add('tests.mods')
-    assert 'bar' in dir(hub.mods.test.attr)
-    assert hub.mods.test.attr.bar == True
+    assert 'bar' in hub.mods.test.attr.__dict__
+    assert hub.mods.test.attr.func.bar is True
+    assert hub.mods.test.attr.func.func is not hub.mods.test.attr.func
 
 
 def test_ref_sys():

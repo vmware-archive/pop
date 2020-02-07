@@ -1,0 +1,28 @@
+=============
+Pop Release 8
+=============
+
+Pop 8 introduces a few structural changes to the loader and some major additions
+to `pop-seed`.
+
+Function Variable Pass Through
+==============================
+
+Pop wraps functions on the hub with contracted objects. This resulted in an issue
+where decorators that add variables to function objects did not always become
+visible to the contracted objects on the hub. This prevented decorators in
+a number of tools to not work with `pop`.
+
+To fix this we have made it so that function level variables are now available on
+the contracted object.
+
+Pop Seed Additions
+==================
+
+Pop-seed now uses Dynamic Names by default when creating new projects. This moves
+the mindset towards making sure that developers are more app-merge centric.
+
+The ability to add dynamic names to the conf during the `pop-seed` call have also
+been added. Now it is possible to pass the -d option to `pop-seed` and list what
+dynamic names need to be created. Then those dynamic names get added to the `conf.py`
+and the needed directories are created.

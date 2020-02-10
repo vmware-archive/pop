@@ -94,13 +94,18 @@ def get_dirs(hub, sub):
     return sub._dirs
 
 
-def iter_subs(hub, sub):
+def iter_subs(hub, sub, recurse=False):
     '''
     Return an iterator that will traverse just the subs. This is useful for
     nested subs
     '''
     for name in sorted(sub._subs):
-        yield sub._subs[name]
+        ret = sub._subs[name]
+        yield ret
+        if recurse:
+            if hasattr(ret, '_subs'):
+                for nest in hub.pop.sub.iter_subs(ret, recurse):
+                    yield nest
 
 
 def load_subdirs(hub, sub, recurse=False):

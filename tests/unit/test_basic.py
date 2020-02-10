@@ -57,6 +57,16 @@ def test_iter_sub():
     assert mods == sorted(hub.mods._loaded.keys())
 
 
+def test_iter_subs_rec():
+    hub = pop.hub.Hub()
+    hub.pop.sub.add('tests.sdirs')
+    hub.pop.sub.load_subdirs(hub.sdirs, recurse=True)
+    subs = []
+    for sub in hub.pop.sub.iter_subs(hub.sdirs, recurse=True):
+        subs.append(sub._subname)
+    assert subs == ['l11', 'l2', 'l12', 'l2', 'l13', 'l2']
+
+
 def test_iter_loads():
     hub = pop.hub.Hub()
     hub.pop.sub.add('tests.mods.iter')

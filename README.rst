@@ -2,6 +2,18 @@
 POP
 ====
 
+MOVED TO GITLAB
+===============
+
+POP projects developed by Saltstack are being moved to Gitlab.
+
+The new location of idem is here:
+
+https://gitlab.com/saltstack/pop/pop
+
+Intro
+=====
+
 Pop is used to express the Plugin Oriented Programming Paradigm. The Plugin
 Oriented Programming Paradigm has been designed to make pluggable software
 easy to write and easy to extend.
